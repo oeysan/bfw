@@ -11,11 +11,10 @@
 #' @param job.group for some hierarchical models with several layers of parameter names (e.g., latent and observed parameters), Default: NULL
 #' @param initial.list initial values for analysis, Default: list()
 #' @param ... further arguments passed to or from other methods
-#' @return see robust vignette
-#' @seealso 
+#' @seealso
 #'  \code{\link[stats]{complete.cases}}
 #' @rdname StatsRegression
-#' @export 
+#' @export
 #' @importFrom stats complete.cases
 StatsRegression <- function(y,
                            y.names,
@@ -29,45 +28,45 @@ StatsRegression <- function(y,
                            initial.list,
                            ...
 ) {
-  
+
 
   # Select continous/dichotomous/dummy paramaters as predictors (and remove non-complete cases across parameters)
   x <- TrimSplit(x)
   DF <- DF[stats::complete.cases(DF[, c(y,x)]), ]
   x.matrix <- as.matrix(sapply(DF[, x], as.numeric))
-  
+
   # Select continous paramater as criterion
   y.matrix <- as.numeric(DF[, y])
-  
+
   # Number of datapoints
   n <- dim(x.matrix)[1]
-  
+
   # Number of blocks
   if (is.null(x.blocks)) x.blocks <- 1
-  
+
   # Number of variables per block
   x.steps <- if (is.null(x.steps)) dim(x.matrix)[2] else as.numeric(TrimSplit(x.steps))
 
   # Create job.names
   y.names <- if (!is.null(y.names)) TrimSplit(y.names) else CapWords(y)
   x.names <- if (!is.null(x.names)) TrimSplit(x.names) else CapWords(x)
-  
+
   # Create job group
-  if (is.null(job.group)) job.group <- list ( c("beta0","zbeta0") , 
-                                              c("beta","zbeta","sigma","zsigma") 
+  if (is.null(job.group)) job.group <- list ( c("beta0","zbeta0") ,
+                                              c("beta","zbeta","sigma","zsigma")
   )
-  
+
   # Final name list
-  job.names <- list(list("Intercept"), 
-                    list(rep(y.names,x.blocks), x.names) 
+  job.names <- list(list("Intercept"),
+                    list(rep(y.names,x.blocks), x.names)
   )
-  
+
   # Create crosstable for y parameters
   n.data <- data.frame(t(combn(job.names, 2)),n)
-  
-  # Paramter(s) of interest 
+
+  # Paramter(s) of interest
   params <- if(length(params)) TrimSplit(params) else c("beta0", "beta", "sigma", "zbeta0", "zbeta", "zsigma")
-  
+
   # Create data for Jags
   data.list <- list(
     x = x.matrix,
@@ -75,7 +74,7 @@ StatsRegression <- function(y,
     n = n,
     n.x = x.steps,
     q = x.blocks)
-  
+
   # Create name list
   name.list <- list(
     job.group = job.group,
@@ -89,5 +88,5 @@ StatsRegression <- function(y,
     params = params,
     n.data = n.data
   ))
-  
+
 }

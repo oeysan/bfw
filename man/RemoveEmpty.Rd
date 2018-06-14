@@ -13,10 +13,6 @@ RemoveEmpty(x)
 Remove empty elements in vector
 }
 \examples{
-\dontrun{
-if(interactive()){
  RemoveEmpty( c("",NA,"","Remains") )
  # [1] "Remains"
- }
-}
 }

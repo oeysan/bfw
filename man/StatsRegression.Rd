@@ -30,9 +30,6 @@ StatsRegression(y, y.names, x, x.names, x.steps, x.blocks, DF, params,
 
 \item{...}{further arguments passed to or from other methods}
 }
-\value{
-see robust vignette
-}
 \description{
 Simple, multiple and hierarchical regression
 }

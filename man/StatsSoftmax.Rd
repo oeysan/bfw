@@ -2,7 +2,7 @@
 % Please edit documentation in R/stats_softmax.R
 \name{StatsSoftmax}
 \alias{StatsSoftmax}
-\title{FUNCTION_TITLE}
+\title{Softmax Regression}
 \usage{
 StatsSoftmax(y, y.names, x, x.names, DF, params, job.group, initial.list,
   run.robust, ...)
@@ -29,13 +29,12 @@ StatsSoftmax(y, y.names, x, x.names, DF, params, job.group, initial.list,
 \item{...}{further arguments passed to or from other methods}
 }
 \description{
-FUNCTION_DESCRIPTION
+Perform softmax regression (i.e., multinomial logistic regression)
 }
 \examples{
-\dontrun{
-if(interactive()){
 # Conduct softmax regression on Cats data
 # Reward is 0 = Food and 1 = Dance
+\donttest{
 mcmc <- bfw(project.data = bfw::Cats,
             y = "Alignment",
             x = "Ratings,Reward",
@@ -43,12 +42,12 @@ mcmc <- bfw(project.data = bfw::Cats,
             jags.model = "softmax",
             jags.seed = 100,
             silent = TRUE)
-
-# Conduct binominal generalized linear model 
+}
+# Conduct binominal generalized linear model
 model <- glm(Alignment ~ Ratings + Reward, data=bfw::Cats, family = binomial(link="logit"))
 
 # Print output from softmax
-mcmc$summary.MCMC
+#' \donttest{ mcmc$summary.MCMC }
 #                                   Mean     Median          Mode   ESS     HDIlo     HDIhi    n
 #beta0[1]: Intercept: Evil     0.0000000  0.0000000 -0.0006069443     0  0.000000  0.000000 2000
 #beta0[2]: Intercept: Good    -7.6900266 -7.6842450 -7.6591980566 17693 -8.471740 -6.917770 2000
@@ -65,12 +64,10 @@ mcmc$summary.MCMC
 
 # Print (truncated) output from GML
 # Coefficients:
-#               Estimate   Std. Error z value Pr(>|z|)    
+#               Estimate   Std. Error z value Pr(>|z|)
 #(Intercept)     -6.39328    0.27255 -23.457  < 2e-16 ***
 #Ratings          1.28480    0.05136  25.014  < 2e-16 ***
 #RewardAffection  1.26975    0.16381   7.751  9.1e-15 ***
- }
-}
 }
 \seealso{
 \code{\link[stats]{complete.cases}}

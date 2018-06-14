@@ -11,7 +11,6 @@
 #' @param model.name name of model used
 #' @param jags.model specify which module to use
 #' @param ... further arguments passed to or from other methods
-#' @return see metric vignette
 #' @seealso
 #'  \code{\link[stats]{complete.cases}},\code{\link[stats]{sd}},\code{\link[stats]{aggregate}},\code{\link[stats]{median}}
 #' @rdname StatsMetric

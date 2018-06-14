@@ -68,11 +68,34 @@ PlotData(data.MCMC = NULL, data.type = "Mean", job.title = NULL,
 Plot data as violin plot visualizing density, box plots to display HDI, whiskers to display standard deviation
 }
 \seealso{
-\code{\link[ggplot2]{ggproto}},\code{\link[ggplot2]{aes}},\code{\link[ggplot2]{element_blank}},\code{\link[ggplot2]{element_line}},\code{\link[ggplot2]{element_rect}},\code{\link[ggplot2]{element_text}},\code{\link[ggplot2]{geom_boxplot}},\code{\link[ggplot2]{geom_errorbar}},\code{\link[ggplot2]{geom_line}},\code{\link[ggplot2]{geom_ribbon}},\code{\link[ggplot2]{geom_violin}},\code{\link[ggplot2]{ggplot}},\code{\link[ggplot2]{scale_fill_manual}},\code{\link[ggplot2]{scale_x_discrete}},\code{\link[ggplot2]{theme}},\code{\link[ggplot2]{layer}},\code{\link[ggplot2]{labs}}
- \code{\link[plyr]{arrange}}
- \code{\link[scales]{zero_range}}
- \code{\link[grid]{grobTree}},\code{\link[grid]{grobName}},\code{\link[grid]{unit}}
- \code{\link[stats]{approxfun}}
- \code{\link[utils]{tail}}
- \code{\link[grDevices]{colorRampPalette}},\code{\link[grDevices]{dev.new}},\code{\link[grDevices]{recordPlot}},\code{\link[grDevices]{graphics.off}},\code{\link[grDevices]{dev.list}},\code{\link[grDevices]{dev.off}}
+\code{\link[ggplot2]{ggproto}},
+\code{\link[ggplot2]{aes}},
+\code{\link[ggplot2]{element_blank}},
+\code{\link[ggplot2]{element_line}},
+\code{\link[ggplot2]{element_rect}},
+\code{\link[ggplot2]{element_text}},
+\code{\link[ggplot2]{geom_boxplot}},
+\code{\link[ggplot2]{geom_errorbar}},
+\code{\link[ggplot2]{geom_line}},
+\code{\link[ggplot2]{geom_ribbon}},
+\code{\link[ggplot2]{geom_violin}},
+\code{\link[ggplot2]{ggplot}},
+\code{\link[ggplot2]{scale_fill_manual}},
+\code{\link[ggplot2]{scale_x_discrete}},
+\code{\link[ggplot2]{theme}},
+\code{\link[ggplot2]{layer}},
+\code{\link[ggplot2]{labs}}
+\code{\link[plyr]{arrange}}
+\code{\link[scales]{zero_range}}
+\code{\link[grid]{grobTree}},
+\code{\link[grid]{grobName}},
+\code{\link[grid]{unit}}
+\code{\link[stats]{approxfun}}
+\code{\link[utils]{tail}}
+\code{\link[grDevices]{colorRampPalette}},
+\code{\link[grDevices]{dev.new}},
+\code{\link[grDevices]{recordPlot}},
+\code{\link[grDevices]{graphics.off}},
+\code{\link[grDevices]{dev.list}},
+\code{\link[grDevices]{dev.off}}
 }

@@ -13,12 +13,8 @@ ParseNumber(x)
 simple function to extract numbers from string/vector
 }
 \examples{
-\dontrun{
-if(interactive()){
  ParseNumber("String1WithNumbers2")
  # [1] 1 2
- }
-}
 }
 \seealso{
 \code{\link[stats]{na.omit}}

@@ -13,10 +13,6 @@ RemoveSpaces(x)
 simple function to remove whitespace
 }
 \examples{
-\dontrun{
-if(interactive()){
  RemoveSpaces("  No More S p a c e s")
  # [1] "NoMoreSpaces"
- }
-}
 }

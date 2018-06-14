@@ -1,5 +1,5 @@
 #' @title Plot Data
-#' @description Plot data as violin plot visualizing density, box plots to display HDI, whiskers to display standard deviation 
+#' @description Plot data as violin plot visualizing density, box plots to display HDI, whiskers to display standard deviation
 #' @param data.MCMC data to plot data from, Default: NULL
 #' @param data.type define what kind of data is being used, Default: 'Mean'
 #' @param job.title title of analysis, Default: NULL
@@ -25,16 +25,39 @@
 #' @param units define unit of length used for visualizations, Default: 'in'
 #' @param paper define a print size for visualizations, Default: 'pw'
 #' @param ... further arguments passed to or from other methods
-#' @seealso 
-#'  \code{\link[ggplot2]{ggproto}},\code{\link[ggplot2]{aes}},\code{\link[ggplot2]{element_blank}},\code{\link[ggplot2]{element_line}},\code{\link[ggplot2]{element_rect}},\code{\link[ggplot2]{element_text}},\code{\link[ggplot2]{geom_boxplot}},\code{\link[ggplot2]{geom_errorbar}},\code{\link[ggplot2]{geom_line}},\code{\link[ggplot2]{geom_ribbon}},\code{\link[ggplot2]{geom_violin}},\code{\link[ggplot2]{ggplot}},\code{\link[ggplot2]{scale_fill_manual}},\code{\link[ggplot2]{scale_x_discrete}},\code{\link[ggplot2]{theme}},\code{\link[ggplot2]{layer}},\code{\link[ggplot2]{labs}}
-#'  \code{\link[plyr]{arrange}}
-#'  \code{\link[scales]{zero_range}}
-#'  \code{\link[grid]{grobTree}},\code{\link[grid]{grobName}},\code{\link[grid]{unit}}
-#'  \code{\link[stats]{approxfun}}
-#'  \code{\link[utils]{tail}}
-#'  \code{\link[grDevices]{colorRampPalette}},\code{\link[grDevices]{dev.new}},\code{\link[grDevices]{recordPlot}},\code{\link[grDevices]{graphics.off}},\code{\link[grDevices]{dev.list}},\code{\link[grDevices]{dev.off}}
+#' @seealso
+#' \code{\link[ggplot2]{ggproto}},
+#' \code{\link[ggplot2]{aes}},
+#' \code{\link[ggplot2]{element_blank}},
+#' \code{\link[ggplot2]{element_line}},
+#' \code{\link[ggplot2]{element_rect}},
+#' \code{\link[ggplot2]{element_text}},
+#' \code{\link[ggplot2]{geom_boxplot}},
+#' \code{\link[ggplot2]{geom_errorbar}},
+#' \code{\link[ggplot2]{geom_line}},
+#' \code{\link[ggplot2]{geom_ribbon}},
+#' \code{\link[ggplot2]{geom_violin}},
+#' \code{\link[ggplot2]{ggplot}},
+#' \code{\link[ggplot2]{scale_fill_manual}},
+#' \code{\link[ggplot2]{scale_x_discrete}},
+#' \code{\link[ggplot2]{theme}},
+#' \code{\link[ggplot2]{layer}},
+#' \code{\link[ggplot2]{labs}}
+#' \code{\link[plyr]{arrange}}
+#' \code{\link[scales]{zero_range}}
+#' \code{\link[grid]{grobTree}},
+#' \code{\link[grid]{grobName}},
+#' \code{\link[grid]{unit}}
+#' \code{\link[stats]{approxfun}}
+#' \code{\link[utils]{tail}}
+#' \code{\link[grDevices]{colorRampPalette}},
+#' \code{\link[grDevices]{dev.new}},
+#' \code{\link[grDevices]{recordPlot}},
+#' \code{\link[grDevices]{graphics.off}},
+#' \code{\link[grDevices]{dev.list}},
+#' \code{\link[grDevices]{dev.off}}
 #' @rdname PlotData
-#' @export 
+#' @export
 #' @importFrom ggplot2 ggproto aes element_blank element_line element_rect element_text geom_boxplot geom_errorbar geom_line geom_ribbon geom_violin ggplot scale_fill_manual scale_x_discrete theme layer labs
 #' @importFrom plyr arrange
 #' @importFrom scales zero_range
@@ -42,34 +65,34 @@
 #' @importFrom stats approxfun
 #' @importFrom utils tail
 #' @importFrom grDevices colorRampPalette dev.new recordPlot graphics.off dev.list dev.off
-PlotData <- function(data.MCMC = NULL, 
-                     data.type = "Mean", 
-                     job.title = NULL, 
-                     run.repeated = FALSE, 
-                     run.split = FALSE, 
-                     y.split = FALSE , 
-                     ribbon.plot = TRUE, 
-                     monochrome = TRUE, 
-                     plot.colors = c("#495054", "#e3e8ea"), 
-                     y.text = "Score", 
+PlotData <- function(data.MCMC = NULL,
+                     data.type = "Mean",
+                     job.title = NULL,
+                     run.repeated = FALSE,
+                     run.split = FALSE,
+                     y.split = FALSE ,
+                     ribbon.plot = TRUE,
+                     monochrome = TRUE,
+                     plot.colors = c("#495054", "#e3e8ea"),
+                     y.text = "Score",
                      x.text = NULL,
                      project.dir = "Results/",
-                     save.data = FALSE, 
-                     graphic.type = "pptx", 
+                     save.data = FALSE,
+                     graphic.type = "pptx",
                      plot.size = "15,10",
-                     scaling = 100, 
-                     plot.aspect = NULL, 
-                     vector.graphic = TRUE, 
-                     point.size = 15, 
-                     font.type = "serif", 
-                     one.file = TRUE, 
+                     scaling = 100,
+                     plot.aspect = NULL,
+                     vector.graphic = TRUE,
+                     point.size = 15,
+                     font.type = "serif",
+                     one.file = TRUE,
                      ppi = 300,
                      units = "in",
                      paper = "pw",
-                     ... 
+                     ...
 ) {
-  
-  
+
+
   # Define ggplot2 elements
   ggproto <- ggplot2::ggproto()
   GeomViolin <- ggplot2::GeomViolin
@@ -89,7 +112,7 @@ PlotData <- function(data.MCMC = NULL,
   scale_fill_manual <- ggplot2::scale_fill_manual()
   scale_x_discrete <- ggplot2::scale_x_discrete()
   theme <- ggplot2::theme()
-  
+
   # Split violin plot for ggplot2
   # Based on Jan Gleixner (@jan-glx) and Wouter van der Bijl (@Axeman)
   # https://stackoverflow.com/questions/47651868/split-violin-plot-with-ggplot2-and-add-information
@@ -98,17 +121,17 @@ PlotData <- function(data.MCMC = NULL,
                        xminv = data$x - data$violinwidth * (data$x - data$xmin),
                        xmaxv = data$x + data$violinwidth * (data$xmax - data$x) )
     groups <- data[1,"group"]
-    
+
     x.var <- if ( groups %% 2 == 1 ) data$xminv else data$xmaxv
     y.var <- if ( groups %% 2 == 1 ) data$y else -data$y
-    
+
     n.data <- plyr::arrange(transform( data, x = x.var), y.var)
     n.data <- rbind(n.data[1, ], n.data, n.data[nrow(n.data), ], n.data[1, ])
-    n.data[c(1,nrow(n.data)-1,nrow(n.data)), "x"] <- round(n.data[1, "x"]) 
+    n.data[c(1,nrow(n.data)-1,nrow(n.data)), "x"] <- round(n.data[1, "x"])
     if (length(draw_quantiles) > 0 & !scales::zero_range(range(data$y))) {
       stopifnot(all(draw_quantiles >= 0), all(draw_quantiles <= 1))
       quantiles <- cQuantile(data, draw_quantiles, split = TRUE, groups = groups)
-      aesthetics <- data[rep(1, nrow(quantiles)), 
+      aesthetics <- data[rep(1, nrow(quantiles)),
                          setdiff(names(data), c("x", "y")), drop = FALSE]
       aesthetics$alpha <- rep(1, nrow(quantiles))
       both <- cbind(quantiles, aesthetics)
@@ -117,12 +140,12 @@ PlotData <- function(data.MCMC = NULL,
     } else {
       grob <- GeomPolygon$draw_panel(n.data, ...)
     }
-    
+
     grob$name <- grid::grobName(grob, "geom_splitviolin")
     return (grob)
-    
+
   } )
-  
+
   cQuantile <- function (data, draw_quantiles, split = FALSE, groups = NULL) {
     dens <- cumsum(data$density)/sum(data$density)
     ecdf <- stats::approxfun(dens, data$y)
@@ -131,59 +154,59 @@ PlotData <- function(data.MCMC = NULL,
     violin.xmaxvs <- (stats::approxfun(data$y, data$xmaxv))(ys)
     violin.xs <- (stats::approxfun(data$y, data$x))(ys)
     if (groups %% 2 == 0) {
-      data.frame(x = Interleave(violin.xs, violin.xmaxvs), 
-                 y = rep(ys, each = 2), group = rep(ys, each = 2)) 
+      data.frame(x = Interleave(violin.xs, violin.xmaxvs),
+                 y = rep(ys, each = 2), group = rep(ys, each = 2))
     } else {
-      data.frame(x = Interleave(violin.xminvs, violin.xs), 
-                 y = rep(ys, each = 2), group = rep(ys, each = 2)) 
+      data.frame(x = Interleave(violin.xminvs, violin.xs),
+                 y = rep(ys, each = 2), group = rep(ys, each = 2))
     }
   }
-  
-  geom_splitviolin <- function (mapping = NULL, 
-                                data = NULL, 
-                                stat = "ydensity", 
-                                position = "identity", 
-                                draw_quantiles = NULL, 
-                                trim = TRUE, 
-                                scale = "area", 
-                                na.rm = FALSE, 
-                                show.legend = NA, 
-                                inherit.aes = TRUE, 
-                                ... 
+
+  geom_splitviolin <- function (mapping = NULL,
+                                data = NULL,
+                                stat = "ydensity",
+                                position = "identity",
+                                draw_quantiles = NULL,
+                                trim = TRUE,
+                                scale = "area",
+                                na.rm = FALSE,
+                                show.legend = NA,
+                                inherit.aes = TRUE,
+                                ...
   ) {
-    
-    ggplot2::layer(data = data, 
-                   mapping = mapping, 
-                   stat = stat, 
-                   geom = GeomSplitViolin, 
-                   position = position, 
-                   show.legend = show.legend, 
-                   inherit.aes = inherit.aes, 
-                   params = list(trim = trim, 
-                                 scale = scale, 
-                                 draw_quantiles = draw_quantiles, 
-                                 na.rm = na.rm, 
+
+    ggplot2::layer(data = data,
+                   mapping = mapping,
+                   stat = stat,
+                   geom = GeomSplitViolin,
+                   position = position,
+                   show.legend = show.legend,
+                   inherit.aes = inherit.aes,
+                   params = list(trim = trim,
+                                 scale = scale,
+                                 draw_quantiles = draw_quantiles,
+                                 na.rm = na.rm,
                                  ...
                    ) )
   }
-  
-  # Find MCMC data   
+
+  # Find MCMC data
   if (is.null(data.MCMC)) {
     get.pattern <- sprintf(".*(%s.*%s).*", data.type, RemoveSpaces(CapWords(job.title)))
-    find.file <- list.files(paste0(project.dir,"MCMC/"), pattern = toString(get.pattern)) 
+    find.file <- list.files(paste0(project.dir,"MCMC/"), pattern = toString(get.pattern))
     data.MCMC <- utils::tail(find.file[order(find.file)],1)
     # Seledct MCMC data
     data.MCMC <- readRDS(paste0(project.dir,"MCMC/",data.MCMC))
   }
-  
+
   # Extract save name
   project.name <- data.MCMC$name.list$project.name
-  
-  # Create results directory 
+
+  # Create results directory
   if (!dir.exists(project.dir) & save.data) {
     dir.create(project.dir)
   }
-  
+
   # Get variables definitions from storage
   summary.MCMC <- data.MCMC$summary.MCMC
   n <- data.MCMC$data.list$n
@@ -194,11 +217,11 @@ PlotData <- function(data.MCMC = NULL,
   y.names <- data.MCMC$name.list$y.names
   x.names <- data.MCMC$name.list$x.names
   x.li <- data.MCMC$name.list$x.li
-  
+
   # y length
   y.length <- length(y.names)
-  # by sequence 
-  x.sequence <- unlist(lapply(x.li , length)) 
+  # by sequence
+  x.sequence <- unlist(lapply(x.li , length))
   # Items in per y sequence
   y.sequence <- seq(1+sum(x.sequence))
   # y and by sequence
@@ -225,10 +248,10 @@ PlotData <- function(data.MCMC = NULL,
   plot.variables <- lapply(1:max(plot.sequence), function (i) matrix(which(plot.sequence %in% i) ) )
   # Create data frame with group indices and Bayesian statistics
   plot.data <- do.call(rbind,lapply(1:q, function (i) {
-    
+
     x.names <- if (!i %in% y.position) x.names[x.groups[i]] else NA
     sub.names <- if (!i %in% y.position) sub.names[(repeated.position-1)[i]] else NA
-    
+
     data.frame(
       y.names = y.names[y.groups[i]],
       x.names = x.names,
@@ -239,19 +262,19 @@ PlotData <- function(data.MCMC = NULL,
       k = i,
       n = n[i],
       # Bayesian stastistics
-      sd.lower.max = summary.MCMC[i, 5] - summary.MCMC[i+q, 6], 
-      sd.lower.mode = summary.MCMC[i, 3] - summary.MCMC[i+q, 3], 
-      sd.lower.min = summary.MCMC[i, 6] - summary.MCMC[i+q, 5], 
-      mean.lower.hdi = summary.MCMC[i, 5], 
+      sd.lower.max = summary.MCMC[i, 5] - summary.MCMC[i+q, 6],
+      sd.lower.mode = summary.MCMC[i, 3] - summary.MCMC[i+q, 3],
+      sd.lower.min = summary.MCMC[i, 6] - summary.MCMC[i+q, 5],
+      mean.lower.hdi = summary.MCMC[i, 5],
       mean.mode = summary.MCMC[i, 3],
-      mean.upper.hdi = summary.MCMC[i, 6], 
-      sd.upper.min = summary.MCMC[i, 5] + summary.MCMC[i+q, 5], 
-      sd.upper.mode = summary.MCMC[i, 3] + summary.MCMC[i+q, 3], 
-      sd.upper.max = summary.MCMC[i, 6] + summary.MCMC[i+q, 6] 
-    )  
-    
+      mean.upper.hdi = summary.MCMC[i, 6],
+      sd.upper.min = summary.MCMC[i, 5] + summary.MCMC[i+q, 5],
+      sd.upper.mode = summary.MCMC[i, 3] + summary.MCMC[i+q, 3],
+      sd.upper.max = summary.MCMC[i, 6] + summary.MCMC[i+q, 6]
+    )
+
   }))
-  
+
   # Create list of number of split violin plots and variables per plot
   ## Repeated split plots
   if (run.split & run.repeated) {
@@ -275,14 +298,14 @@ PlotData <- function(data.MCMC = NULL,
       t(combn(seq(i,q,max(y.sequence)),2))
     } )
   }
-  
-  
+
+
   # number of plots
   n.plots <- length(plot.variables)
-  
+
   # run all plots
   run.plots <- lapply(1:n.plots, function (i) {
-    
+
     # i in n plots
     plot.variables <- plot.variables[[i]]
     # observations
@@ -291,11 +314,11 @@ PlotData <- function(data.MCMC = NULL,
     y.names <- plot.data[ c(plot.variables) , "y.names"]
     x.names <- plot.data[ c(plot.variables) , "x.names"]
     sub.names <- plot.data[ c(plot.variables) , "sub.names"]
-    
+
     # Define names for the various combination of plots (split, repeated, normal)
     ## Beware! Hasty and messy coding
     if ( (run.split & !y.split & !run.repeated) | !run.repeated ) job.names <- y.names
-    
+
     if (run.repeated & run.split) {
       plotTitle <- paste(job.title, "by", x.names)
       label.groups <- y.names
@@ -312,30 +335,30 @@ PlotData <- function(data.MCMC = NULL,
       plotTitle <- paste(job.names, "by", x.names)
       label.groups <- unique(sub.names)
     }
-    
+
     # define colors
     n.colors <- if (run.repeated & run.split) length(unique(sub.names)) else length(label.groups)
     plot.colors <- if (monochrome) grDevices::colorRampPalette(plot.colors)(n.colors) else DistinctColors(1:n.colors)
-    
+
     # create xtick names
     if (run.split) {
-      x.ticks <- unique(plot.data[,1]) 
+      x.ticks <- unique(plot.data[,1])
     } else {
       group <- if (run.repeated) unique(plot.data[,1]) else label.groups
       x.ticks <- lapply(1:length(group), function (i) {
-        bquote(atop(.(as.character(group[i])),"("*italic("n")==.(n[i])*")")) 
+        bquote(atop(.(as.character(group[i])),"("*italic("n")==.(n[i])*")"))
       })
     }
-    
+
     # group names
     if (run.repeated & run.split) {
       label.groups <- unique(sub.names)
       n <- rep(unique(n), length(label.groups))
     }
     label.groups <- lapply(1:length(label.groups), function (i) {
-      bquote(.(as.character(label.groups[i]))~"("*italic("n")==.(n[i])*")") 
+      bquote(.(as.character(label.groups[i]))~"("*italic("n")==.(n[i])*")")
     })
-    
+
     # box data sizes and positions
     if (run.split) {
       size.prop <- matrix(prop.table(plot.data[ c(plot.variables) , "n"  ]),ncol=2)
@@ -351,35 +374,35 @@ PlotData <- function(data.MCMC = NULL,
       if (nrow(plot.variables)==2) size <- size / 1.5
       x.pos <- seq(nrow(plot.variables))
     }
-    
+
     # more group namings
     if (run.repeated & !run.split) {
-      groups <- plot.data[c(plot.variables), "y.names" ]  
-    } else if (run.repeated) { 
-      groups <- plot.data[c(plot.variables), "sub.names" ] 
+      groups <- plot.data[c(plot.variables), "y.names" ]
+    } else if (run.repeated) {
+      groups <- plot.data[c(plot.variables), "sub.names" ]
     } else {
-      groups <- c(plot.variables) 
+      groups <- c(plot.variables)
     }
-    
+
     # Violin data
     violin.data <- data.frame(
       x = rep(seq(nrow(plot.variables)), each = nrow(y)),
       y = c(y[, c(plot.variables)]),
       groups = rep(groups, each = nrow(y))
     )
-    
+
     # Box data (Bayesian statistics)
     plot.data <- do.call(cbind,lapply(1:ncol(plot.variables), function (i) {
       t <- plot.data[ c(plot.variables[,i]) , match("sd.lower.max",names(plot.data)):ncol(plot.data)]
       if (i>1) colnames(t) <- paste0(colnames(t),i)
       return (t)
     } ) )
-    
+
     # Create factors and remove NA
     violin.data$x <- factor(violin.data$x)
     violin.data$groups <- factor(violin.data$groups)
-    violin.data <- violin.data[complete.cases(violin.data), ]    
-    
+    violin.data <- violin.data[complete.cases(violin.data), ]
+
     sd.lower.max <- violin.data$sd.lower.max
     sd.lower.mode <- violin.data$sd.lower.mode
     sd.lower.min <- violin.data$sd.lower.min
@@ -399,9 +422,9 @@ PlotData <- function(data.MCMC = NULL,
     sd.upper.mode2 <- violin.data$sd.upper.mode2
     sd.upper.max2 <- violin.data$sd.upper.max2
     x <- violin.data$x
-    
+
     # Create plot
-    plot <- suppressWarnings( ggplot(plot.data) + 
+    plot <- suppressWarnings( ggplot(plot.data) +
     {if (!run.split) geom_violin(data=violin.data, aes(x, y, fill=groups), draw_quantiles = 0.5, alpha = 0.9, trim=FALSE, lwd=0.1)}+
     {if (run.split) geom_splitviolin(data=violin.data, aes(x, y, fill = groups), alpha = 0.9, trim=FALSE, lwd=0.1)}+
     {if (ribbon.plot & run.repeated) geom_ribbon(aes(x=x.pos, ymin = mean.lower.hdi, ymax = mean.upper.hdi), alpha=0.3)}+
@@ -431,12 +454,12 @@ PlotData <- function(data.MCMC = NULL,
             panel.grid.major.x = element_blank(),
             axis.text.x = element_text(lineheight = 9),
             panel.grid.major.y = element_line( size=.01, color="lightgrey"),
-            axis.title.x=element_blank())+ 
+            axis.title.x=element_blank())+
             {if (!run.split) theme(legend.position = "none")}+
             {if (run.split & !run.repeated) theme(axis.text.x=element_blank(),
                                                   axis.ticks.x=element_blank())}
-    )    
-    
+    )
+
     # Open new device
     grDevices::dev.new()
     # Print plot
@@ -447,25 +470,28 @@ PlotData <- function(data.MCMC = NULL,
     grDevices::graphics.off()
     # Turn off graphics device drive
     if (!is.null(grDevices::dev.list())) invisible(grDevices::dev.off())
-    
+
     return (recorded.plot)
-    
+
   })
-  
-  #  Save plots
-  SavePlot(run.plots,
-           file = paste0(project.dir,project.name), 
-           graphic.type = graphic.type, 
-           plot.size = plot.size,
-           save.data = save.data, 
-           vector.graphic = vector.graphic, 
-           point.size = point.size, 
-           font.type = "serif", 
-           one.file = one.file,
-           scaling = scaling,
-           paper = paper,
-           units = units,
-           ppi = ppi
+
+  #  Parse plots
+  parse.plot <- ParsePlot(run.plots,
+                          project.dir = project.dir,
+                          project.name = project.name,
+                          graphic.type = graphic.type,
+                          plot.size = plot.size,
+                          save.data = save.data,
+                          vector.graphic = vector.graphic,
+                          point.size = point.size,
+                          font.type = "serif",
+                          one.file = one.file,
+                          scaling = scaling,
+                          paper = paper,
+                          units = units,
+                          ppi = ppi
   )
-  
+
+  parse.plot <- c(Plots = run.plots ,  Location = parse.plot)
+
 }

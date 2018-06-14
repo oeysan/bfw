@@ -15,13 +15,9 @@ DistinctColors(range, random = FALSE)
 create vector containing Hex color codes
 }
 \examples{
-\dontrun{
-if(interactive()){
  DistinctColors(1:3)
  # [1] "#FFFF00" "#1CE6FF" "#FF34FF"
  set.seed(1)
  DistinctColors(1:3, TRUE)
  # [1] "#575329" "#CB7E98" "#D86A78"
- }
-}
 }

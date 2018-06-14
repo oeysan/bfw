@@ -13,13 +13,13 @@ bfw(y = NULL, y.names = NULL, x = NULL, x.names = NULL, latent = NULL,
   credible.region = 0.95, ROPE = NULL, run.contrasts = FALSE,
   use.contrast = "between", contrasts = NULL, initial.list = list(),
   project.name = "Project", project.dir = "Results/", project.data = NULL,
-  save.data = FALSE, data.set = "AllData", data.format = "csv",
-  raw.data = FALSE, run.robust = FALSE, merge.MCMC = FALSE,
-  run.diag = FALSE, sep = ",", graphic.type = "pptx",
-  plot.size = "15,10", scaling = 100, plot.aspect = NULL,
-  vector.graphic = TRUE, point.size = 15, font.type = "serif",
-  one.file = TRUE, ppi = 300, units = "in", paper = "pw",
-  silent = FALSE, ...)
+  time.stamp = TRUE, save.data = FALSE, data.set = "AllData",
+  data.format = "csv", raw.data = FALSE, run.robust = FALSE,
+  merge.MCMC = FALSE, run.diag = FALSE, sep = ",",
+  graphic.type = "pptx", plot.size = "15,10", scaling = 100,
+  plot.aspect = NULL, vector.graphic = TRUE, point.size = 15,
+  font.type = "serif", one.file = TRUE, ppi = 300, units = "in",
+  paper = "pw", silent = FALSE, ...)
 }
 \arguments{
 \item{y}{criterion variable(s), Default: NULL}
@@ -81,6 +81,8 @@ bfw(y = NULL, y.names = NULL, x = NULL, x.names = NULL, latent = NULL,
 \item{project.dir}{define where to save data, Default: 'Results/'}
 
 \item{project.data}{define data to use for analysis (e.g., csv, rda, custom data.frame or matrix, or data included in package, Default: NULL}
+
+\item{time.stamp}{logical, indicating whether or not to append unix time stamp to file name, Default: TRUE}
 
 \item{save.data}{logical, indicating whether or not to save data, Default: FALSE}
 

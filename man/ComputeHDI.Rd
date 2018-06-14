@@ -20,3 +20,11 @@ Compute highest density interval (HDI) from posterior output
 \details{
 values within the HDI have higher probability density than values outside the HDI, and the values inside the HDI have a total probability equal to the credible region (e.g., 95 percent).
 }
+\examples{
+set.seed(1)
+data <-rnorm(100,0,1)
+credible.region <- 0.95
+ComputeHDI(data,credible.region)
+# hdi.min hdi.max
+# -1.99    1.60
+}

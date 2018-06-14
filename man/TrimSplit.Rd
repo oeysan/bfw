@@ -24,10 +24,6 @@ Extends strsplit by trimming and unlisting string
 \link[base]{strsplit}
 }
 \examples{
-\dontrun{
-if(interactive()){
  TrimSplit("Data 1,     Data2, Data3")
  # [1] "Data 1" "Data2"  "Data3"
- }
-}
 }

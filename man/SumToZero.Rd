@@ -17,13 +17,9 @@ SumToZero(q.levels, data, contrasts)
 Compute sum to zero values across all levels of a data matrix
 }
 \examples{
-\dontrun{
-if(interactive()){
  data <- matrix(c(1,2),ncol=2)
  colnames(data) <- c("m1[1]","m1[2]")
  SumToZero( 2 , data , contrasts = NULL )
  #               b0[1] b1[1] b1[2]
  #       m1[1]   1.5  -0.5   0.5
- }
-}
 }

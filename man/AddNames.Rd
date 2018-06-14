@@ -24,8 +24,6 @@ AddNames(par, job.names, job.group = NULL, keep.par = TRUE,
 Add names to columns from naming list
 }
 \examples{
-\dontrun{
-if(interactive()){
 par <- "cor[1,2]"
 job.names <- c("A","B")
 AddNames(par, job.names, keep.par = TRUE)
@@ -34,6 +32,4 @@ AddNames(par, job.names, keep.par = FALSE)
 # [1]  "A vs. B"
 AddNames(par, job.names, names.only = TRUE)
 # [1]  "A" "B"
- }
-}
 }

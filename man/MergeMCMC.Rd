@@ -7,7 +7,7 @@
 MergeMCMC(pat, project.dir = "Results/", data.sets)
 }
 \arguments{
-\item{pat}{PARAM_DESCRIPTION}
+\item{pat}{pattern to select MCMC chain from}
 
 \item{project.dir}{define where to save data, Default: 'Results/'}
 
@@ -18,9 +18,6 @@ Merged MCMC chains
 }
 \description{
 Merge two or more MCMC simulations
-}
-\details{
-DETAILS
 }
 \seealso{
 \code{\link[utils]{tail}}

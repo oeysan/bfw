@@ -30,19 +30,20 @@ StatsNominal(x, x.names, DF, params, job.group, initial.list, model.name,
 Bayesian alternative to chi-square test
 }
 \examples{
-\dontrun{
-if(interactive()){
 # Use cats data
+\donttest{
 mcmc <- bfw(project.data = bfw::Cats,
             x = "Reward,Dance,Alignment",
             saved.steps = 50000,
             jags.model = "nominal",
             run.contrasts = TRUE,
             jags.seed = 100)
-
+}
 # Print only odds-ratio and effect sizes
-mcmc$summary.MCMC[ grep("Odds ratio|Effect",
-                        rownames(mcmc$summary.MCMC)) , c(3:7 ]
+\donttest{
+   mcmc$summary.MCMC[ grep("Odds ratio|Effect",
+                       rownames(mcmc$summary.MCMC)) , c(3:7) ]
+}
 #                                                    Mode   ESS    HDIlo     HDIhi    n
 # Odds ratio: Food/Affection vs. No/Yes           0.14586 44452  0.11426   0.18982 2000
 # Odds ratio: Affection/Food vs. No/Yes           6.49442 44215  5.10392   8.46668 2000
@@ -68,6 +69,4 @@ mcmc$summary.MCMC[ grep("Odds ratio|Effect",
 # The results indicate that evil cats are 13.13 times more likely than good cats to decline dancing
 # Furthermore, when offered affection, evil cats are 104.20 times more likely to decline dancing,
 # relative to evil cats that are offered food.
- }
-}
 }

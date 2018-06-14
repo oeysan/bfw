@@ -12,7 +12,7 @@
 #' @param contrasts define contrasts to use for analysis (defaults to all) , Default: NULL
 #' @param n.data sample size for each parameter
 #' @param credible.region summarize uncertainty by defining a region of most credible values (e.g., 95 percent of the distribution), Default: 0.95
-#' @param save.data PARAM_DESCRIPTION, Default: FALSE
+#' @param save.data logical, indicating whether or not to save data, Default: FALSE
 #' @param ROPE define range for region of practical equivalence (e.g., c(-0.05 , 0.05), Default: NULL
 #' @param merge.MCMC logical, indicating whether or not to merge MCMC chains, Default: FALSE
 #' @param run.diag logical, indicating whether or not to run diagnostics, Default: FALSE
@@ -30,7 +30,6 @@
 #' @param paper define a print size for visualizations, Default: 'pw'
 #' @param ... further arguments passed to or from other methods
 #' @return list containing MCMC chains , MCMC chains as matrix , summary of MCMC, list of name used, list of data, the jags model, running time of analysis and names of saved files
-#' @details DETAILS
 #' @seealso 
 #'  \code{\link[runjags]{runjags.options}},\code{\link[runjags]{run.jags}}
 #'  \code{\link[parallel]{detectCores}}
@@ -306,8 +305,9 @@ RunMCMC <- function(jags.model,
     
     #  Save plots as PowerPoint, Default is raster graphics. 
     ## Change vector.graphic to TRUE if needed (not recommended) 
-    SavePlot(diag.plots,
-             file = paste0(project.dir,"Diagnostics/",project.name), 
+    ParsePlot(diag.plots,
+             project.dir = paste0(project.dir,"Diagnostics/"),
+             project.name = project.name,
              graphic.type = "pptx", 
              plot.size = "15,10",
              save.data = save.data, 

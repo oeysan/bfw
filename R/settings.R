@@ -23,13 +23,14 @@
 #' @param thinned.steps save every kth step of the original saved.steps, Default: 1
 #' @param credible.region summarize uncertainty by defining a region of most credible values (e.g., 95 percent of the distribution), Default: 0.95
 #' @param ROPE define range for region of practical equivalence (e.g., c(-0.05 , 0.05), Default: NULL
-#' @param run.contrasts logical, indicating whether or not to run contrasts, Default: FALSE 
+#' @param run.contrasts logical, indicating whether or not to run contrasts, Default: FALSE
 #' @param use.contrast choose from "between", "within" and "mixed". Between compare groups at different conditions. Within compare a group at different conditions. Mixed compute all comparisons
 #' @param contrasts define contrasts to use for analysis (defaults to all) , Default: NULL
 #' @param initial.list initial values for analysis, Default: list()
 #' @param project.name name of project, Default: 'Project'
 #' @param project.dir define where to save data, Default: 'Results/'
 #' @param project.data define data to use for analysis (e.g., csv, rda, custom data.frame or matrix, or data included in package, Default: NULL
+#' @param time.stamp logical, indicating whether or not to append unix time stamp to file name, Default: TRUE
 #' @param save.data logical, indicating whether or not to save data, Default: FALSE
 #' @param data.set define subset of data, Default: 'AllData'
 #' @param data.format define what data format is being used, Default: 'csv'
@@ -53,11 +54,11 @@
 #' @param ... further arguments passed to or from other methods
 #' @return data from MCMC \link[bfw]{RunMCMC}
 #' @details Settings act like the main framework for bfw, connecting function, model and JAGS.
-#' @seealso 
+#' @seealso
 #'  \code{\link[utils]{tail}},\code{\link[utils]{modifyList}},\code{\link[utils]{capture.output}}
 #'  \code{\link[methods]{formalArgs}}
 #' @rdname bfw
-#' @export 
+#' @export
 #' @importFrom utils tail modifyList capture.output
 #' @importFrom methods formalArgs
 bfw <- function(y = NULL,
@@ -90,6 +91,7 @@ bfw <- function(y = NULL,
                 project.name = "Project",
                 project.dir = "Results/",
                 project.data = NULL,
+                time.stamp = TRUE,
                 save.data = FALSE,
                 data.set = "AllData",
                 data.format = "csv",
@@ -115,6 +117,11 @@ bfw <- function(y = NULL,
 
   # Directory of bfw
   bfw.dir <- find.package("bfw", lib.loc=NULL, quiet = TRUE)
+
+  # If necessary add trailing slash to project directory
+  if ( tail(TrimSplit(project.dir,""),1) != "/") {
+    project.dir <- paste0(project.dir,"/")
+  }
 
   # Some initial definitions
   n.data <- NULL
@@ -143,21 +150,16 @@ bfw <- function(y = NULL,
   #Java garbage collection
   JavaGarbage()
 
-  # Create results directory
-  if (!dir.exists(project.dir) & save.data) {
-    dir.create(project.dir)
-  }
 
-  # Create MCMC directory
-  mcmc <- paste0(project.dir,"MCMC/")
-  if (!dir.exists(mcmc) & save.data) {
-    dir.create(mcmc)
-  }
-
-  # Create diagnostics directory
-  diag <- paste0(project.dir,"Diagnostics/")
-  if (!dir.exists(diag) & save.data) {
-    dir.create(diag)
+  if (save.data) {
+    # Create directories
+    make.dirs <- c("MCMC","Diagnostics")
+    invisible(lapply(make.dirs, function(x) {
+      make.dir <- paste0(project.dir,x)
+      if (!dir.exists(make.dir)) {
+        dir.create(make.dir,recursive = TRUE)
+      }
+    }))
   }
 
   # Select sample
@@ -174,7 +176,7 @@ bfw <- function(y = NULL,
       stats.model <- custom.function
     } else if (toupper(utils::tail(TrimSplit(custom.function,".", fixed = TRUE),1)) == "R") {
       stats.model <- source(custom.function)[[1]]
-    } else if (IsString(custom.function)) {
+    } else if (SingleString(custom.function)) {
       stats.model <- eval(parse(text=custom.function))
     }
   } else {
@@ -186,7 +188,7 @@ bfw <- function(y = NULL,
   # If custom jags model
   if (!is.null(custom.model)) {
     model.name <- paste0("Custom JAGS model")
-    if (IsString(custom.model)) {
+    if (SingleString(custom.model)) {
       jags.model <- custom.model
     } else if (tolower(utils::tail(TrimSplit(custom.model,".", fixed = TRUE),1)) == "txt") {
       jags.model <- paste(readLines(custom.model,warn=FALSE), collapse="\n")
@@ -223,7 +225,7 @@ bfw <- function(y = NULL,
   if (is.null(jags.seed)) jags.seed <- sample(1:10^6,1)
 
   # Create save name
-  project.name <- SaveName( project.name , data.set , model.type , job.title)
+  project.name <- FileName( project.name , data.set , model.type , job.title , time.stamp)
 
   # Create name list
   tmp.list <- list(
@@ -238,7 +240,7 @@ bfw <- function(y = NULL,
     jags.seed = jags.seed,
     robust = run.robust
   )
-  
+
   # Update name list with name list from function
   name.list <- if (exists("name.list")) utils::modifyList(tmp.list,name.list) else tmp.list
 

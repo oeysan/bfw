@@ -18,12 +18,8 @@ returns capitalized string
 capitalize the first letter in each words in a string
 }
 \examples{
-\dontrun{
-if(interactive()){
  CapWords("example eXAMPLE", FALSE)
  # [1] "Example EXAMPLE"
  CapWords("example eXAMPLE", TRUE)
  # [1] "Example Example"
- }
-}
 }

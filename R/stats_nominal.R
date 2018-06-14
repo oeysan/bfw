@@ -9,20 +9,21 @@
 #' @param model.name name of model used
 #' @param jags.model specify which module to use
 #' @param ... further arguments passed to or from other methods
-#' @examples 
-#' \dontrun{
-#' if(interactive()){
+#' @examples
 #' # Use cats data
+#' \donttest{
 #' mcmc <- bfw(project.data = bfw::Cats,
 #'             x = "Reward,Dance,Alignment",
 #'             saved.steps = 50000,
 #'             jags.model = "nominal",
 #'             run.contrasts = TRUE,
 #'             jags.seed = 100)
-#' 
+#' }
 #' # Print only odds-ratio and effect sizes
-#' mcmc$summary.MCMC[ grep("Odds ratio|Effect",
-#'                         rownames(mcmc$summary.MCMC)) , c(3:7 ]
+#' \donttest{
+#'    mcmc$summary.MCMC[ grep("Odds ratio|Effect",
+#'                        rownames(mcmc$summary.MCMC)) , c(3:7) ]
+#' }
 #' #                                                    Mode   ESS    HDIlo     HDIhi    n
 #' # Odds ratio: Food/Affection vs. No/Yes           0.14586 44452  0.11426   0.18982 2000
 #' # Odds ratio: Affection/Food vs. No/Yes           6.49442 44215  5.10392   8.46668 2000
@@ -48,10 +49,8 @@
 #' # The results indicate that evil cats are 13.13 times more likely than good cats to decline dancing
 #' # Furthermore, when offered affection, evil cats are 104.20 times more likely to decline dancing,
 #' # relative to evil cats that are offered food.
-#'  }
-#' }
 #' @rdname StatsNominal
-#' @export 
+#' @export
 
 StatsNominal <- function(x,
                      x.names,
@@ -63,24 +62,24 @@ StatsNominal <- function(x,
                      jags.model,
                      ...
 ) {
-  
+
   # Fetch x parameters
   x <- TrimSplit(x)
   x.names <- if (length(x.names)) TrimSplit(x.names) else CapWords(x)
-  
+
   # Create crosstable for x parameters
   x.data  <- as.data.frame(table(DF[, x]))
   names(x.data) <- c(x.names, "Freq") #add names
-  
+
   # Set at n data
   n.data <- x.data
-  
+
   # name.contrasts for creating contrasts
   name.contrasts <- unique(lapply(DF[,x], function (x) as.list(levels(x))))
-  
+
   # Create job names from contrast names
   single.names <- lapply(name.contrasts, function (x) unlist(x))
-  
+
   # combine names from list 1 and 2
   combined.names <- lapply(1:length(single.names), function (i) {
     if (i<3) {
@@ -90,7 +89,7 @@ StatsNominal <- function(x,
       single.names[[i]]
     }
   })
-  
+
   # Reverse combinations from first naming list
   reversed.names <- lapply(1:length(single.names), function (i) {
     if (i<3) {
@@ -100,16 +99,16 @@ StatsNominal <- function(x,
       single.names[[i]]
     }
   })
-  
+
   # Final job names
   job.names <- list(single.names, combined.names, reversed.names)
-  
+
   # Number of X parameters
   n.x <- length(name.contrasts)
-  
+
   # Number of observations
   n <- sum(x.data[,ncol(x.data)])
-  
+
   y.data <- x.data[, ncol(x.data)] # Frequencies
   Ncell <- length(y.data) # Number of cells
   q.levels  <- apply(as.matrix(x.data[,1:n.x]), 2, function(x) length(unique(x[!is.na(x)]))) #Number of categories per x
@@ -118,12 +117,12 @@ StatsNominal <- function(x,
   Ncell <- length(y.data) # Number of cells
   q.levels  <- apply(x.data, 2, function(x) length(unique(x[!is.na(x)]))) #Number of categories per x
   xC    <- lapply(1:n.x, function (i) t(combn(unique(x.data[,i]),2))) #combinations of categorices within each x
-  
+
   # Prior distributions
   yLogMean = log(sum(y.data) / Ncell )
   yLogSD = log( sd(c(rep(0, Ncell - 1), sum(y.data))))
   aGammaShRa = unlist(GammaDist(mode = yLogSD, sd = 2 * yLogSD))
-  
+
   # Create data for Jags
   data.list <- list(
     y = y.data,
@@ -136,24 +135,24 @@ StatsNominal <- function(x,
   )
   # Remove empty elements
   data.list <- data.list[lapply(data.list,length)>0]
-  
-  # Paramter(s) of interest according to number of variables 
+
+  # Paramter(s) of interest according to number of variables
   if(length(params)) {
     params <- TrimSplit(params)
   } else {
-    params <- c(paste0("m",seq(n.x),collapse=""), 
+    params <- c(paste0("m",seq(n.x),collapse=""),
                 paste0("e",seq(n.x),collapse=""),
-                paste0(paste0("e",seq(n.x),collapse=""),"p"), 
+                paste0(paste0("e",seq(n.x),collapse=""),"p"),
                 paste0("o",seq(n.x),collapse=""),
                 paste0(paste0("o",seq(n.x),collapse=""),"p")
                 )
   }
-  
+
   if (n.x>1) {
     # Find relevant model according to number of x
-    if ( grepl("_robust", model.name) ) { 
-      model.name <- gsub("_robust",paste0(n.x, "_robust"),model.name) 
-    } else { 
+    if ( grepl("_robust", model.name) ) {
+      model.name <- gsub("_robust",paste0(n.x, "_robust"),model.name)
+    } else {
       model.name <-  paste0(model.name,n.x)
     }
     jags.model <- ReadFile( model.name , data.format = "txt" )

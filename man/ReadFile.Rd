@@ -5,7 +5,7 @@
 \title{Read File}
 \usage{
 ReadFile(file = NULL, path = "Models/", package = "bfw",
-  type = "string", sep = ",", data.format = "csv", custom = FALSE)
+  type = "string", sep = ",", data.format = "txt", custom = FALSE)
 }
 \arguments{
 \item{file}{name of file, Default: NULL}
@@ -24,6 +24,16 @@ ReadFile(file = NULL, path = "Models/", package = "bfw",
 }
 \description{
 opens connection to a file
+}
+\examples{
+# Print JAGS model for bernoulli trials
+cat(ReadFile("stats_bernoulli"))
+# model {
+#   for (i in 1:n){
+#     x[i] ~ dbern(theta)
+#   }
+#   theta ~ dunif(0,1)
+# }
 }
 \seealso{
 \code{\link[utils]{read.csv}}

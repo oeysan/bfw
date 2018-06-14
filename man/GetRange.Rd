@@ -7,32 +7,27 @@
 GetRange(var, range = 1:8, df)
 }
 \arguments{
-\item{var}{variable of interest (e.g., Var)}
+\item{var}{variable of interest (e.g., V)}
 
-\item{range}{range of variables with same stem name (e.g., Var1, Var2, ..., Var8) , Default: 1:8}
+\item{range}{range of variables with same stem name (e.g., V1, V2, ..., V8) , Default: 1:8}
 
-\item{df}{data to extract from, Default: DF}
+\item{df}{data to extract from}
 }
 \description{
 simple function to extract columns from data frame
 }
 \examples{
-\dontrun{
-if(interactive()){
- data <- as.data.frame(matrix(1:80,ncol=8))
- colnames(data) <- paste0("Var", 1:8)
- GetRange("Var", 4:5, data)
- #   Var4 Var5
- #1    31   41
- #2    32   42
- #3    33   43
- #4    34   44
- #5    35   45
- #6    36   46
- #7    37   47
- #8    38   48
- #9    39   49
- #10   40   50
- }
-}
+data <- as.data.frame(matrix(1:80,ncol=8))
+GetRange("V", c(1,4), data)
+#    V1 V4
+# 1   1 31
+# 2   2 32
+# 3   3 33
+# 4   4 34
+# 5   5 35
+# 6   6 36
+# 7   7 37
+# 8   8 38
+# 9   9 39
+# 10 10 40
 }

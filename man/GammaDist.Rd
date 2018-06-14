@@ -12,16 +12,12 @@ GammaDist(mode, sd)
 \item{sd}{standard deviation from data}
 }
 \description{
-compute gamma distribution (shape and rate) from mode and and standard deviation
+compute gamma distribution (shape and rate) from mode and standard deviation
 }
 \examples{
-\dontrun{
-if(interactive()){
  GammaDist(1,0.5)
  # $shape
  # [1] 5.828427
  # $rate
  # [1] 4.828427
- }
-}
 }

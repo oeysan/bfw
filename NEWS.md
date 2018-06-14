@@ -2,7 +2,7 @@
 
 * Initial launch with the following modules:
 ** Bernoulli trials
-** Covariate estimations (including correlelation and Cronbach's alpha)
+** Covariate estimations (including correlation and Cronbach's alpha)
 ** Fit data (e.g., SEM, CFA, mediation models)
 ** Bayesian equivalent of Cohen's kappa
 ** Mean and standard deviation estimations

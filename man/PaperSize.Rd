@@ -16,10 +16,6 @@ width and height of select medium
 collection of print sizes
 }
 \examples{
-\dontrun{
-if(interactive()){
  PaperSize()
  # [1]  8.3 11.7
- }
-}
 }

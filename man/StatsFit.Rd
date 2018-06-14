@@ -39,9 +39,6 @@ StatsFit(latent, latent.names, observed, observed.names, additional,
 
 \item{...}{further arguments passed to or from other methods}
 }
-\value{
-See fit_data vignette
-}
 \description{
 Apply latent or observed models to fit data (e.g., SEM, CFA, mediation)
 }

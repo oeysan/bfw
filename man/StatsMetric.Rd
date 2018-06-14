@@ -30,9 +30,6 @@ StatsMetric(y, y.names, x, x.names, DF, params, job.group, initial.list,
 
 \item{...}{further arguments passed to or from other methods}
 }
-\value{
-see metric vignette
-}
 \description{
 Bayesian alternative to ANOVA
 }

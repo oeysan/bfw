@@ -18,12 +18,8 @@ mixed vector
 mix vectors by alternating between them
 }
 \examples{
-\dontrun{
-if(interactive()){
  a <- 1:3
  b <- LETTERS[1:3]
  Interleave(a,b)
  # [1] "1" "A" "2" "B" "3" "C"
- }
-}
 }

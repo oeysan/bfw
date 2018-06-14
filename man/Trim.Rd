@@ -15,12 +15,8 @@ Trim(s, multi = TRUE)
 remove excess whitespace from string
 }
 \examples{
-\dontrun{
-if(interactive()){
  Trim("             Trimmed      string")
  # [1] "Trimmed string"
  Trim("             Trimmed      string", FALSE)
  # [1] "Trimmed      string"
- }
-}
 }

@@ -19,17 +19,10 @@ modified string with replaced values
 \description{
 extending gsub by matching pattern and replacement from two vectors
 }
-\details{
-DETAILS
-}
 \examples{
-\dontrun{
-if(interactive()){
  pattern <- c("A","B","C")
  replacement <- 1:3
  string <- "A went to B went to C"
  VectorSub(pattern,replacement,string)
  # [1] "1 went to 2 went to 3"
- }
-}
 }

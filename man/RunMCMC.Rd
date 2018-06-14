@@ -37,7 +37,7 @@ RunMCMC(jags.model, params, name.list, data.list, initial.list, saved.steps,
 
 \item{credible.region}{summarize uncertainty by defining a region of most credible values (e.g., 95 percent of the distribution), Default: 0.95}
 
-\item{save.data}{PARAM_DESCRIPTION, Default: FALSE}
+\item{save.data}{logical, indicating whether or not to save data, Default: FALSE}
 
 \item{ROPE}{define range for region of practical equivalence (e.g., c(-0.05 , 0.05), Default: NULL}
 
@@ -76,9 +76,6 @@ list containing MCMC chains , MCMC chains as matrix , summary of MCMC, list of n
 }
 \description{
 Conduct MCMC simulations using JAGS
-}
-\details{
-DETAILS
 }
 \seealso{
 \code{\link[runjags]{runjags.options}},\code{\link[runjags]{run.jags}}
