@@ -1,0 +1,6 @@
+model {
+    for (i in 1:n){
+      x[i] ~ dbern(theta)
+    }
+    theta ~ dunif(0,1)
+}

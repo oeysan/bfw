@@ -1,0 +1,16 @@
+model {
+    for (i in 1:n) {
+        for (j in 1:n.raters) {
+            rater[i, j] ~ dcat(p[j, 1:n.categories])
+        }
+        equal[i] ~ dbern(equal.p)
+    }
+    # priors
+    for (l in 1:n.raters) {
+        p[l, 1:n.categories] ~ ddirch(alpha)
+    }
+    equal.p ~ dbeta(1, 1)
+    # Compute chance agreement and Cohen's Kappa
+    equal.c <- sum(p[1, 1:n.categories] * p[2, 1:n.categories])
+    Kappa <- (equal.p - equal.c) / (1 - equal.c)
+}

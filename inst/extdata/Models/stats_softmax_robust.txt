@@ -1,0 +1,42 @@
+# Standardize the data
+data {
+  for ( j in 1:n.x ) {
+    x.mean[j]  <- mean(x[,j])
+    x.sd[j] <-   sd(x[,j])
+    for ( i in 1:n ) {
+      zX[i,j] <- ( x[i,j] - x.mean[j] ) / x.sd[j]
+    }
+  }
+  for ( k in 1:q ) {
+    alpha.prec[k] <- 1/q
+  }
+}
+# Specify the model for standardized data
+model {
+  for ( i in 1:n ) {
+      y[i] ~ dcat( ( (1 - alpha) * lambda.exp[1:q,i] + (alpha * alpha.prec) )
+    
+    for ( j in 1:q ) {
+      lambda.exp[j,i] <- exp( zbeta0[j] + sum( zbeta[j,1:n.x] * zX[i,1:n.x] ) )
+    }
+  }
+  
+  # Priors vague on standardized scale
+  zbeta0[1] <- 0
+  for ( k in 1:n.x ) { 
+    zbeta[1,k] <- 0 
+  }
+  for ( l in 2:q ) {
+    zbeta0[l] ~ dnorm(0 , 0.0001)
+    for ( m in 1:n.x ) {
+      zbeta[l,m] ~ dnorm(0 , 0.0001)
+    }
+  }
+  
+  # Transform to original scale
+  for ( j in 1:q ) {
+    beta[j,1:n.x] <- zbeta[j,1:n.x] / x.sd[1:n.x] 
+    beta0[j] <- zbeta0[j] - sum( zbeta[j,1:n.x] * x.mean[1:n.x] / x.sd[1:n.x] )
+  }
+  alpha ~ dbeta(1,9)
+}

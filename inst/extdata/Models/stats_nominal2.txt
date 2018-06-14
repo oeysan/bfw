@@ -1,0 +1,54 @@
+model <- "
+      model {
+        for (i in 1:Ncell) {
+          y[i] ~ dpois(lambda[i])
+          lambda[i] <- exp(a0 + a1[x[i,1]] + a2[ x[i,2] ] # Main effects
+                           + a1a2[ x[i,1] , x[i,2] ]) # Two-way effects
+        }
+
+        a0 ~ dnorm(yLogMean, 1 / (yLogSD * 2) ^ 2)
+        
+        # Main effect (1)    
+        for (k in 1:q.levels[1]) {
+          a1[k] ~ dnorm(0.0, 1 / a1SD ^ 2)
+        }
+        a1SD ~ dgamma(aGammaShRa[1], aGammaShRa[2])
+        
+        # Main effect (2)    
+        for (k in 1:q.levels[2]) {
+          a2[k] ~ dnorm(0.0, 1 / a2SD ^ 2)
+        }
+        a2SD ~ dgamma(aGammaShRa[1], aGammaShRa[2])
+        
+        # Two-way effect (1x2)
+        for (k in 1:q.levels[1]) {
+          for (l in 1:q.levels[2]) {
+            a1a2[k,l] ~ dnorm(0.0, 1 / a1a2SD ^ 2)
+          }
+        }
+        a1a2SD ~ dgamma(aGammaShRa[1], aGammaShRa[2])
+        
+
+        # Means
+        for (l in 1:q.levels[1]) {
+          for (m in 1:q.levels[2]) {
+            m1m2[l,m] <- a0 + a1[l] + a2[m] + a1a2[l,m]
+          }
+        }
+                
+        # Compute predicted count and proportions:
+        for (o in 1:q.levels[1]) {
+          for (p in 1:q.levels[2]) {
+            o1o2[o , p] <- exp(m1m2[o , p ])
+            o1o2p[o , p] <- ( o1o2[o , p ] / sum( o1o2[ 1:q.levels[1] , 1:q.levels[2] ] ) ) * 100
+          }
+        }
+                
+        #Compute expected count 
+        for (r in 1:q.levels[1]) {
+          for (s in 1:q.levels[2]) {
+            e1e2[r, s] <- ( sum( o1o2[ r , 1:q.levels[2] ] ) *  sum ( o1o2[ 1:q.levels[1] , s ] ) ) / sum( o1o2[ 1:q.levels[1] , 1:q.levels[2] ] )
+            e1e2p[r, s] <- ( e1e2[r, s] / sum( o1o2[ 1:q.levels[1] , 1:q.levels[2] ] ) ) * 100
+          }
+        }        
+} 

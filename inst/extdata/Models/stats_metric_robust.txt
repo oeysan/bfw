@@ -1,0 +1,33 @@
+model {
+    for (i in 1:n) {
+      y[i] ~ dt(mu[i], 1 / (s1[ x[i,1] ]) ^ 2, nu)
+      mu[i] <- a0 + a1[ x[i,1] ]  # Main effects
+    }
+
+    # Priors on sigma         
+    for (j in 1:q.levels[1]) {
+        sigma.frac[j] ~ dnorm(0.0, 1 / a1SD ^ 2)
+        s1[j] <- max(sigma.frac[j], medianCellSD / 1000) # Prevent zero sigma.
+    }     
+
+    # Baseline
+    a0 ~ dnorm(yMean, 1 / (ySD * 5) ^ 2)
+
+    # Main effect (1)    
+    for (k in 1:q.levels[1]) {
+      a1[k] ~ dnorm(0.0, 1 / a1SD ^ 2)
+    }
+    a1SD ~ dgamma(aGammaShRa[1], aGammaShRa[2])
+    
+    # Means
+    for (l in 1:q.levels[1]) {
+        m1[l] <- a0 + a1[l]             
+    }
+
+    sigmaSh <- 1 + sigmaMode * sigmaRa
+    sigmaRa <- (sigmaMode + sqrt(sigmaMode ^ 2 + 4 * sigmaSD ^ 2)) / (2 * sigmaSD ^ 2)
+    sigmaMode ~ dgamma(sGammaShRa[1], sGammaShRa[2])
+    sigmaSD ~ dgamma(sGammaShRa[1], sGammaShRa[2])
+    nu <- nu.prec + 1
+    nu.prec  ~ dexp(1 / 29)
+}

@@ -1,0 +1,45 @@
+# Standardize the data:
+data {
+    y.m <- mean(y)
+    y.sd <- sd(y)
+    for (j in 1:q) {
+        for ( i in 1:length(y) ) {
+        zY[i,j] <- ( y[i] - y.m ) / y.sd
+        } 
+    }
+    for (j in 1:q) {
+        for (k in 1:n.x[j]) {
+            x.m[j,k] <- mean(x[, k])
+            x.sd[j,k] <- sd(x[, k])
+            for (i in 1:n) {
+                zX[i, j, k] <- (x[i, k] - x.m[j,k]) / x.sd[j,k]
+            }
+        }
+    }
+}
+# Specify the model for standardized data:
+model {
+    for (j in 1:q) {
+        for (i in 1:n) {
+            zY[i,j] ~ dnorm(zbeta0[j] + sum(zbeta[j,1:n.x[j]] * zX[i, j, 1:n.x[j]]), 1 / zsigma[j] ^ 2)
+        }
+    }
+    # Priors vague on standardized scale:
+    for (k in 1:q) {
+        zbeta0[k] ~ dnorm(0 , 0.0001)
+        for (l in 1:n.x[k]) {
+            zbeta[k,l] ~ dnorm(0 , 0.0001)
+        }
+    }
+    for (m in 1:q) {
+        zsigma[m] <- 1 / sqrt(zsigma.prec[m])
+        zsigma.prec[m] ~ dgamma(0.0001,0.0001)
+    }
+  
+    # Transform to original scale:
+    for (n in 1:q) {
+        beta[n, 1:n.x[n]] <- (zbeta[n, 1:n.x[n]] / x.sd[n, 1:n.x[n]]) * y.sd
+        beta0[n] <- zbeta0[n] * y.sd + y.m - sum(zbeta[n, 1:n.x[n]] * x.m[n, 1:n.x[n]] / x.sd[n, 1:n.x[n]]) * y.sd
+        sigma[n] <- zsigma[n] * y.sd
+    }
+}

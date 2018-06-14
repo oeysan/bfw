@@ -1,0 +1,40 @@
+model {
+    for (j in 1:length(m2[,1])) {
+      for(i in 1:n[j]) {
+        y[i, m2[j,]  ] ~ dmt(mu[m1[j,]], prec[ m2[j,] , m2[j,] ], nu[j] )
+      }
+    }
+
+    # Inverse covariance matrices
+    for (j in 1:length(m2[, 1])) {
+      prec[ m2[j,] , m2[j,] ] <- inverse ( cov[ m1[j,] , m1[j,] ] )
+    }
+
+    for (k in 1:q) {
+      cov[k,k] <- sigma[k] ^ 2
+      cor[k,k] <- 1
+      diag[k] <- cov[k,k]
+    }
+
+    for (l in 1:length(m1[,1]) ) {
+      cov[m1[l,1] , m1[l,2]] <- sigma[m1[l,1]] * sigma[m1[l,2]] * rho[l]
+      cov[m1[l,2] , m1[l,1]] <- cov[m1[l,1] , m1[l,2]]
+      cor[m1[l,1] , m1[l,2]] <- rho[l]
+      cor[m1[l,2] , m1[l,1]] <- cor[m1[l, 1] , m1[l, 2]]
+    }
+
+    for (j in 1:q) {
+      mu[j] ~ dnorm(0, 0.00001)
+      sigma[j] <- 1 / sqrt(sigma.prec[j])
+      sigma.prec[j] ~ dgamma(0.0001,0.0001)
+    }
+
+    for (k in 1:length(m1[,1])) {
+      rho[k] ~ dunif(-1, 1)
+      nu[k] <- nu.prec[k] + 1
+      nu.prec[k] ~ dexp(1 / 29)
+    }
+
+    # Compute Alpha
+    Alpha <- q / (q - 1) * (1 - sum(diag[]) / (sum(cov)))
+}

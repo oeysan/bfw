@@ -1,0 +1,49 @@
+model {
+    for (i in 1:n) {
+      y[i] ~ dnorm(mu[i], 1 / (s1s2[ x[ i,1] , x[i,2] ]) ^ 2)
+      mu[i] <- a0 + a1[ x[i,1]] + a2[ x[i,2] ] # Main effects
+                  + a1a2[ x[i,1] , x[i,2] ] # Two-way effects
+    }
+    
+    # Priors on sigma         
+    for (j in 1:q.levels[1]) {
+      for (k in 1:q.levels[2]) {
+          sigma.frac[j,k] ~ dnorm(0.0, 1 / a1a2SD ^ 2)
+          s1s2[j,k] <- max(sigma.frac[j,k], medianCellSD / 1000) # Prevent zero sigma.
+      }
+    }     
+
+    # Baseline
+    a0 ~ dnorm(yMean, 1 / (ySD * 5) ^ 2)
+    
+    # Main effect (1)    
+    for (k in 1:q.levels[1]) {
+      a1[k] ~ dnorm(0.0, 1 / a1SD ^ 2)
+    }
+    a1SD ~ dgamma(aGammaShRa[1], aGammaShRa[2])
+    
+    # Main effect (2)    
+    for (k in 1:q.levels[2]) {
+      a2[k] ~ dnorm(0.0, 1 / a2SD ^ 2)
+    }
+    a2SD ~ dgamma(aGammaShRa[1], aGammaShRa[2])
+                
+    # Two-way effect (1x2)
+    for (k in 1:q.levels[1]) {
+      for (l in 1:q.levels[2]) {
+        a1a2[k,l] ~ dnorm(0.0, 1 / a1a2SD ^ 2)
+      }
+    }
+    a1a2SD ~ dgamma(aGammaShRa[1], aGammaShRa[2])
+               
+    for (l in 1:q.levels[1]) {
+      for (m in 1:q.levels[2]) {
+          m1m2[l,m] <- a0 + a1[l] + a2[m] + a1a2[l,m]                
+      }
+    }
+
+    sigmaSh <- 1 + sigmaMode * sigmaRa
+    sigmaRa <- (sigmaMode + sqrt(sigmaMode ^ 2 + 4 * sigmaSD ^ 2)) / (2 * sigmaSD ^ 2)
+    sigmaMode ~ dgamma(sGammaShRa[1], sGammaShRa[2])
+    sigmaSD ~ dgamma(sGammaShRa[1], sGammaShRa[2])
+}

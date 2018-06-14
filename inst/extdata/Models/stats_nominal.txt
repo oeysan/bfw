@@ -1,0 +1,31 @@
+model {
+        for (i in 1:Ncell) {
+          y[i] ~ dpois(lambda[i])
+          lambda[i] <- exp(a0 + a1[x[i,1]]) # Main effects
+        }
+
+        a0 ~ dnorm(yLogMean, 1 / (yLogSD * 2) ^ 2)
+        
+        # Main effect   
+        for (k in 1:q.levels[1]) {
+          a1[k] ~ dnorm(0.0, 1 / a1SD ^ 2)
+        }
+        a1SD ~ dgamma(aGammaShRa[1], aGammaShRa[2])
+        
+        # Means
+        for (l in 1:q.levels[1]) {
+            m1[l] <- a0 + a1[l]
+        }
+                
+        # Compute predicted count and proportions:
+        for (o in 1:q.levels[1]) {
+          o1[o] <- exp(m1[o])
+          o1p[o] <- ( o1[o] / sum( o1[ 1:q.levels[1] ] ) ) * 100
+        }
+                
+        #Compute expected count 
+        for (r in 1:q.levels[1]) {
+          e1[r] <- sum( o1[ 1:q.levels[1] ] ) / q.levels[1]
+          e1p[r] <- ( e1[r] / sum( o1[ 1:q.levels[1] ] ) ) * 100
+        }
+} 

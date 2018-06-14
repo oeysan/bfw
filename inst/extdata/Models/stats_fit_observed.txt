@@ -1,0 +1,77 @@
+model { 
+    for(i in 1:n) {
+        # Measurement model
+        for(j in 1:q) {
+            y[i , j] ~ dnorm(mu[i , j] , error.prec[j])
+        }
+        # Structural model
+        for(k in 1:lat) {
+            eta[i , k] ~ dnorm(mu.eta[i , k] , psi.prec[k])
+        }   
+    }
+    
+    for(i in 1:n) {
+        # Mu definition
+        for (j in 1:q) {
+            mu[i , j] <- mu.alpha[j] + lam[j] * eta[i , factor.seq[j] ]
+        }
+        
+        # Regression model
+        # Note. 'REGRESSIONMODEL' is replaced by the R script
+                   
+        #REGRESSIONMODEL
+        
+        # Note. 'REGRESSIONMODEL' is replaced by the R script 
+        
+        # Compute variance
+        for (k in 1:length(m[, 1])) {
+            cov.var[i, k] <- ( eta[ i , m[k, 1] ] - mean(eta[ , m[k, 1] ]) ) * ( eta[ i , m[k, 2] ] - mean(eta[ , m[k, 2] ]) )
+        }
+    }
+             
+    # Compute diagonals for covariation matrix
+    for (j in 1:lat) {
+        cov[j, j] <- eta.sd[j] ^ 2
+        eta.sd[j] <- sd(eta[,j])
+    }
+    
+    # Compute covariance matrix
+    for (k in 1:length(m[, 1])) {
+        cov[m[k, 1], m[k, 2]] <- sum(cov.var[, k]) / (n - 1)
+        cov[m[k, 2], m[k, 1]] <- cov[ m[k, 1] , m[k, 2] ]
+    }
+    
+    #priors on errors and mu precision
+    for(j in 1:q) {
+        error[j] <- 1 / error.prec[j]
+        error.prec[j] ~ dgamma(.001, .001)
+        mu.alpha[j] ~ dnorm(0 , 0.0001)
+    }
+    
+    #priors on eta precisions, alpha and fixed factor loadings
+    for(k in 1:lat) {
+        psi[k] <- 1 / psi.prec[k]
+        psi.prec[k] ~ dgamma(.001, .001)
+        lam[ cl[ k , 1] ] <- 1
+        alpha[k] <- 0
+    }
+    
+    #priors on free factor loadings
+    for (l in 1:length(fl)) {
+        lam[ fl[l] ] ~ dnorm(0 , 0.001)
+    }
+    
+    #priors on beta coefficients 
+    for (m in 1:length(b.priors[,1])) {
+        beta[ b.priors[m,1] , b.priors[m,2] ] ~ dnorm(0 , 0.0001)
+    }
+    
+    
+    # Additional computations
+    # Note. 'ADDITIONAL' is replaced by the R script
+               
+    #ADDITIONAL
+    
+    # Note. 'ADDITIONAL' is replaced by the R script 
+    
+}
