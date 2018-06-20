@@ -1,3 +1,27 @@
+# bfw 0.1.0
+
+## Moderate
+
+* Migrated from the orphaned `ReporteRs` to `officer` (thanks to Professor Brian Ripley at University of Oxford for notifying me)
+    + Added two PowerPoint templates 'legacy' (4:3) and 'widescreen' (16:9)
+* The following packages are moved from 'Imports' to 'Suggests'
+    + ggplot2
+    + lavaan
+    + officer
+    + psych
+    + robust
+    + rvg
+    + scales
+    + truncnorm
+    
+## Minor
+
+* Modified title of package from 'Computational Modelling' to 'Computational Modeling' to conform with US spelling
+* Recoded diagnostics, making the code more efficent.
+* Correcting some typos and code aesthetics (e.g., replaced print with cat to display running time of analyses)
+* Reviewed 'TrimSplit' function to include removing empty elements from vector
+* Removed 'methods' from imports
+
 # bfw 0.0.1
 
 * Initial launch with the following modules:

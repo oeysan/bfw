@@ -20,7 +20,8 @@
 #' @param one.file logical, indicating whether or not visualizations should be placed in one or several files, Default: TRUE
 #' @param ppi define pixel per inch used for visualizations, Default: 300
 #' @param units define unit of length used for visualizations, Default: 'in'
-#' @param paper define a print size for visualizations, Default: 'pw'
+#' @param layout define a layout size for visualizations, Default: 'pw'
+#' @param layout.inverse logical, indicating whether or not to inverse layout (e.g., landscape) , Default: FALSE
 #' @param ... further arguments passed to or from other methods
 #' @return list of diagnostic plots
 #' @seealso 
@@ -39,36 +40,60 @@ DiagMCMC <- function(data.MCMC,
                     job.names, 
                     job.group, 
                     project.name,
-                    credible.region = 0.95,
                     project.dir,
+                    save.data = FALSE,
+                    credible.region = 0.95,
                     monochrome = TRUE,
                     plot.colors = c("#495054", "#e3e8ea"),
-                    graphic.type = "pptx", 
+                    graphic.type = "pptx",
                     plot.size = "15,10",
-                    scaling = 100, 
-                    plot.aspect = NULL, 
-                    save.data = FALSE, 
-                    vector.graphic = TRUE, 
-                    point.size = 15, 
-                    font.type = "serif", 
-                    one.file = TRUE, 
+                    scaling = 100,
+                    plot.aspect = NULL,
+                    vector.graphic = FALSE,
+                    point.size = 15,
+                    font.type = "serif",
+                    one.file = TRUE,
                     ppi = 300,
                     units = "in",
-                    paper = "pw",
+                    layout = "pw",
+                    layout.inverse = FALSE,
                     ...
 ) {
   
-  # Open new device
-  grDevices::dev.new()
+
+  # Trim and split plot size
+  plot.size <- as.numeric(TrimSplit(plot.size))
   
-  JavaGarbage() #Java garbage collection
+  # Use width / height if aspect ratio is not defined
+  if (is.null(plot.aspect)) plot.aspect <- plot.size[[1]] / plot.size[[2]]
+  # Extract width of page
+  page.width <- Layout(layout,layout.inverse)[1]
+  # Extract height of page
+  page.height <- Layout(layout,layout.inverse)[2]
+  # Aspect ratio of page
+  page.aspect <- page.width / page.height
+  # If aspect ratio of page is creater than the aspect rataio of plot adjust width factor
+  width.factor <- if (page.aspect > plot.aspect) plot.aspect / page.aspect else 1
+  # If aspect ratio of page is creater than the aspect rataio of plot adjust height factor
+  height.factor <- if (page.aspect > plot.aspect) 1 else page.aspect / plot.aspect
+  # Define width of plot based on scaling and page width and width factor
+  plot.width <- ( scaling / 100 ) * ( page.width * width.factor )
+  # Define height of plot based on scaling and page heighbt and height factor
+  plot.height <- ( scaling / 100 ) * ( page.height * height.factor )
   
+  # Open new graphics device
+  grDevices::dev.new(width=plot.width,
+                     height=plot.height,
+                     noRStudioGD = TRUE,
+                     res=ppi,
+                     units="in")
+                       
   plot.colors <- if (monochrome) grDevices::colorRampPalette(plot.colors)(4) else DistinctColors(1:4)
   graphics::par(mar = 0.5 + c(3, 4, 1, 0),
                 oma = 0.1 + c(0, 0, 2, 0),
                 mgp = c(2.25, 0.7, 0),
                 cex.lab = 1.5,
-                par(family = "serif"))
+                par(family = font.type))
   graphics::layout(matrix(1:4, nrow = 2))
   
   # Traceplot
@@ -94,35 +119,68 @@ DiagMCMC <- function(data.MCMC,
     }
   }
   n.chain <- length(data.MCMC)
-  ESS <- coda::effectiveSize(data.MCMC[, c(par.name)]) # Effective sample size
-  MCSE <- stats::sd(as.matrix(data.MCMC[, c(par.name)])) / sqrt(ESS) # Monte Carlo standard error
-  
+  diag.data <- do.call(cbind,data.MCMC[, par.name][1:n.chain])
+  ESS <- coda::effectiveSize(rowMeans(diag.data)) # Effective sample size
+  MCSE <- stats::sd(rowMeans(diag.data)) / sqrt(ESS) # Monte Carlo standard error  
+ 
   # Autocorrelation
-  x.matrix <- do.call(cbind, lapply(1:n.chain, function(i) stats::acf(data.MCMC[, c(par.name)][[i]], plot = FALSE) $lag))
-  y.matrix <- do.call(cbind, lapply(1:n.chain, function(i) stats::acf(data.MCMC[, c(par.name)][[i]], plot = FALSE) $acf))
-  graphics::matplot(x.matrix, y.matrix, type = "o", pch = 20, col = plot.colors, ylim = c(0, 1), main = "", xlab = "Lag", ylab = "Autocorrelation")
+  x <- apply(diag.data, 2 , function (x) stats::acf(x, plot = FALSE)$lag)  
+  y <- apply(diag.data, 2 , function (x) stats::acf(x, plot = FALSE)$acf)
+   
+  graphics::matplot(x, 
+                    y, 
+                    type = "o", 
+                    pch = 20, 
+                    col = plot.colors,
+                    ylim = c(0, 1), 
+                    main = "", 
+                    xlab = "Lag", 
+                    ylab = "Autocorrelation")
   graphics::abline(h = 0, lty = "dashed")
-  graphics::text(x = max(x.matrix), y = max(y.matrix), adj = c(1.0, 1.0), cex = 1.25, labels = paste("ESS = ", round(ESS, 1)))
-  
-  # Density
-  x.matrix <- do.call( cbind, lapply( 1:n.chain, function(i) stats::density( data.MCMC[, c(par.name)][[i]] ) $x ) )
-  y.matrix <- do.call( cbind, lapply( 1:n.chain, function(i) stats::density( data.MCMC[, c(par.name)][[i]] ) $y ) )
-  hdi.interval <- do.call( cbind, lapply(1:n.chain, function(i) ComputeHDI( data.MCMC[, c(par.name)][[i]],  credible.region ) ) )
-  graphics::matplot(x.matrix, y.matrix, type = "l", col = plot.colors, main = "", xlab = "Param. Value", ylab = "Density")
-  graphics::abline(h = 0)
-  graphics::points(hdi.interval[1, ], rep(0, n.chain), col = plot.colors, pch = "|")
-  graphics::points(hdi.interval[2, ], rep(0, n.chain), col = plot.colors, pch = "|")
-  graphics::text(mean(hdi.interval), 0, "95% HDI", adj = c(0.5, -0.2))
-  graphics::text(max(x.matrix), max(y.matrix), adj = c(1.0, 1.0), cex = 1.25, paste("MCSE = \n", signif(MCSE, 3)))
-  graphics::mtext(text = AddNames(par.name, job.names, job.group), outer = TRUE, adj = c(0.5, 0.5), cex = 2.0)
-  
-  # Record plot
-  recorded.plot <- grDevices::recordPlot()
-  # Close all graphics
-  grDevices::graphics.off()
-  # Turn off graphics device drive
-  if (!is.null(grDevices::dev.list())) invisible(grDevices::dev.off())
+  graphics::text(x = max(x), 
+                 y = max(y), 
+                 adj = c(1.0, 1.0), 
+                 cex = 1.25, 
+                 labels = paste("ESS = ", round(ESS, 1)))
     
-  return (recorded.plot)
+  # Density
+  x <- apply(diag.data, 2 , function (x) stats::density(x)$x)  
+  y <- apply(diag.data, 2 , function (x) stats::density(x)$y)
+  hdi.interval <- apply(diag.data, 2 , function (x) ComputeHDI(x,  credible.region) ) 
+  graphics::matplot(x, 
+                    y, 
+                    type = "l", 
+                    col = plot.colors, 
+                    main = "", 
+                    xlab = "Param. Value", 
+                    ylab = "Density")
+  graphics::abline(h = 0)
+  graphics::points(hdi.interval[1, ], 
+                   rep(0, n.chain), 
+                   col = plot.colors, 
+                   pch = "|")
+  graphics::points(hdi.interval[2, ], 
+                   rep(0, n.chain), 
+                   col = plot.colors, 
+                   pch = "|")
+  graphics::text(mean(hdi.interval), 
+                 0, 
+                 "95% HDI", 
+                 adj = c(0.5, -0.2))
+  graphics::text(max(x), 
+                 max(y), 
+                 adj = c(1.0, 1.0), 
+                 cex = 1.25, 
+                 paste("MCSE = \n", signif(MCSE, 3)))
+  graphics::mtext(text = AddNames(par.name, job.names, job.group), 
+                  outer = TRUE, 
+                  adj = c(0.5, 0.5), 
+                  cex = 2.0)
   
+  if (save.data) {
+      # Record plot
+      recorded.plot <- grDevices::recordPlot()
+       
+      return (recorded.plot) 
+  }
 }

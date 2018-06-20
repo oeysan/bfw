@@ -210,18 +210,16 @@ MergeMCMC <- function (pat , project.dir = "Results/" , data.sets) {
 #' @param data data to compute contrasts from
 #' @param job.names names of all parameters in analysis, Default: NULL
 #' @seealso
-#'  \code{\link[pbapply]{pblapply}}
 #'  \code{\link[utils]{combn}}
 #' @rdname RunContrasts
 #' @export
-#' @importFrom pbapply pblapply
 #' @importFrom utils combn
 
 RunContrasts <- function(contrast.type , q.levels , use.contrast , contrasts , data , job.names) {
   contrast.type <- TrimSplit(contrast.type)
   col.names <- colnames(data)
 
-  contrast.list <- pbapply::pblapply(contrast.type, function (contrast.type) {
+  contrast.list <- lapply(contrast.type, function (contrast.type) {
 
     q.seq <- seq(length(q.levels))
     if (!is.null(contrasts)) q.seq <- q.seq[q.seq %in% as.numeric(TrimSplit(contrasts)) ]

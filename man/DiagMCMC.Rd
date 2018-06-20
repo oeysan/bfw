@@ -4,13 +4,13 @@
 \alias{DiagMCMC}
 \title{Diagnose MCMC}
 \usage{
-DiagMCMC(data.MCMC, par.name, job.names, job.group, project.name,
-  credible.region = 0.95, project.dir, monochrome = TRUE,
+DiagMCMC(data.MCMC, par.name, job.names, job.group, project.name, project.dir,
+  save.data = FALSE, credible.region = 0.95, monochrome = TRUE,
   plot.colors = c("#495054", "#e3e8ea"), graphic.type = "pptx",
   plot.size = "15,10", scaling = 100, plot.aspect = NULL,
-  save.data = FALSE, vector.graphic = TRUE, point.size = 15,
-  font.type = "serif", one.file = TRUE, ppi = 300, units = "in",
-  paper = "pw", ...)
+  vector.graphic = FALSE, point.size = 15, font.type = "serif",
+  one.file = TRUE, ppi = 300, units = "in", layout = "pw",
+  layout.inverse = FALSE, ...)
 }
 \arguments{
 \item{data.MCMC}{MCMC chains to diagnose}
@@ -23,9 +23,11 @@ DiagMCMC(data.MCMC, par.name, job.names, job.group, project.name,
 
 \item{project.name}{name of project, Default: 'Project'}
 
-\item{credible.region}{summarize uncertainty by defining a region of most credible values (e.g., 95 percent of the distribution), Default: 0.95}
-
 \item{project.dir}{define where to save data, Default: 'Results/'}
+
+\item{save.data}{logical, indicating whether or not to save data, Default: FALSE}
+
+\item{credible.region}{summarize uncertainty by defining a region of most credible values (e.g., 95 percent of the distribution), Default: 0.95}
 
 \item{monochrome}{logical, indicating whether or not to use monochrome colors, else use \link[bfw]{DistinctColors}, Default: TRUE}
 
@@ -39,8 +41,6 @@ DiagMCMC(data.MCMC, par.name, job.names, job.group, project.name,
 
 \item{plot.aspect}{aspect of plot, Default: NULL}
 
-\item{save.data}{logical, indicating whether or not to save data, Default: FALSE}
-
 \item{vector.graphic}{logical, indicating whether or not visualizations should be vector or raster graphics, Default: TRUE}
 
 \item{point.size}{point size used for visualizations, Default: 15}
@@ -53,7 +53,9 @@ DiagMCMC(data.MCMC, par.name, job.names, job.group, project.name,
 
 \item{units}{define unit of length used for visualizations, Default: 'in'}
 
-\item{paper}{define a print size for visualizations, Default: 'pw'}
+\item{layout}{define a layout size for visualizations, Default: 'pw'}
+
+\item{layout.inverse}{logical, indicating whether or not to inverse layout (e.g., landscape) , Default: FALSE}
 
 \item{...}{further arguments passed to or from other methods}
 }

@@ -8,7 +8,8 @@ ParsePlot(plot.data, project.dir = "Results/", project.name = FileName(name
   = "Plot"), graphic.type = "pptx", plot.size = "15,10", scaling = 100,
   plot.aspect = NULL, save.data = FALSE, vector.graphic = TRUE,
   point.size = 15, font.type = "serif", one.file = TRUE, ppi = 300,
-  units = "in", paper = "pw", return.files = FALSE, ...)
+  units = "in", layout = "pw", layout.inverse = FALSE,
+  return.files = FALSE, ...)
 }
 \arguments{
 \item{plot.data}{a list of plots}
@@ -39,7 +40,9 @@ ParsePlot(plot.data, project.dir = "Results/", project.name = FileName(name
 
 \item{units}{define unit of length used for visualizations, Default: 'in'}
 
-\item{paper}{define a print size for visualizations, Default: 'pw'}
+\item{layout}{define a layout size for visualizations, Default: 'pw'}
+
+\item{layout.inverse}{logical, indicating whether or not to inverse layout (e.g., landscape) , Default: FALSE}
 
 \item{return.files}{logical, indicating whether or not to return saved file names}
 
@@ -82,15 +85,15 @@ plot.data <- lapply(1:3, function (i) {
 ParsePlot(plot.data)
 # Plots are displayed in three separate windows
 \donttest{
-# Save plots as png on a4 paper and return file names
+# Save plots as png with a4 layout and return file names
 project.dir <- tempdir()
 project.name <- FileName(name="Testing")
 ParsePlot(plot.data,
-          project.dir = project.dir ,
-          project.name = project.name ,
+          project.dir = project.dir,
+          project.name = project.name,
           graphic.type = "png",
           save.data = TRUE,
-          paper = "a4",
+          layout = "a4",
           return.files = TRUE
 )
 # [1] "\\\\Temp/Project-Testing-Plot01-1528833217.png"
@@ -102,8 +105,10 @@ ParsePlot(plot.data,
 project.dir <- tempdir()
 project.name <- FileName(name="Testing")
 ParsePlot(plot.data,
-          project.dir = project.dir ,
-          project.name = project.name ,
+          project.dir = project.dir,
+          project.name = project.name,
+          graphic.type = "pptx",
+          layout = "pw",
           save.data = TRUE,
           return.files = TRUE
 )
@@ -117,8 +122,4 @@ ParsePlot(plot.data,
 \code{\link[grDevices]{graphics.off}},
 \code{\link[grDevices]{dev.list}},
 \code{\link[grDevices]{dev.off}}
-\code{\link[ReporteRs]{pptx}},
-\code{\link[ReporteRs]{addSlide}},
-\code{\link[ReporteRs]{addPlot}},
-\code{\link[ReporteRs]{writeDoc}}
 }

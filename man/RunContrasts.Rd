@@ -23,6 +23,5 @@ RunContrasts(contrast.type, q.levels, use.contrast, contrasts, data, job.names)
 Compute contrasts from mean and standard deviation (Cohen's d) or frequencies (odds ratio)
 }
 \seealso{
-\code{\link[pbapply]{pblapply}}
- \code{\link[utils]{combn}}
+\code{\link[utils]{combn}}
 }

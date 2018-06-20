@@ -4,7 +4,8 @@
 \alias{TrimSplit}
 \title{Trim Split}
 \usage{
-TrimSplit(x, sep = ",", fixed = FALSE, perl = FALSE, useBytes = FALSE)
+TrimSplit(x, sep = ",", fixed = FALSE, perl = FALSE, useBytes = FALSE,
+  rm.empty = TRUE)
 }
 \arguments{
 \item{x}{string}
@@ -16,6 +17,8 @@ TrimSplit(x, sep = ",", fixed = FALSE, perl = FALSE, useBytes = FALSE)
 \item{perl}{logical, indicating whether or not to use Perl-compatible regexps, Default: FALSE}
 
 \item{useBytes}{logical. If TRUE the matching is done byte-by-byte rather than character-by-character, Default: FALSE}
+
+\item{rm.empty}{logical. indicating whether or not to remove empty elements, Default: TRUE}
 }
 \description{
 Extends strsplit by trimming and unlisting string

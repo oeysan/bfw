@@ -7,10 +7,11 @@
 RunMCMC(jags.model, params, name.list, data.list, initial.list, saved.steps,
   thinned.steps, run.contrasts, use.contrast, contrasts, n.data,
   credible.region, save.data = FALSE, ROPE, merge.MCMC, run.diag, sep,
-  graphic.type = "pptx", plot.size = "15,10", scaling = 100,
+  monochrome = TRUE, plot.colors = c("#495054", "#e3e8ea"),
+  graphic.type = "png", plot.size = "15,10", scaling = 100,
   plot.aspect = NULL, vector.graphic = TRUE, point.size = 15,
   font.type = "serif", one.file = TRUE, ppi = 300, units = "in",
-  paper = "pw", ...)
+  layout = "pw", layout.inverse = FALSE, ...)
 }
 \arguments{
 \item{jags.model}{specify which module to use}
@@ -47,6 +48,10 @@ RunMCMC(jags.model, params, name.list, data.list, initial.list, saved.steps,
 
 \item{sep}{symbol to separate data (e.g., comma-delimited), Default: ','}
 
+\item{monochrome}{logical, indicating whether or not to use monochrome colors, else use \link[bfw]{DistinctColors}, Default: TRUE}
+
+\item{plot.colors}{range of color to use, Default: c("#495054", "#e3e8ea")}
+
 \item{graphic.type}{type of graphics to use (e.g., pdf, png, ps), Default: 'pptx'}
 
 \item{plot.size}{size of plot, Default: '15,10'}
@@ -67,7 +72,9 @@ RunMCMC(jags.model, params, name.list, data.list, initial.list, saved.steps,
 
 \item{units}{define unit of length used for visualizations, Default: 'in'}
 
-\item{paper}{define a print size for visualizations, Default: 'pw'}
+\item{layout}{define a layout size for visualizations, Default: 'pw'}
+
+\item{layout.inverse}{logical, indicating whether or not to inverse layout (e.g., landscape) , Default: FALSE}
 
 \item{...}{further arguments passed to or from other methods}
 }
@@ -81,9 +88,9 @@ Conduct MCMC simulations using JAGS
 \code{\link[runjags]{runjags.options}},\code{\link[runjags]{run.jags}}
  \code{\link[parallel]{detectCores}}
  \code{\link[coda]{as.mcmc.list}},\code{\link[coda]{varnames}}
+ \code{\link[plyr]{rbind.fill}}
  \code{\link[robust]{covRob}}
  \code{\link[stats]{cor}},\code{\link[stats]{cov}},\code{\link[stats]{sd}}
- \code{\link[pbapply]{pblapply}}
  \code{\link[MASS]{mvrnorm}}
  \code{\link[utils]{write.table}}
 }

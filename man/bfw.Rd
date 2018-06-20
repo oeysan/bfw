@@ -15,11 +15,12 @@ bfw(y = NULL, y.names = NULL, x = NULL, x.names = NULL, latent = NULL,
   project.name = "Project", project.dir = "Results/", project.data = NULL,
   time.stamp = TRUE, save.data = FALSE, data.set = "AllData",
   data.format = "csv", raw.data = FALSE, run.robust = FALSE,
-  merge.MCMC = FALSE, run.diag = FALSE, sep = ",",
-  graphic.type = "pptx", plot.size = "15,10", scaling = 100,
-  plot.aspect = NULL, vector.graphic = TRUE, point.size = 15,
-  font.type = "serif", one.file = TRUE, ppi = 300, units = "in",
-  paper = "pw", silent = FALSE, ...)
+  merge.MCMC = FALSE, run.diag = FALSE, sep = ",", monochrome = TRUE,
+  plot.colors = c("#495054", "#e3e8ea"), graphic.type = "pptx",
+  plot.size = "15,10", scaling = 100, plot.aspect = NULL,
+  vector.graphic = TRUE, point.size = 15, font.type = "serif",
+  one.file = TRUE, ppi = 300, units = "in", layout = "pw",
+  layout.inverse = FALSE, silent = FALSE, ...)
 }
 \arguments{
 \item{y}{criterion variable(s), Default: NULL}
@@ -100,6 +101,10 @@ bfw(y = NULL, y.names = NULL, x = NULL, x.names = NULL, latent = NULL,
 
 \item{sep}{symbol to separate data (e.g., comma-delimited), Default: ','}
 
+\item{monochrome}{logical, indicating whether or not to use monochrome colors, else use \link[bfw]{DistinctColors}, Default: TRUE}
+
+\item{plot.colors}{range of color to use, Default: c("#495054", "#e3e8ea")}
+
 \item{graphic.type}{type of graphics to use (e.g., pdf, png, ps), Default: 'pptx'}
 
 \item{plot.size}{size of plot, Default: '15,10'}
@@ -120,7 +125,9 @@ bfw(y = NULL, y.names = NULL, x = NULL, x.names = NULL, latent = NULL,
 
 \item{units}{define unit of length used for visualizations, Default: 'in'}
 
-\item{paper}{define a print size for visualizations, Default: 'pw'}
+\item{layout}{define a layout size for visualizations, Default: 'pw'}
+
+\item{layout.inverse}{logical, indicating whether or not to inverse layout (e.g., landscape) , Default: FALSE}
 
 \item{silent}{logical, indicating whether or not analysis should be run silent, Default: FALSE}
 
@@ -137,5 +144,4 @@ Settings act like the main framework for bfw, connecting function, model and JAG
 }
 \seealso{
 \code{\link[utils]{tail}},\code{\link[utils]{modifyList}},\code{\link[utils]{capture.output}}
- \code{\link[methods]{formalArgs}}
 }

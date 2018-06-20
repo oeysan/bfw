@@ -39,6 +39,8 @@
 #' @param merge.MCMC logical, indicating whether or not to merge MCMC chains, Default: FALSE
 #' @param run.diag logical, indicating whether or not to run diagnostics, Default: FALSE
 #' @param sep symbol to separate data (e.g., comma-delimited), Default: ','
+#' @param monochrome logical, indicating whether or not to use monochrome colors, else use \link[bfw]{DistinctColors}, Default: TRUE
+#' @param plot.colors range of color to use, Default: c("#495054", "#e3e8ea")
 #' @param graphic.type type of graphics to use (e.g., pdf, png, ps), Default: 'pptx'
 #' @param plot.size size of plot, Default: '15,10'
 #' @param scaling scale size of plot, Default: 100
@@ -49,18 +51,17 @@
 #' @param one.file logical, indicating whether or not visualizations should be placed in one or several files, Default: TRUE
 #' @param ppi define pixel per inch used for visualizations, Default: 300
 #' @param units define unit of length used for visualizations, Default: 'in'
-#' @param paper define a print size for visualizations, Default: 'pw'
+#' @param layout define a layout size for visualizations, Default: 'pw'
+#' @param layout.inverse logical, indicating whether or not to inverse layout (e.g., landscape) , Default: FALSE
 #' @param silent logical, indicating whether or not analysis should be run silent, Default: FALSE
 #' @param ... further arguments passed to or from other methods
 #' @return data from MCMC \link[bfw]{RunMCMC}
 #' @details Settings act like the main framework for bfw, connecting function, model and JAGS.
 #' @seealso
 #'  \code{\link[utils]{tail}},\code{\link[utils]{modifyList}},\code{\link[utils]{capture.output}}
-#'  \code{\link[methods]{formalArgs}}
 #' @rdname bfw
 #' @export
 #' @importFrom utils tail modifyList capture.output
-#' @importFrom methods formalArgs
 bfw <- function(y = NULL,
                 y.names = NULL,
                 x = NULL,
@@ -100,6 +101,8 @@ bfw <- function(y = NULL,
                 merge.MCMC = FALSE,
                 run.diag = FALSE,
                 sep = ",",
+                monochrome = TRUE,
+                plot.colors = c("#495054", "#e3e8ea"),
                 graphic.type = "pptx",
                 plot.size = "15,10",
                 scaling = 100,
@@ -110,7 +113,8 @@ bfw <- function(y = NULL,
                 one.file = TRUE,
                 ppi = 300,
                 units = "in",
-                paper = "pw",
+                layout = "pw",
+                layout.inverse = FALSE,
                 silent = FALSE,
                 ...
 ) {
@@ -146,10 +150,6 @@ bfw <- function(y = NULL,
     stop("Please specify data. Quitting.")
 
   }
-
-  #Java garbage collection
-  JavaGarbage()
-
 
   if (save.data) {
     # Create directories
@@ -197,7 +197,7 @@ bfw <- function(y = NULL,
     # Specify model type
     jags.model <- paste0("stats_",RemoveSpaces(tolower(jags.model)))
     # Check if model exists
-    list.models <- list.files(paste0(system.file(package = 'bfw'),"/extdata/Models/"))
+    list.models <- list.files(paste0(system.file(package = 'bfw'),"/extdata/models/"))
     if (!length(grep(jags.model,list.models))) stop("The model: ", model.name, " does not exist. Quitting.")
     # Specify model type (robust)
     if (run.robust) jags.model <- paste0(jags.model,"_robust")
@@ -209,10 +209,11 @@ bfw <- function(y = NULL,
   }
 
   # Get arguments from model function
-  model.arguments  <- methods::formalArgs(args(stats.model))
+  model.arguments  <- TrimSplit(names(formals(stats.model)))
   # Create argument list
-  model.arguments  <- paste(lapply(model.arguments[model.arguments != "..."],
-                                   function (x) paste0(x,"=", x)), collapse=",")
+  model.arguments  <- paste0(paste(model.arguments,
+                                   model.arguments,sep="="),
+                             collapse=",")
   # Create data list from model from specified argument list
   stats.model <- eval(parse(text=sprintf("stats.model(%s)" , model.arguments)))
 
@@ -264,6 +265,8 @@ bfw <- function(y = NULL,
                     merge.MCMC = merge.MCMC,
                     run.diag = run.diag,
                     sep = sep,
+                    monochrome = monochrome,
+                    plot.colors = plot.colors,
                     graphic.type = graphic.type,
                     plot.size = plot.size,
                     scaling = scaling,
@@ -275,7 +278,8 @@ bfw <- function(y = NULL,
                     one.file = one.file,
                     ppi = 300,
                     units = units,
-                    paper = paper)
+                    layout = layout,
+                    layout.inverse = layout.inverse)
 
   # Run MCMC
   if (silent) {

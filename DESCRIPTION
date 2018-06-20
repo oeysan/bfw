@@ -1,7 +1,7 @@
 Package: bfw
-Version: 0.0.1.9000
-Date: 2018-06-15
-Title: Bayesian Framework for Computational Modelling
+Version: 0.1.0.9000
+Date: 2018-06-20
+Title: Bayesian Framework for Computational Modeling
 Authors@R: person( "Øystein Olav","Skaar", email="bayesianfw@gmail.com", role=c("aut","cre"))
 Maintainer: Øystein Olav Skaar <bayesianfw@gmail.com>
 URL: https://github.com/oeysan/bfw/
@@ -16,26 +16,27 @@ Description: Derived from the work of Kruschke (2015, <ISBN:9780124058880>),
     (e.g., structural equation modeling).
 SystemRequirements: JAGS >=4.3.0 <http://mcmc-jags.sourceforge.net/>,
                     Java JDK >=1.4 <https://www.java.com/en/download/manual.jsp>
-Depends: R (>= 3.4.0),
-Imports: plyr (>= 1.8.4),
-         methods (>= 3.5.0),
+Depends: R (>= 3.5.0),
+Imports: coda (>= 0.19-1),
          MASS (>= 7.3-47),
-         pbapply (>= 1.3-4),
-         ReporteRs (>= 0.8.9),
-         coda (>= 0.19-1),
-         psych (>= 1.7.8),
          rJava (>= 0.9-9),
-         runjags (>= 2.0.4-2),
+         runjags (>= 2.0.4-2)         
+Suggests:
          ggplot2 (>= 2.2.1),
-         scales (>= 0.5.0),
-         truncnorm (>= 1.0-8),
+         knitr (>= 1.20),
+         lavaan (>= 0.6-1),
+         officer (>= 0.3.1),
+         plyr (>= 1.8.4),
+         psych (>= 1.7.8),
+         rmarkdown (>= 1.10),
          robust (>= 0.4-18),
-         lavaan (>= 0.6-1)
+         rvg (>= 0.1.9),
+         scales (>= 0.5.0),
+         truncnorm (>= 1.0-8)
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.0.1
-Suggests: knitr, rmarkdown
 VignetteBuilder: knitr
 NeedsCompilation: no
 Packaged: 2018-06-13 09:55:29 UTC; Melkor

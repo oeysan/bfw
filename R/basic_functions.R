@@ -76,7 +76,7 @@ DistinctColors <- function(range, random = FALSE) {
               "#6C8F7D", "#D7BFC2", "#3C3E6E", "#D83D66", "#2F5D9B", "#6C5E46",
               "#D25B88", "#5B656C", "#00B57F", "#545C46", "#866097", "#365D25",
               "#252F99", "#00CCFF", "#674E60", "#FC009C", "#92896B")
-
+  
   val <- if (random & length(range) > length(colors)) {
     sample(colors, length(range), replace = TRUE)
   } else if (random) {
@@ -85,7 +85,7 @@ DistinctColors <- function(range, random = FALSE) {
     colors[range]
   }
   val <- val[!is.na(val)]
-
+  
   return (val)
 }
 
@@ -237,19 +237,6 @@ SingleString <- function(x) {
   is.character(x) & length(x) == 1
 }
 
-#' @title Java Garbage
-#' @description Call rJava function jcall to clear java cache
-#' @seealso
-#'  \code{\link[rJava]{.jcall}}
-#' @rdname JavaGarbage
-#' @export
-#' @importFrom rJava .jcall
-
-JavaGarbage <- function() {
-  rJava::.jcall("java/lang/System", method = "gc")
-  gc()
-}
-
 #' @title Normalize
 #' @description simple function to normalize data
 #' @param x numeric vector to normalize
@@ -277,36 +264,42 @@ PadVector <- function(v) {
   gsub("\\s", "0", format(v, width=max(nchar(v))))
 }
 
-#' @title Paper Size
-#' @description collection of print sizes
-#' @param x select medium to print on, Default: 'a4'
+#' @title Layout 
+#' @description collection of layout sizes
+#' @param x type of layout, Default: 'a4'
+#' @param layout.inverse logical, indicating whether or not to inverse layout (e.g., landscape) , Default: FALSE
 #' @return width and height of select medium
 #' @examples
-#'  PaperSize()
+#'  Layout()
 #'  # [1]  8.3 11.7
-#' @rdname PaperSize
+#' @rdname Layout
 #' @export
 
-PaperSize <- function(x = "a4") {
-
+Layout <- function(x = "a4", layout.inverse = FALSE) {
+  
   x <- Trim(tolower(x))
-  switch (x,
-          "pt" = c(10,7.5),
-          "pw" = c(13.33,7.5),
-          "4a0" = c(66.2,93.6),
-          "2a0" = c(46.8,66.2),
-          "a0" = c(33.1,46.8),
-          "a1" = c(23.4,33.1),
-          "a2" = c(16.5,23.4),
-          "a3" = c(11.7,16.5),
-          "a5" = c(5.8,8.3),
-          "a6" = c(4.1,5.8),
-          "a7" = c(2.9,4.1),
-          "a8" = c(2,2.9),
-          "a9" = c(1.5,2),
-          "a10" = c(1,1.5),
-          "a4" = c(8.3,11.7)
+  x <- switch (x,
+               "pt" = c(10,7.5),
+               "pw" = c(13.33,7.5),
+               "4a0" = c(66.2,93.6),
+               "2a0" = c(46.8,66.2),
+               "a0" = c(33.1,46.8),
+               "a1" = c(23.4,33.1),
+               "a2" = c(16.5,23.4),
+               "a3" = c(11.7,16.5),
+               "a5" = c(5.8,8.3),
+               "a6" = c(4.1,5.8),
+               "a7" = c(2.9,4.1),
+               "a8" = c(2,2.9),
+               "a9" = c(1.5,2),
+               "a10" = c(1,1.5),
+               "a4" = c(8.3,11.7)
   )
+  
+  if (layout.inverse) x <- rev(x)
+  
+  return (x)
+  
 }
 
 #' @title Parse Numbers
@@ -330,7 +323,7 @@ ParseNumber <- function (x) {
 #' @title Read File
 #' @description opens connection to a file
 #' @param file name of file, Default: NULL
-#' @param path path to file, Default: 'Models/'
+#' @param path path to file, Default: 'models/'
 #' @param package choose package to open from, Default: 'bfw'
 #' @param type Type of file (i.e., text or data), Default: 'string'
 #' @param sep symbol to separate data (e.g., comma-delimited), Default: ','
@@ -352,27 +345,27 @@ ParseNumber <- function (x) {
 #' @importFrom utils read.csv
 
 ReadFile <- function(file = NULL ,
-                     path = "Models/" ,
+                     path = "models/" ,
                      package = "bfw" ,
                      type="string" ,
                      sep = "," ,
                      data.format = "txt" ,
                      custom = FALSE) {
-
+  
   type <- RemoveSpaces(tolower(type))
-
+  
   if (is.null(file)) stop("Please specify a file. Quitting.")
   if (!custom) file <- system.file(paste0("extdata/",path),
-                                          paste0(file,".",data.format),
-                                          package=package)
+                                   paste0(file,".",data.format),
+                                   package=package)
   if (file == "") {
-      file <- NULL
+    file <- NULL
   } else {
-      if (type == "string") file <- paste(readLines(file,warn=FALSE),
-                                          collapse="\n")
-      if (type == "data") file <- utils::read.csv(file ,
-                                                  head = TRUE ,
-                                                  sep = sep)
+    if (type == "string") file <- paste(readLines(file,warn=FALSE),
+                                        collapse="\n")
+    if (type == "data") file <- utils::read.csv(file ,
+                                                head = TRUE ,
+                                                sep = sep)
   }
   return (file)
 }
@@ -433,7 +426,7 @@ FileName <- function ( project = "Project" ,
   if(length(type)) sName <- paste(sName, type, sep="-")
   unix <- if (unix) paste0("-" , as.integer(Sys.time()) )
   sName <- RemoveSpaces(CapWords(paste0(sName, "-", name, unix)))
-
+  
   return (sName)
 }
 
@@ -453,7 +446,8 @@ FileName <- function ( project = "Project" ,
 #' @param one.file logical, indicating whether or not visualizations should be placed in one or several files, Default: TRUE
 #' @param ppi define pixel per inch used for visualizations, Default: 300
 #' @param units define unit of length used for visualizations, Default: 'in'
-#' @param paper define a print size for visualizations, Default: 'pw'
+#' @param layout define a layout size for visualizations, Default: 'pw'
+#' @param layout.inverse logical, indicating whether or not to inverse layout (e.g., landscape) , Default: FALSE
 #' @param return.files logical, indicating whether or not to return saved file names
 #' @param ... further arguments passed to or from other methods
 #' @examples
@@ -491,15 +485,15 @@ FileName <- function ( project = "Project" ,
 #' ParsePlot(plot.data)
 #' # Plots are displayed in three separate windows
 #' \donttest{
-#' # Save plots as png on a4 paper and return file names
+#' # Save plots as png with a4 layout and return file names
 #' project.dir <- tempdir()
 #' project.name <- FileName(name="Testing")
 #' ParsePlot(plot.data,
-#'           project.dir = project.dir ,
-#'           project.name = project.name ,
+#'           project.dir = project.dir,
+#'           project.name = project.name,
 #'           graphic.type = "png",
 #'           save.data = TRUE,
-#'           paper = "a4",
+#'           layout = "a4",
 #'           return.files = TRUE
 #' )
 #' # [1] "\\Temp/Project-Testing-Plot01-1528833217.png"
@@ -511,8 +505,10 @@ FileName <- function ( project = "Project" ,
 #' project.dir <- tempdir()
 #' project.name <- FileName(name="Testing")
 #' ParsePlot(plot.data,
-#'           project.dir = project.dir ,
-#'           project.name = project.name ,
+#'           project.dir = project.dir,
+#'           project.name = project.name,
+#'           graphic.type = "pptx",
+#'           layout = "pw",
 #'           save.data = TRUE,
 #'           return.files = TRUE
 #' )
@@ -525,15 +521,9 @@ FileName <- function ( project = "Project" ,
 #' \code{\link[grDevices]{graphics.off}},
 #' \code{\link[grDevices]{dev.list}},
 #' \code{\link[grDevices]{dev.off}}
-#' \code{\link[ReporteRs]{pptx}},
-#' \code{\link[ReporteRs]{addSlide}},
-#' \code{\link[ReporteRs]{addPlot}},
-#' \code{\link[ReporteRs]{writeDoc}}
 #' @rdname ParsePlot
 #' @export
 #' @importFrom grDevices dev.new recordPlot setEPS graphics.off dev.list dev.off
-#' @importFrom ReporteRs pptx addSlide addPlot writeDoc
-
 
 ParsePlot <- function (plot.data,
                        project.dir = "Results/",
@@ -549,88 +539,106 @@ ParsePlot <- function (plot.data,
                        one.file = TRUE,
                        ppi = 300,
                        units = "in",
-                       paper = "pw",
+                       layout = "pw",
+                       layout.inverse = FALSE,
                        return.files = FALSE,
                        ...) {
-
-
+  
   # If single plot add plot to list
   if (typeof(plot.data[[1]]) != "list") plot.data <- list(plot.data)
   # Check if plot
   if (length((plot.data[[1]])) !=  3) stop("This is not a plot.")
   # Count number of plots
   n.plots <- length(plot.data)
-
-  # Trim and lowercase graphic type
+  
+   # Trim and lowercase graphic type
   graphic.type <- Trim(tolower(graphic.type))
   if (graphic.type == "ppt") graphic.type <- "pptx"
   if (graphic.type == "jpg") graphic.type <- "jpeg"
+  
+  # If using PowerPoint, check if 'officer' and 'rvg' are installed
+  if (graphic.type == "pptx" & vector.graphic &
+      !requireNamespace("officer", quietly = TRUE) &
+      !requireNamespace("rvg", quietly = TRUE)) {
+    cat("\nThe function need packages 'officer' and 'rvg' to create PowerPoint with vector graphics.\n",
+        "Defaults to 'pdf'.\n")    
+    graphic.type <- "pdf" 
+  } else if (graphic.type == "pptx" & vector.graphic &
+             !requireNamespace("rvg", quietly = TRUE)) {
+    cat("\nThe function need package 'rvg' to create PowerPoint with vector graphics.\n",
+        "Defaults to PowerPoint with raster graphics.\n")     
+    vector.graphic <- FALSE
+  } else if (graphic.type == "pptx" & 
+             !vector.graphic & !requireNamespace("officer", quietly = TRUE)) {
+    cat("\nThe function need packages 'officer' to create PowerPoint.\n",
+        "Defaults to 'pdf'.\n")    
+    graphic.type <- "pdf" 
+  }
 
   # Set graphics device driver (if eps/ps set postscript else use file name extension)
   dev.type <- if (graphic.type == "eps" | graphic.type == "ps") "postscript" else graphic.type
-
-  # Trim and split plot size
-  plot.size <- as.numeric(TrimSplit(plot.size))
-
-
+    
   if (save.data) {
-
+    
     # If necessary add trailing slash to project directory
     if ( tail(TrimSplit(project.dir,""),1) != "/") {
       project.dir <- paste0(project.dir,"/")
     }
-
+    
     # Create directories
     if (!dir.exists(project.dir)) {
       dir.create(project.dir,recursive = TRUE)
     }
-
+    
     # Decide whether to use singular or plural in plot name
     if (one.file & ( graphic.type == "ps" |
                      graphic.type == "eps" |
                      graphic.type == "pdf" |
                      graphic.type == "pptx" ) ) {
-      plot.type <- "-Plot-"
+      plot.type <- "-Plot"
     } else {
-      plot.type <- "-Plot%02d-"
+      plot.type <- "-Plot%02d"
     }
-
+    
     # split file name
     names.vector <- TrimSplit(project.name,"-")
     # Number of elements in file name
     n.names <- length(names.vector)
     # Check if file name has unix time stamp
     time.stamp  <- nchar(ParseNumber(tail(names.vector,1))) > 9
-
+    
     # If file name has unix timestamp prepend stamp or append to name
     ## Add file extension
     if (time.stamp) {
       project.name <- paste0(
         paste0(names.vector[-n.names],collapse="-"),
         plot.type,
-        names.vector[n.names],
+        "-", names.vector[n.names],
         ".", graphic.type
       )
     } else {
-      project.name <- paste0(project.name, plot.type , graphic.type)
+      project.name <- paste0(project.name, plot.type , "." , graphic.type)
     }
-
+    
     # if multiple files and PowerPoint, change %02d to regular numerics
     if (!one.file & graphic.type == "pptx") {
       padded.vector <- PadVector(seq(n.plots))
       project.name <- unlist(lapply(padded.vector, function (i) gsub("%02d",i,project.name) ) )
     }
-
+    
     # Create final file name
     file.name <- paste0(project.dir,project.name)
   }
-
+  
+  # Trim and split plot size
+  plot.size <- as.numeric(TrimSplit(plot.size))
+  
   # Use width / height if aspect ratio is not defined
   if (is.null(plot.aspect)) plot.aspect <- plot.size[[1]] / plot.size[[2]]
   # Extract width of page
-  page.width <- PaperSize(paper)[1]
+  page.width <- Layout(layout,layout.inverse)[1]
   # Extract height of page
-  page.height <- PaperSize(paper)[2]
+  page.height <- Layout(layout,layout.inverse)[2]
   # Aspect ratio of page
   page.aspect <- page.width / page.height
   # If aspect ratio of page is creater than the aspect rataio of plot adjust width factor
@@ -641,8 +649,7 @@ ParsePlot <- function (plot.data,
   plot.width <- ( scaling / 100 ) * ( page.width * width.factor )
   # Define height of plot based on scaling and page heighbt and height factor
   plot.height <- ( scaling / 100 ) * ( page.height * height.factor )
-
-
+  
   if (!save.data) {
     # Print plots
     print.plot <- lapply(plot.data, function (x) {
@@ -654,12 +661,10 @@ ParsePlot <- function (plot.data,
                          units="in")
       print(x)
     })
-  }
-
-  if (dev.type == "pptx" & save.data) {
-
+  } else if (dev.type == "pptx" & save.data) {
+    
     lapply(1:length(file.name), function (i) {
-
+      
       plot.data <- lapply(plot.data, function (x) {
         # Open new graphics device
         grDevices::dev.new(width=plot.width,
@@ -673,55 +678,94 @@ ParsePlot <- function (plot.data,
         grDevices::dev.off()
         return (p)
       } )
-
+      
       # Number of documents in PowerPoint file
       create.document <- if (one.file) seq(n.plots) else i
-
+      
       # Define font type
       if (font.type == "serif") font.type <- "Times New Roman"
-
+      
+      # Select template
+      template <- if (layout == "pt") "legacy" else "widescreen" 
+      template.file <- paste0(system.file(package = 'bfw'),"/extdata/templates/",template,".pptx")
+      
       # Create PowerPoint document
-      document <- ReporteRs::pptx()
-
+      document <- officer::read_pptx(template.file)
+      
       # Create slides
       lapply(create.document, function (j) {
-
+        
         # Add new slide
-        document <- ReporteRs::addSlide(document, slide.layout = "Blank")
-
-        # Create slide
-        document <- ReporteRs::addPlot(document,
-                                       function() print(plot.data[[j]]),
-                                       fontname_sans = font.type,
-                                       vector.graphic = vector.graphic,
-                                       pointsize = point.size,
-                                       offx = (page.width - plot.width) / 2,
-                                       offy = (page.height - plot.height) / 2,
-                                       width = plot.width,
-                                       height = plot.height)
+        document <- officer::add_slide(document, "Blank", "Office Theme")
+        
+        # If Vector graphics use rvg
+        if (vector.graphic) { 
+          
+          # Create slide
+          document <- rvg::ph_with_vg(document, 
+                                      print(plot.data[[j]]),
+                                      fonts = list(font.type),
+                                      type = NULL,
+                                      pointsize = point.size,
+                                      offx = (page.width - plot.width) / 2,
+                                      offy = (page.height - plot.height) / 2,
+                                      width = plot.width,
+                                      height = plot.height
+                                      
+          )
+        # Else use png device
+        } else {
+        
+          # Create tmp file
+          tmp.file <- tempfile(fileext = ".png")
+          # Open png device
+          grDevices::png(tmp.file,
+                         width = plot.width,
+                         height = plot.height,
+                         family = font.type,
+                         pointsize = point.size,
+                         res = ppi,
+                         units = units)
+          # Print plot
+          print(plot.data[[j]])
+          # close png device
+          if (!is.null(grDevices::dev.list())) invisible(grDevices::dev.off())
+          
+          # Add image to slide
+          document <- officer::ph_with_img_at(x = document, 
+                                              src = tmp.file,
+                                              width = plot.width,
+                                              height = plot.height,
+                                              left = (page.width - plot.width) / 2,
+                                              top = (page.height - plot.height) / 2 )
+        }
+        
       })
-
+      
       # Write file
-      ReporteRs::writeDoc(document, file = file.name[[i]])
-
+      invisible(print(document, target = file.name[[i]]))
+      
+      # Empty temp folder 
+      unlink(paste0(tempdir(),"/*"),force=TRUE,recursive=TRUE)
+      
     })
-
+    
   } else if (save.data) {
-
+    
     # Convert inches to pixles
     if (units == "px" & (dev.type != "pdf" | dev.type != "postscript")) {
       plot.width <- plot.width * ppi
       plot.height <- plot.height * ppi
     }
-
+    
     # Convert inches to cm
     if (units == "cm" & (dev.type != "pdf" | dev.type != "postscript")) {
       plot.width <- plot.width * 2.54
       plot.height <- plot.height * 2.54
     }
-
+    
     if (graphic.type == "ps" | graphic.type == "eps" | graphic.type == "pdf") {
-
+      
       if (graphic.type == "eps") grDevices::setEPS()
       dev.par <- sprintf("grDevices::%s(
                          file.name,
@@ -741,22 +785,23 @@ ParsePlot <- function (plot.data,
                          pointsize = point.size,
                          res = ppi,
                          units = units)", dev.type)
-
-
+      
+      
     }
-
+    
     # Evaluate and run graphics device drive
     eval(parse(text=dev.par))
     # Print plots
     print.plot <- lapply(plot.data, function (x) print(x) )
   }
-
+  
   if (save.data) {
+    cat("Saving plots. Closing windows.")
     # Close all graphics
     grDevices::graphics.off()
     # Turn off graphics device drive
     if (!is.null(grDevices::dev.list())) invisible(grDevices::dev.off())
-
+    
     # If requested, return file names
     if (return.files) {
       if (grepl("%02d", file.name[[1]])) file.name <- sprintf(file.name,1:n.plots)
@@ -792,6 +837,7 @@ Trim <- function(s, multi = TRUE) {
 #' @param fixed logical, if TRUE match split exactly, otherwise use regular expressions. Has priority over perl, Default: FALSE
 #' @param perl logical, indicating whether or not to use Perl-compatible regexps, Default: FALSE
 #' @param useBytes logical. If TRUE the matching is done byte-by-byte rather than character-by-character, Default: FALSE
+#' @param rm.empty logical. indicating whether or not to remove empty elements, Default: TRUE
 #' @details \link[base]{strsplit}
 #' @examples
 #'  TrimSplit("Data 1,     Data2, Data3")
@@ -803,10 +849,18 @@ TrimSplit <- function(x ,
                       sep = ",",
                       fixed = FALSE,
                       perl = FALSE,
-                      useBytes = FALSE) {
-
+                      useBytes = FALSE,
+                      rm.empty = TRUE) {
+  
+  # Split string by seperator
   x <- strsplit(as.character(x), sep , fixed, perl, useBytes)
-  return(Trim(unlist(x)))
+  # Unlist and trim vector elements
+  x <- Trim(unlist(x))
+  # If selected remove empty elements
+  if (rm.empty) x <- RemoveEmpty(x) 
+  
+  return (x)
+  
 }
 
 #' @title Pattern Matching and Replacement From Vectors

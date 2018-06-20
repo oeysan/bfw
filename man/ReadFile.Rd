@@ -4,13 +4,13 @@
 \alias{ReadFile}
 \title{Read File}
 \usage{
-ReadFile(file = NULL, path = "Models/", package = "bfw",
+ReadFile(file = NULL, path = "models/", package = "bfw",
   type = "string", sep = ",", data.format = "txt", custom = FALSE)
 }
 \arguments{
 \item{file}{name of file, Default: NULL}
 
-\item{path}{path to file, Default: 'Models/'}
+\item{path}{path to file, Default: 'models/'}
 
 \item{package}{choose package to open from, Default: 'bfw'}
 

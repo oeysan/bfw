@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# bfw: Bayesian Framework for Computational Modelling
+# bfw: Bayesian Framework for Computational Modeling
 
 The purpose of `bfw` is to establish a framework for conducting Bayesian
 analysis, using MCMC and JAGS (Plummer, 2003). The framework provides
@@ -176,10 +176,10 @@ round(biased.mcmc.robust$summary.MCMC[,c(3:6,9:12)],3)
 ``` r
 # Running time for normal distribution analyis 
 biased.mcmc$run.time[2] - biased.mcmc$run.time[1]
-#> Time difference of 6.72 secs
+#> Time difference of 7.27 secs
 # Running time for t-distribution analysis
 biased.mcmc.robust$run.time[2] - biased.mcmc.robust$run.time[1]
-#> Time difference of 35 secs
+#> Time difference of 32.5 secs
 ```
 
 ## Example 3: Using custom function and model

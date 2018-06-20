@@ -23,7 +23,8 @@
 #' @param one.file logical, indicating whether or not visualizations should be placed in one or several files, Default: TRUE
 #' @param ppi define pixel per inch used for visualizations, Default: 300
 #' @param units define unit of length used for visualizations, Default: 'in'
-#' @param paper define a print size for visualizations, Default: 'pw'
+#' @param layout define a layout size for visualizations, Default: 'pw'
+#' @param layout.inverse logical, indicating whether or not to inverse layout (e.g., landscape) , Default: FALSE
 #' @param ... further arguments passed to or from other methods
 #' @seealso
 #' \code{\link[ggplot2]{ggproto}},
@@ -44,6 +45,7 @@
 #' \code{\link[ggplot2]{layer}},
 #' \code{\link[ggplot2]{labs}}
 #' \code{\link[plyr]{arrange}}
+#' \code{\link[plyr]{rbind.fill}}
 #' \code{\link[scales]{zero_range}}
 #' \code{\link[grid]{grobTree}},
 #' \code{\link[grid]{grobName}},
@@ -58,10 +60,6 @@
 #' \code{\link[grDevices]{dev.off}}
 #' @rdname PlotData
 #' @export
-#' @importFrom ggplot2 ggproto aes element_blank element_line element_rect element_text geom_boxplot geom_errorbar geom_line geom_ribbon geom_violin ggplot scale_fill_manual scale_x_discrete theme layer labs
-#' @importFrom plyr arrange
-#' @importFrom scales zero_range
-#' @importFrom grid grobTree grobName unit
 #' @importFrom stats approxfun
 #' @importFrom utils tail
 #' @importFrom grDevices colorRampPalette dev.new recordPlot graphics.off dev.list dev.off
@@ -88,31 +86,41 @@ PlotData <- function(data.MCMC = NULL,
                      one.file = TRUE,
                      ppi = 300,
                      units = "in",
-                     paper = "pw",
+                     layout = "pw",
+                     layout.inverse = FALSE,
                      ...
 ) {
 
 
+  # Check if ggplots is installed
+  if (!requireNamespace("ggplot2", quietly = TRUE) |
+      !requireNamespace("scales", quietly = TRUE) |
+      !requireNamespace("plyr", quietly = TRUE) |
+      !requireNamespace("grid", quietly = TRUE)) {
+    stop("Packages \"ggplot2\", \"grid\", \"plyr\" and \"scales\" are needed for this function to work. Please install them.",
+    call. = FALSE)
+  }
+  
   # Define ggplot2 elements
-  ggproto <- ggplot2::ggproto()
+  ggproto <- ggplot2::ggproto
   GeomViolin <- ggplot2::GeomViolin
   GeomPath <- ggplot2::GeomPath
   GeomPolygon <- ggplot2::GeomPolygon
-  aes <- ggplot2::aes()
-  element_blank <- ggplot2::element_blank()
-  element_line <- ggplot2::element_line()
-  element_rect <- ggplot2::element_rect()
-  element_text <- ggplot2::element_text()
-  geom_boxplot <- ggplot2::geom_boxplot()
-  geom_errorbar <- ggplot2::geom_errorbar()
-  geom_line <- ggplot2::geom_line()
-  geom_ribbon <- ggplot2::geom_ribbon()
-  geom_violin <- ggplot2::geom_violin()
-  ggplot <- ggplot2::ggplot()
-  scale_fill_manual <- ggplot2::scale_fill_manual()
-  scale_x_discrete <- ggplot2::scale_x_discrete()
-  theme <- ggplot2::theme()
-
+  aes <- ggplot2::aes
+  element_blank <- ggplot2::element_blank
+  element_line <- ggplot2::element_line
+  element_rect <- ggplot2::element_rect
+  element_text <- ggplot2::element_text
+  geom_boxplot <- ggplot2::geom_boxplot
+  geom_errorbar <- ggplot2::geom_errorbar
+  geom_line <- ggplot2::geom_line
+  geom_ribbon <- ggplot2::geom_ribbon
+  geom_violin <- ggplot2::geom_violin
+  ggplot <- ggplot2::ggplot
+  scale_fill_manual <- ggplot2::scale_fill_manual
+  scale_x_discrete <- ggplot2::scale_x_discrete
+  theme <- ggplot2::theme
+  
   # Split violin plot for ggplot2
   # Based on Jan Gleixner (@jan-glx) and Wouter van der Bijl (@Axeman)
   # https://stackoverflow.com/questions/47651868/split-violin-plot-with-ggplot2-and-add-information
@@ -247,7 +255,7 @@ PlotData <- function(data.MCMC = NULL,
   # Lists of variables to plot
   plot.variables <- lapply(1:max(plot.sequence), function (i) matrix(which(plot.sequence %in% i) ) )
   # Create data frame with group indices and Bayesian statistics
-  plot.data <- do.call(rbind,lapply(1:q, function (i) {
+  plot.data <- plyr::rbind.fill(lapply(1:q, function (i) {
 
     x.names <- if (!i %in% y.position) x.names[x.groups[i]] else NA
     sub.names <- if (!i %in% y.position) sub.names[(repeated.position-1)[i]] else NA
@@ -282,7 +290,7 @@ PlotData <- function(data.MCMC = NULL,
       m <- lapply(1:length(x.li), function (j) {
         t(combn(plot.data[ plot.data$y.groups == i & plot.data$by.groups == j  , "k"],2))
       } )
-      do.call(rbind,m)
+      plyr::rbind.fill(m)
     } ) )
     plot.variables <- lapply(1:nrow(plot.variables), function (i) matrix(plot.variables[i,], ncol=2, byrow=TRUE))
     # horizontal split plots (variables per group)
@@ -487,7 +495,8 @@ PlotData <- function(data.MCMC = NULL,
                           font.type = "serif",
                           one.file = one.file,
                           scaling = scaling,
-                          paper = paper,
+                          layout = layout,
+                          layout.inverse = layout.inverse,
                           units = units,
                           ppi = ppi
   )

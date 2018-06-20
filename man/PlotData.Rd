@@ -11,7 +11,7 @@ PlotData(data.MCMC = NULL, data.type = "Mean", job.title = NULL,
   save.data = FALSE, graphic.type = "pptx", plot.size = "15,10",
   scaling = 100, plot.aspect = NULL, vector.graphic = TRUE,
   point.size = 15, font.type = "serif", one.file = TRUE, ppi = 300,
-  units = "in", paper = "pw", ...)
+  units = "in", layout = "pw", layout.inverse = FALSE, ...)
 }
 \arguments{
 \item{data.MCMC}{data to plot data from, Default: NULL}
@@ -60,7 +60,9 @@ PlotData(data.MCMC = NULL, data.type = "Mean", job.title = NULL,
 
 \item{units}{define unit of length used for visualizations, Default: 'in'}
 
-\item{paper}{define a print size for visualizations, Default: 'pw'}
+\item{layout}{define a layout size for visualizations, Default: 'pw'}
+
+\item{layout.inverse}{logical, indicating whether or not to inverse layout (e.g., landscape) , Default: FALSE}
 
 \item{...}{further arguments passed to or from other methods}
 }
@@ -86,6 +88,7 @@ Plot data as violin plot visualizing density, box plots to display HDI, whiskers
 \code{\link[ggplot2]{layer}},
 \code{\link[ggplot2]{labs}}
 \code{\link[plyr]{arrange}}
+\code{\link[plyr]{rbind.fill}}
 \code{\link[scales]{zero_range}}
 \code{\link[grid]{grobTree}},
 \code{\link[grid]{grobName}},

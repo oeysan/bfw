@@ -23,6 +23,7 @@
 #'
 #' }
 #' # Print frequentist and Bayesian kappa
+#' library(psych)
 #' psych::cohen.kappa(data)$confid[1,]
 #' #  lower     estimate  upper
 #' #  0.6137906 0.7593583 0.9049260
