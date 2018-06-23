@@ -190,7 +190,7 @@ StatsFit <- function(latent,
   # Add latent names if present
   if(length(latent.names)) {
     latent.names <- TrimSplit(latent.names)
-  } else if(length(latent)) {
+  } else if(!length(latent)) {
     latent.names <- CapWords(name.stems)
   }
 

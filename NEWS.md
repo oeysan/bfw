@@ -1,3 +1,9 @@
+# bfw 0.1.0:9000
+
+## Minor
+
+* Fixed small bug in 'fit data' (names of latent variables if not defined by user)
+
 # bfw 0.1.0
 
 ## Moderate
@@ -20,7 +26,7 @@
 * Recoded diagnostics, making the code more efficent.
 * Correcting some typos and code aesthetics (e.g., replaced print with cat to display running time of analyses)
 * Reviewed 'TrimSplit' function to include removing empty elements from vector
-* Removed 'methods' from imports
+* Removed 'methods' and 'rJava' from imports
 
 # bfw 0.0.1
 

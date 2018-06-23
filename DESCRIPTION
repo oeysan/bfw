@@ -19,7 +19,6 @@ SystemRequirements: JAGS >=4.3.0 <http://mcmc-jags.sourceforge.net/>,
 Depends: R (>= 3.5.0),
 Imports: coda (>= 0.19-1),
          MASS (>= 7.3-47),
-         rJava (>= 0.9-9),
          runjags (>= 2.0.4-2)         
 Suggests:
          ggplot2 (>= 2.2.1),
