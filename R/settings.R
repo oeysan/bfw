@@ -16,16 +16,21 @@
 #' @param job.group for some hierarchical models with several layers of parameter names (e.g., latent and observed parameters), Default: NULL
 #' @param jags.model specify which module to use
 #' @param jags.seed specify seed to replicate a analysis, Default: NULL
+#' @param jags.method specify method for JAGS (e.g., parallel or simple), Default: NULL
+#' @param jags.chains specify specify number of chains for JAGS, Default: NULL
 #' @param custom.function custom function to use (e.g., defined function, external R file or string with function), Default: NULL
 #' @param custom.model define a custom model to use (e.g., string or text file (.txt), Default: NULL
 #' @param params define parameters to observe, Default: NULL
 #' @param saved.steps define the number of iterations/steps/chains in the MCMC simulations, Default: 10000
 #' @param thinned.steps save every kth step of the original saved.steps, Default: 1
+#' @param adapt.steps the number of adaptive iterations to use at the start of each simulation, Default: NULL
+#' @param burnin.steps the number of burnin iterations, NOT including the adaptive iterations to use for the simulation, Default: NULL
 #' @param credible.region summarize uncertainty by defining a region of most credible values (e.g., 95 percent of the distribution), Default: 0.95
 #' @param ROPE define range for region of practical equivalence (e.g., c(-0.05 , 0.05), Default: NULL
 #' @param run.contrasts logical, indicating whether or not to run contrasts, Default: FALSE
 #' @param use.contrast choose from "between", "within" and "mixed". Between compare groups at different conditions. Within compare a group at different conditions. Mixed compute all comparisons
 #' @param contrasts define contrasts to use for analysis (defaults to all) , Default: NULL
+#' @param run.ppp logical, indicating whether or not to conduct ppp analysis, Default: FALSE
 #' @param initial.list initial values for analysis, Default: list()
 #' @param project.name name of project, Default: 'Project'
 #' @param project.dir define where to save data, Default: 'Results/'
@@ -78,16 +83,21 @@ bfw <- function(y = NULL,
                 job.group = NULL,
                 jags.model,
                 jags.seed = NULL,
+                jags.method = NULL,
+                jags.chains = NULL,
                 custom.function = NULL,
                 custom.model = NULL,
                 params = NULL,
                 saved.steps = 10000,
                 thinned.steps = 1,
+                adapt.steps = NULL,
+                burnin.steps = NULL,
                 credible.region = 0.95,
                 ROPE = NULL,
                 run.contrasts = FALSE,
                 use.contrast = "between",
                 contrasts = NULL,
+                run.ppp = FALSE,
                 initial.list = list(),
                 project.name = "Project",
                 project.dir = "Results/",
@@ -170,7 +180,7 @@ bfw <- function(y = NULL,
   }
 
   # If custom function
-  if (!is.null(custom.function)) {
+  if (length(custom.function)) {
     model.type <- "Custom function"
     if (is.function(custom.function)) {
       stats.model <- custom.function
@@ -186,12 +196,12 @@ bfw <- function(y = NULL,
     stats.model <- eval(parse(text=paste0("Stats",model.type)))
   }
   # If custom jags model
-  if (!is.null(custom.model)) {
+  if (length(custom.model)) {
     model.name <- paste0("Custom JAGS model")
-    if (SingleString(custom.model)) {
-      jags.model <- custom.model
-    } else if (tolower(utils::tail(TrimSplit(custom.model,".", fixed = TRUE),1)) == "txt") {
+    if (tolower(utils::tail(TrimSplit(custom.model,".", fixed = TRUE),1)) == "txt") {
       jags.model <- paste(readLines(custom.model,warn=FALSE), collapse="\n")
+    } else if (SingleString(custom.model)) {
+      jags.model <- custom.model
     }
   } else {
     # Specify model type
@@ -207,7 +217,7 @@ bfw <- function(y = NULL,
     jags.model <- ReadFile( model.name , data.format = "txt" )
 
   }
-
+  
   # Get arguments from model function
   model.arguments  <- TrimSplit(names(formals(stats.model)))
   # Create argument list
@@ -227,6 +237,9 @@ bfw <- function(y = NULL,
 
   # Create save name
   project.name <- FileName( project.name , data.set , model.type , job.title , time.stamp)
+  
+  # Tidy up JAGS model
+  jags.model <- TidyCode(jags.model)
 
   # Create name list
   tmp.list <- list(
@@ -238,16 +251,23 @@ bfw <- function(y = NULL,
     job.group = job.group,
     model.name = model.name,
     model.type = model.type,
+    robust = run.robust,
+    saved.steps = saved.steps,
+    thinned.steps = thinned.steps,
+    adapt.steps = adapt.steps,
+    burnin.steps = burnin.steps,
+    jags.model = jags.model,
     jags.seed = jags.seed,
-    robust = run.robust
+    jags.method <- jags.method,
+    jags.chains <- jags.chains
   )
-
+  
   # Update name list with name list from function
   name.list <- if (exists("name.list")) utils::modifyList(tmp.list,name.list) else tmp.list
 
   # Determine whether to use normal or combined MCMC chains
   merge.MCMC <- if (merge.MCMC) MergeMCMC( model.type , project.dir , data.sets ) else NULL
-
+  
   # Store arguments for MCMC run
   MCMC.list <- list(jags.model = jags.model,
                     params = params,
@@ -259,6 +279,7 @@ bfw <- function(y = NULL,
                     run.contrasts = run.contrasts,
                     use.contrast = use.contrast,
                     contrasts = contrasts,
+                    run.ppp = run.ppp,
                     n.data = n.data,
                     credible.region = credible.region,
                     ROPE = ROPE,

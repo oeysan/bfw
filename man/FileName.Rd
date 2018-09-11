@@ -4,8 +4,8 @@
 \alias{FileName}
 \title{File Name}
 \usage{
-FileName(project = "Project", subset = NULL, type = NULL, name = "Name",
-  unix = TRUE, ...)
+FileName(project = "Project", subset = NULL, type = NULL,
+  name = "Name", unix = TRUE, ...)
 }
 \arguments{
 \item{project}{name of project, Default: 'Project'}

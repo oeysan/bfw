@@ -10,6 +10,8 @@
 #' @param initial.list initial values for analysis, Default: list()
 #' @param model.name name of model used
 #' @param jags.model specify which module to use
+#' @param custom.model define a custom model to use (e.g., string or text file (.txt), Default: NULL
+#' @param run.robust logical, indicating whether or not robust analysis, Default: FALSE
 #' @param ... further arguments passed to or from other methods
 #' @seealso
 #'  \code{\link[stats]{complete.cases}},\code{\link[stats]{sd}},\code{\link[stats]{aggregate}},\code{\link[stats]{median}}
@@ -26,39 +28,39 @@ StatsMetric <- function(y,
                         initial.list,
                         model.name,
                         jags.model,
+                        custom.model,
+                        run.robust,
                         ...
 ) {
-
+  
   # Fetch y and x parameters
   x <- TrimSplit(x)
   y.names <- if (length(y.names)) TrimSplit(y.names) else CapWords(y)
   x.names <- if (length(x.names)) TrimSplit(x.names) else CapWords(x)
-
+  
   # Create table for x.data
   DF <- DF[stats::complete.cases( DF[, c(y,x)] ), ]
-
+  
   # Create X and Y metric count observations, number of parameters and categories in each parameter
   y.data <- DF[, y]
   x.data <- apply(as.matrix(DF[, x]), 2 , function (x) as.numeric(as.factor(x)))
-  n <- length(y.data)
-  q <- length(x.data[1,])
   q.levels  <- apply(x.data, 2, function(x) length(unique(x[!is.na(x)]))) #Number of categories per x
-
+  
   # name.contrasts for creating contrasts
   name.contrasts <- unique(lapply(DF[,x], function (x) as.list(levels(x))))
-
+  
   # Number of x parameters
-  n.x <- length(name.contrasts)
-
+  n.x <- ncol(x.data)
+  
   # Number of observations
   n <- length(y.data)
-
+  
   # Create crosstable for x parameters
   n.data  <- as.data.frame(table(DF[, x]))
-
+  
   # Create job names from contrast names
   single.names <- lapply(name.contrasts, function (x) unlist(x))
-
+  
   # combine names from list 1 and 2
   combined.names <- lapply(1:length(single.names), function (i) {
     if (i<3) {
@@ -68,7 +70,7 @@ StatsMetric <- function(y,
       single.names[[i]]
     }
   })
-
+  
   # Reverse combinations from first naming list
   reversed.names <- lapply(1:length(single.names), function (i) {
     if (i<3) {
@@ -78,34 +80,39 @@ StatsMetric <- function(y,
       single.names[[i]]
     }
   })
-
+  
   # Final job names
   job.names <- list(single.names, combined.names, reversed.names)
-
+  
   # Prior distributions
-  yMean <- mean(y.data)
-  ySD <- stats::sd(y.data)
-  aGammaShRa <- unlist(GammaDist(sd(y.data)/2 , 2*sd(y.data)))
-  cellSDs <- stats::aggregate( y.data , unlist( apply(x.data,2, function(x) list(as.vector(x))), recursive=FALSE) , FUN=sd )
-  medianCellSD <- stats::median( cellSDs$x , na.rm=TRUE )
-  sdCellSD <- stats::sd( cellSDs$x , na.rm=TRUE )
-  sGammaShRa <- unlist(GammaDist( medianCellSD , 2*sdCellSD))
-
+  y.mean <- mean(y.data)
+  y.sd <- stats::sd(y.data)
+  y.gamma.prior <- unlist(GammaDist(sd(y.data)/2 , 2*sd(y.data)))
+  x.row.sd <- stats::aggregate( y.data , unlist( apply(x.data, 2 , function(x) { 
+    list(as.vector(x)) 
+  }), recursive=FALSE) , FUN=sd )
+  median.x.sd <- stats::median( x.row.sd$x , na.rm=TRUE )
+  x.sd <- stats::sd( x.row.sd$x , na.rm=TRUE )
+  x.gamma.prior <- unlist(GammaDist( median.x.sd , 2*x.sd))
+  
   # Create data for Jags
   data.list <- list(
     y = y.data,
     x = x.data,
     n = n,
     q.levels = q.levels,
-    yMean = yMean,
-    ySD = ySD,
-    medianCellSD = medianCellSD,
-    aGammaShRa = aGammaShRa,
-    sGammaShRa = sGammaShRa
+    y.mean = y.mean,
+    y.sd = y.sd,
+    y.gamma.prior = y.gamma.prior
   )
-  # Remove empty elements
-  data.list <- data.list[lapply(data.list,length)>0]
-
+  
+  # If robust add robust parameters
+  if (run.robust) {
+    data.list <- c(data.list,
+                   median.x.sd = list(median.x.sd),
+                   x.gamma.prior = list(x.gamma.prior))
+  }
+  
   # Paramter(s) of interest according to number of variables
   if(length(params)) {
     params <- TrimSplit(params)
@@ -113,24 +120,131 @@ StatsMetric <- function(y,
     params <- c(paste0("m",seq(n.x),collapse=""),
                 paste0("s",seq(n.x),collapse="") )
   }
+  
+  # Create combinations of factors
+  factors <- lapply(seq(n.x), function  (i) {
+    as.matrix(t(combn(seq(n.x), i)))
+  })
+  
+  
+  # Create sigma
+  sigma <- sprintf("1 / (%s[ %s ]) ^ 2" , 
+                   paste0("s",seq(n.x),collapse="") , 
+                   paste(sprintf("x[i,%s]" , seq(n.x)),collapse=",") )
+                   
+  sigma.prec <- paste(apply(tail(factors,1)[[1]], 1, function (x) {
+    
+    get.letters <- letters[(10+length(x))+seq(length(x))]
+    letters <- paste( get.letters , collapse=",")
+    
+    start <- paste(lapply(1:length(x), function (i) {
+      sprintf("for (%s in 1:q.levels[%s]) {\n", get.letters[i] , x[i])
+    }),collapse="")
+    
+    end <- paste(lapply(rev(seq(x)), function (j) { 
+      paste0( "\n" , "}" ) 
+    }),collapse="")
+    
+    if (run.robust) {
 
-  # Find relevant model according to number of x
-  if (n.x>1) {
-    if ( grepl("_robust", model.name) ) {
-      model.name <- gsub("_robust",paste0(n.x, "_robust"),model.name)
+      sigma <- sprintf("%s[%s] <- max(sigma.prec[%s], median.x.sd / 1000)\n" , 
+                       paste0("s",seq(n.x),collapse="") , 
+                       letters , 
+                       letters )
+      sigma.prec <- sprintf("sigma.prec[%s] ~ dgamma( sigma.r , sigma.l )" , 
+                            letters )
+    
     } else {
-      model.name <-  paste0(model.name,n.x)
+    
+      sigma <- sprintf("%s[%s] ~ dgamma( 0.0001 , 0.0001 )" , 
+                       paste0("s",seq(n.x),collapse=""),
+                       letters )
+      sigma.prec <- NULL
+    
     }
-    jags.model <- ReadFile( model.name , data.format = "txt" )
-  }
-
+    
+    paste0(start,sigma,sigma.prec,end)
+    
+  }),collapse="\n\n")
+  
+  # Create factor list
+  factors.additive <- paste(lapply(factors, function (x) {
+    paste(apply(x, 1, function (y) {
+      factor <- paste0("a",y,collapse="")
+      matrix.pos <- paste0(sprintf("x[i,%s]",y),collapse=",")
+      sprintf("%s[%s]",factor,matrix.pos)
+    }),collapse="+\n")
+  }),collapse="+\n")
+  
+  # Create effects
+  effects <- paste(lapply(factors, function (x) {
+    paste(apply(x, 1, function (x) {
+      factor <- paste0("a",x,collapse="")
+      factor.gamma <- sprintf("\n%s.sd ~ dgamma(y.gamma.prior[1], y.gamma.prior[2])", factor)
+      
+      start <- paste(lapply(1:length(x), function (i) {
+        sprintf("for (%s in 1:q.levels[%s]) {\n", letters[10+i] , x[i])
+      }),collapse="")
+      
+      dist <- sprintf("%s[%s] ~ dnorm(0.0, 1 / %s ^ 2)",
+                      factor , 
+                      paste(letters[seq(11,10+length(x))],collapse=",") , 
+                      paste0(factor,".sd")
+      )
+      
+      end <- paste(lapply(1:length(x), function (j) { 
+        paste0( "\n" , "}" ) 
+      }),collapse="")
+      
+      paste (start,dist,end,factor.gamma)
+      
+    }),collapse="\n\n")
+  }),collapse="\n\n")
+  
+  # Create means matrix
+  means <- paste(apply(tail(factors,1)[[1]], 1, function (x) {
+    
+    get.letters <- letters[(10+length(x))+seq(length(x))]
+    
+    start <- paste(lapply(1:length(x), function (i) {
+      sprintf("for (%s in 1:q.levels[%s]) {\n", get.letters[i] , x[i])
+    }),collapse="")
+    
+    end <- paste(lapply(rev(seq(x)), function (j) { 
+      paste0( "\n" , "}" ) 
+    }),collapse="")
+    
+    means <- paste(lapply(factors, function (x) {
+      paste(apply(x, 1, function (y) {
+        factor <- paste0("a",y,collapse="")
+        matrix.pos <- paste0(get.letters[y],collapse=",")
+        sprintf("%s[%s]",factor,matrix.pos)
+      }),collapse=paste("+\n"))
+    }),collapse=paste("+\n"))
+    means <- sprintf("%s[%s] <- a0+\n%s",
+                     paste0("m",x,collapse=""),
+                     paste(get.letters,collapse=","),
+                     means)
+    
+    paste(start,means,end)
+    
+  }),collapse="\n\n")
+  
+  # Replace placeholders in jags model with created values
+  model.name <-  paste0(model.name,n.x)
+  jags.model <- gsub("\\#\\bSIGMA\\b", sigma, jags.model)
+  jags.model <- gsub("\\#SIGMAPREC", sigma.prec, jags.model)
+  jags.model <- gsub("\\#FACTORS", factors.additive, jags.model)
+  jags.model <- gsub("\\#EFFECTS", effects, jags.model)
+  jags.model <- gsub("\\#MEANS", means, jags.model)
+    
   # Create name list
   name.list <- list(
     job.group = job.group,
     job.names = job.names,
     model.name = model.name
   )
-
+  
   # Return data list
   return (list(
     data.list = data.list,
@@ -139,5 +253,5 @@ StatsMetric <- function(y,
     n.data = n.data,
     jags.model = jags.model
   ))
-
+  
 }

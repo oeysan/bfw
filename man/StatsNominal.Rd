@@ -5,7 +5,7 @@
 \title{Predict Nominal}
 \usage{
 StatsNominal(x, x.names, DF, params, job.group, initial.list, model.name,
-  jags.model, ...)
+  jags.model, custom.model, ...)
 }
 \arguments{
 \item{x}{categorical variable(s), Default: NULL}
@@ -23,6 +23,8 @@ StatsNominal(x, x.names, DF, params, job.group, initial.list, model.name,
 \item{model.name}{name of model used}
 
 \item{jags.model}{specify which module to use}
+
+\item{custom.model}{define a custom model to use (e.g., string or text file (.txt), Default: NULL}
 
 \item{...}{further arguments passed to or from other methods}
 }

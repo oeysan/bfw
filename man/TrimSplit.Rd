@@ -4,8 +4,8 @@
 \alias{TrimSplit}
 \title{Trim Split}
 \usage{
-TrimSplit(x, sep = ",", fixed = FALSE, perl = FALSE, useBytes = FALSE,
-  rm.empty = TRUE)
+TrimSplit(x, sep = ",", fixed = FALSE, perl = FALSE,
+  useBytes = FALSE, rm.empty = TRUE)
 }
 \arguments{
 \item{x}{string}

@@ -1,0 +1,45 @@
+model { 
+  for(i in 1:n) {
+    # Structural model
+    for(j in 1:lat) {
+      eta[i , j] ~ dt(mu.eta[i , j] , psi.prec[j], nu[j])
+    }   
+  }
+  
+  for(i in 1:n) {
+    # Regression model
+    # Note. 'REGRESSIONMODEL' is replaced by the R script
+    
+    #REGRESSIONMODEL        
+  }
+    
+  # Priors on beta coefficients 
+  for (j in 1:length(b.priors[,1])) {
+    zbeta[ b.priors[j,1] , b.priors[j,2] ] <- beta[ b.priors[j,1] , b.priors[j,2] ] *
+                                              ( eta.sd[ b.priors[j,2] ] / eta.sd[ b.priors[j,1] ] )
+  } 
+  
+  # Standard deviation for eta
+  for (k in 1:lat) {
+    eta.sd[k] <- max(sd(eta[,k]),0.0001)
+  }
+  
+  #priors on eta precisions, alpha and fixed factor loadings
+  for(j in 1:lat) {
+    psi[j] <- 1 / psi.prec[j]
+    psi.prec[j] ~ dgamma(1 , 0.5)
+    alpha[j] ~ dnorm(0,0.0001)
+    nu[j] <- nu.prec[j] + 1
+    nu.prec[j] ~ dexp(1 / 29)
+  }
+  
+  # Priors on beta coefficients 
+  for (k in 1:length(b.priors[,1])) {
+    beta[ b.priors[k,1] , b.priors[k,2] ] ~ dnorm(0 , 0.001)
+  } 
+  
+  # Additional computations
+  # Note. 'ADDITIONAL' is replaced by the R script
+  
+  #ADDITIONAL    
+}

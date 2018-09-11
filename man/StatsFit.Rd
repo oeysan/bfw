@@ -5,8 +5,8 @@
 \title{Fit Data}
 \usage{
 StatsFit(latent, latent.names, observed, observed.names, additional,
-  additional.names, DF, params, job.group, initial.list, model.name, jags.model,
-  custom.model, run.robust, ...)
+  additional.names, DF, params, job.group, initial.list, model.name,
+  jags.model, custom.model, run.ppp, run.robust, ...)
 }
 \arguments{
 \item{latent}{laten variables, Default: NULL}
@@ -34,6 +34,8 @@ StatsFit(latent, latent.names, observed, observed.names, additional,
 \item{jags.model}{specify which module to use}
 
 \item{custom.model}{define a custom model to use (e.g., string or text file (.txt), Default: NULL}
+
+\item{run.ppp}{logical, indicating whether or not to conduct ppp analysis, Default: FALSE}
 
 \item{run.robust}{logical, indicating whether or not robust analysis, Default: FALSE}
 

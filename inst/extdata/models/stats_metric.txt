@@ -1,0 +1,16 @@
+model {
+  for (i in 1:n) {
+    y[i] ~ dnorm(mu[i], #SIGMA)
+    mu[i] <- a0 + #FACTORS
+  }
+  
+  # Priors on sigma         
+  #SIGMAPREC
+  
+  # Baseline
+  a0 ~ dnorm(y.mean, 1 / (y.sd * 5) ^ 2)
+  
+  #EFFECTS
+  
+  #MEANS
+}

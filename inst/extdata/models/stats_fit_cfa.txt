@@ -1,0 +1,43 @@
+model {
+  for(i in 1:n) {
+    # Measurement model
+    for(j in 1:q) {
+      y[i,j] ~ dnorm(mu[i,j], 1 / error[j])
+    }
+    # Structural model
+    eta[i,1:lat] ~ dmnorm(mu.eta[i,1:lat], psi[1:lat,1:lat])
+  }
+  
+  for(i in 1:n) {
+    # Mu definition for measurement model
+    for (j in 1:q) {
+      mu[i , j] <- mu.alpha[j] + lam[j] * eta[i , factor.seq[j] ]
+    }
+    
+    # Mu definition for structural model
+    for (k in 1:q) {
+      mu.eta[i , k] <- 0
+    }    
+  }
+  
+  # Priors on errors and mu precision
+  for(j in 1:q) {
+    error[j] <- 1 / error.prec[j]
+    error.prec[j] ~ dgamma(1 , 0.5)
+    mu.alpha[j] ~ dnorm(0 , 0.0001)
+  }
+  
+  # Priors on eta precisions, alpha and fixed factor loadings
+  for(k in 1:lat) {
+    lam[ cl[ k , 1] ] <- 1
+  }
+  
+  # Priors on free factor loadings
+  for (l in 1:length(fl)) {
+    lam[ fl[l] ] ~ dnorm(0 , 0.001)
+  }
+  
+  # Priors Wishart Distribution
+  psi[1:lat,1:lat] ~ dwish(psi.prec,lat)
+  cov[1:lat,1:lat] <- inverse(psi[1:lat,1:lat])
+}

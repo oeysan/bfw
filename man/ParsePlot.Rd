@@ -4,12 +4,12 @@
 \alias{ParsePlot}
 \title{Parse Plot}
 \usage{
-ParsePlot(plot.data, project.dir = "Results/", project.name = FileName(name
-  = "Plot"), graphic.type = "pptx", plot.size = "15,10", scaling = 100,
-  plot.aspect = NULL, save.data = FALSE, vector.graphic = TRUE,
-  point.size = 15, font.type = "serif", one.file = TRUE, ppi = 300,
-  units = "in", layout = "pw", layout.inverse = FALSE,
-  return.files = FALSE, ...)
+ParsePlot(plot.data, project.dir = "Results/",
+  project.name = FileName(name = "Plot"), graphic.type = "pptx",
+  plot.size = "15,10", scaling = 100, plot.aspect = NULL,
+  save.data = FALSE, vector.graphic = TRUE, point.size = 15,
+  font.type = "serif", one.file = TRUE, ppi = 300, units = "in",
+  layout = "pw", layout.inverse = FALSE, return.files = FALSE, ...)
 }
 \arguments{
 \item{plot.data}{a list of plots}
@@ -67,23 +67,6 @@ plot.data <- lapply(1:3, function (i) {
 
 # Print plots
 ParsePlot(plot.data)
-# Plots are displayed in three separate windows
-# Create three plots
-plot.data <- lapply(1:3, function (i) {
-  # Open new device
-  grDevices::dev.new()
-  # Print plot
-  plot(1:i)
-  # Record plot
-  p <- grDevices::recordPlot()
-  # Turn off graphics device drive
-  grDevices::dev.off()
-  return (p)
-} )
-
-# Print plots
-ParsePlot(plot.data)
-# Plots are displayed in three separate windows
 \donttest{
 # Save plots as png with a4 layout and return file names
 project.dir <- tempdir()
@@ -99,14 +82,13 @@ ParsePlot(plot.data,
 # [1] "\\\\Temp/Project-Testing-Plot01-1528833217.png"
 # [2] "\\\\Temp/Project-Testing-Plot02-1528833217.png"
 # [3] "\\\\Temp/Project-Testing-Plot03-1528833217.png"
-}
-\donttest{
 # Save plots as single PowerPoint (default) and return file names
 project.dir <- tempdir()
 project.name <- FileName(name="Testing")
 ParsePlot(plot.data,
           project.dir = project.dir,
           project.name = project.name,
+          vector.graphic = FALSE,
           graphic.type = "pptx",
           layout = "pw",
           save.data = TRUE,
@@ -122,4 +104,6 @@ ParsePlot(plot.data,
 \code{\link[grDevices]{graphics.off}},
 \code{\link[grDevices]{dev.list}},
 \code{\link[grDevices]{dev.off}}
+\code{\link[graphics]{par}}
+\code{\link[graphics]{plot}}
 }

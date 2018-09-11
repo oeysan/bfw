@@ -4,9 +4,9 @@
 \alias{RunMCMC}
 \title{Run MCMC}
 \usage{
-RunMCMC(jags.model, params, name.list, data.list, initial.list, saved.steps,
-  thinned.steps, run.contrasts, use.contrast, contrasts, n.data,
-  credible.region, save.data = FALSE, ROPE, merge.MCMC, run.diag, sep,
+RunMCMC(jags.model, params, name.list, data.list, initial.list,
+  run.contrasts, use.contrast, contrasts, run.ppp, n.data, credible.region,
+  save.data = FALSE, ROPE, merge.MCMC, run.diag, sep,
   monochrome = TRUE, plot.colors = c("#495054", "#e3e8ea"),
   graphic.type = "png", plot.size = "15,10", scaling = 100,
   plot.aspect = NULL, vector.graphic = TRUE, point.size = 15,
@@ -24,15 +24,13 @@ RunMCMC(jags.model, params, name.list, data.list, initial.list, saved.steps,
 
 \item{initial.list}{initial values for analysis, Default: list()}
 
-\item{saved.steps}{define the number of iterations/steps/chains in the MCMC simulations, Default: 10000}
-
-\item{thinned.steps}{save every kth step of the original saved.steps, Default: 1}
-
 \item{run.contrasts}{logical, indicating whether or not to run contrasts, Default: FALSE}
 
 \item{use.contrast}{choose from "between", "within" and "mixed". Between compare groups at different conditions. Within compare a group at different conditions. Mixed compute all comparisons.}
 
 \item{contrasts}{define contrasts to use for analysis (defaults to all) , Default: NULL}
+
+\item{run.ppp}{logical, indicating whether or not to conduct ppp analysis, Default: FALSE}
 
 \item{n.data}{sample size for each parameter}
 
@@ -89,7 +87,6 @@ Conduct MCMC simulations using JAGS
  \code{\link[parallel]{detectCores}}
  \code{\link[coda]{as.mcmc.list}},\code{\link[coda]{varnames}}
  \code{\link[plyr]{rbind.fill}}
- \code{\link[robust]{covRob}}
  \code{\link[stats]{cor}},\code{\link[stats]{cov}},\code{\link[stats]{sd}}
  \code{\link[MASS]{mvrnorm}}
  \code{\link[utils]{write.table}}

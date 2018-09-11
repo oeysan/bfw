@@ -5,7 +5,7 @@
 \title{Predict Metric}
 \usage{
 StatsMetric(y, y.names, x, x.names, DF, params, job.group, initial.list,
-  model.name, jags.model, ...)
+  model.name, jags.model, custom.model, run.robust, ...)
 }
 \arguments{
 \item{y}{criterion variable(s), Default: NULL}
@@ -27,6 +27,10 @@ StatsMetric(y, y.names, x, x.names, DF, params, job.group, initial.list,
 \item{model.name}{name of model used}
 
 \item{jags.model}{specify which module to use}
+
+\item{custom.model}{define a custom model to use (e.g., string or text file (.txt), Default: NULL}
+
+\item{run.robust}{logical, indicating whether or not robust analysis, Default: FALSE}
 
 \item{...}{further arguments passed to or from other methods}
 }

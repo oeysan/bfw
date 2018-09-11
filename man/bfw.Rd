@@ -4,23 +4,26 @@
 \alias{bfw}
 \title{Settings}
 \usage{
-bfw(y = NULL, y.names = NULL, x = NULL, x.names = NULL, latent = NULL,
-  latent.names = NULL, observed = NULL, observed.names = NULL,
-  additional = NULL, additional.names = NULL, x.steps = NULL,
-  x.blocks = NULL, job.title = NULL, job.group = NULL, jags.model,
-  jags.seed = NULL, custom.function = NULL, custom.model = NULL,
+bfw(y = NULL, y.names = NULL, x = NULL, x.names = NULL,
+  latent = NULL, latent.names = NULL, observed = NULL,
+  observed.names = NULL, additional = NULL, additional.names = NULL,
+  x.steps = NULL, x.blocks = NULL, job.title = NULL,
+  job.group = NULL, jags.model, jags.seed = NULL, jags.method = NULL,
+  jags.chains = NULL, custom.function = NULL, custom.model = NULL,
   params = NULL, saved.steps = 10000, thinned.steps = 1,
-  credible.region = 0.95, ROPE = NULL, run.contrasts = FALSE,
-  use.contrast = "between", contrasts = NULL, initial.list = list(),
-  project.name = "Project", project.dir = "Results/", project.data = NULL,
-  time.stamp = TRUE, save.data = FALSE, data.set = "AllData",
-  data.format = "csv", raw.data = FALSE, run.robust = FALSE,
-  merge.MCMC = FALSE, run.diag = FALSE, sep = ",", monochrome = TRUE,
-  plot.colors = c("#495054", "#e3e8ea"), graphic.type = "pptx",
-  plot.size = "15,10", scaling = 100, plot.aspect = NULL,
-  vector.graphic = TRUE, point.size = 15, font.type = "serif",
-  one.file = TRUE, ppi = 300, units = "in", layout = "pw",
-  layout.inverse = FALSE, silent = FALSE, ...)
+  adapt.steps = NULL, burnin.steps = NULL, credible.region = 0.95,
+  ROPE = NULL, run.contrasts = FALSE, use.contrast = "between",
+  contrasts = NULL, run.ppp = FALSE, initial.list = list(),
+  project.name = "Project", project.dir = "Results/",
+  project.data = NULL, time.stamp = TRUE, save.data = FALSE,
+  data.set = "AllData", data.format = "csv", raw.data = FALSE,
+  run.robust = FALSE, merge.MCMC = FALSE, run.diag = FALSE,
+  sep = ",", monochrome = TRUE, plot.colors = c("#495054",
+  "#e3e8ea"), graphic.type = "pptx", plot.size = "15,10",
+  scaling = 100, plot.aspect = NULL, vector.graphic = TRUE,
+  point.size = 15, font.type = "serif", one.file = TRUE, ppi = 300,
+  units = "in", layout = "pw", layout.inverse = FALSE,
+  silent = FALSE, ...)
 }
 \arguments{
 \item{y}{criterion variable(s), Default: NULL}
@@ -55,6 +58,10 @@ bfw(y = NULL, y.names = NULL, x = NULL, x.names = NULL, latent = NULL,
 
 \item{jags.seed}{specify seed to replicate a analysis, Default: NULL}
 
+\item{jags.method}{specify method for JAGS (e.g., parallel or simple), Default: NULL}
+
+\item{jags.chains}{specify specify number of chains for JAGS, Default: NULL}
+
 \item{custom.function}{custom function to use (e.g., defined function, external R file or string with function), Default: NULL}
 
 \item{custom.model}{define a custom model to use (e.g., string or text file (.txt), Default: NULL}
@@ -65,6 +72,10 @@ bfw(y = NULL, y.names = NULL, x = NULL, x.names = NULL, latent = NULL,
 
 \item{thinned.steps}{save every kth step of the original saved.steps, Default: 1}
 
+\item{adapt.steps}{the number of adaptive iterations to use at the start of each simulation, Default: NULL}
+
+\item{burnin.steps}{the number of burnin iterations, NOT including the adaptive iterations to use for the simulation, Default: NULL}
+
 \item{credible.region}{summarize uncertainty by defining a region of most credible values (e.g., 95 percent of the distribution), Default: 0.95}
 
 \item{ROPE}{define range for region of practical equivalence (e.g., c(-0.05 , 0.05), Default: NULL}
@@ -74,6 +85,8 @@ bfw(y = NULL, y.names = NULL, x = NULL, x.names = NULL, latent = NULL,
 \item{use.contrast}{choose from "between", "within" and "mixed". Between compare groups at different conditions. Within compare a group at different conditions. Mixed compute all comparisons}
 
 \item{contrasts}{define contrasts to use for analysis (defaults to all) , Default: NULL}
+
+\item{run.ppp}{logical, indicating whether or not to conduct ppp analysis, Default: FALSE}
 
 \item{initial.list}{initial values for analysis, Default: list()}
 

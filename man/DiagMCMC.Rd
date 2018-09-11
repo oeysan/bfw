@@ -4,13 +4,9 @@
 \alias{DiagMCMC}
 \title{Diagnose MCMC}
 \usage{
-DiagMCMC(data.MCMC, par.name, job.names, job.group, project.name, project.dir,
-  save.data = FALSE, credible.region = 0.95, monochrome = TRUE,
-  plot.colors = c("#495054", "#e3e8ea"), graphic.type = "pptx",
-  plot.size = "15,10", scaling = 100, plot.aspect = NULL,
-  vector.graphic = FALSE, point.size = 15, font.type = "serif",
-  one.file = TRUE, ppi = 300, units = "in", layout = "pw",
-  layout.inverse = FALSE, ...)
+DiagMCMC(data.MCMC, par.name, job.names, job.group,
+  credible.region = 0.95, monochrome = TRUE,
+  plot.colors = c("#495054", "#e3e8ea"))
 }
 \arguments{
 \item{data.MCMC}{MCMC chains to diagnose}
@@ -21,43 +17,11 @@ DiagMCMC(data.MCMC, par.name, job.names, job.group, project.name, project.dir,
 
 \item{job.group}{for some hierarchical models with several layers of parameter names (e.g., latent and observed parameters), Default: NULL}
 
-\item{project.name}{name of project, Default: 'Project'}
-
-\item{project.dir}{define where to save data, Default: 'Results/'}
-
-\item{save.data}{logical, indicating whether or not to save data, Default: FALSE}
-
 \item{credible.region}{summarize uncertainty by defining a region of most credible values (e.g., 95 percent of the distribution), Default: 0.95}
 
 \item{monochrome}{logical, indicating whether or not to use monochrome colors, else use \link[bfw]{DistinctColors}, Default: TRUE}
 
 \item{plot.colors}{range of color to use, Default: c("#495054", "#e3e8ea")}
-
-\item{graphic.type}{type of graphics to use (e.g., pdf, png, ps), Default: 'pptx'}
-
-\item{plot.size}{size of plot, Default: '15,10'}
-
-\item{scaling}{scale size of plot, Default: 100}
-
-\item{plot.aspect}{aspect of plot, Default: NULL}
-
-\item{vector.graphic}{logical, indicating whether or not visualizations should be vector or raster graphics, Default: TRUE}
-
-\item{point.size}{point size used for visualizations, Default: 15}
-
-\item{font.type}{font type used for visualizations, Default: 'serif'}
-
-\item{one.file}{logical, indicating whether or not visualizations should be placed in one or several files, Default: TRUE}
-
-\item{ppi}{define pixel per inch used for visualizations, Default: 300}
-
-\item{units}{define unit of length used for visualizations, Default: 'in'}
-
-\item{layout}{define a layout size for visualizations, Default: 'pw'}
-
-\item{layout.inverse}{logical, indicating whether or not to inverse layout (e.g., landscape) , Default: FALSE}
-
-\item{...}{further arguments passed to or from other methods}
 }
 \value{
 list of diagnostic plots

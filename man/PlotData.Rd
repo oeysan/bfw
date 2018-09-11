@@ -7,11 +7,12 @@
 PlotData(data.MCMC = NULL, data.type = "Mean", job.title = NULL,
   run.repeated = FALSE, run.split = FALSE, y.split = FALSE,
   ribbon.plot = TRUE, monochrome = TRUE, plot.colors = c("#495054",
-  "#e3e8ea"), y.text = "Score", x.text = NULL, project.dir = "Results/",
-  save.data = FALSE, graphic.type = "pptx", plot.size = "15,10",
-  scaling = 100, plot.aspect = NULL, vector.graphic = TRUE,
-  point.size = 15, font.type = "serif", one.file = TRUE, ppi = 300,
-  units = "in", layout = "pw", layout.inverse = FALSE, ...)
+  "#e3e8ea"), y.text = "Score", x.text = NULL,
+  project.dir = "Results/", save.data = FALSE, graphic.type = "pptx",
+  plot.size = "15,10", scaling = 100, plot.aspect = NULL,
+  vector.graphic = TRUE, point.size = 15, font.type = "serif",
+  one.file = TRUE, ppi = 300, units = "in", layout = "pw",
+  layout.inverse = FALSE, ...)
 }
 \arguments{
 \item{data.MCMC}{data to plot data from, Default: NULL}

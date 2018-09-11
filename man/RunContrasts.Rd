@@ -4,7 +4,8 @@
 \alias{RunContrasts}
 \title{Run Contrasts}
 \usage{
-RunContrasts(contrast.type, q.levels, use.contrast, contrasts, data, job.names)
+RunContrasts(contrast.type, q.levels, use.contrast, contrasts, data,
+  job.names)
 }
 \arguments{
 \item{contrast.type}{type of contrast: "m" indicate means and standard deviations, "o" indicate frequency}

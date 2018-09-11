@@ -1,0 +1,22 @@
+model {
+  for (i in 1:n) {
+    y[i] ~ dt(mu[i], #SIGMA, nu)
+    mu[i] <- a0 + #FACTORS
+  }
+    
+  #SIGMAPREC  
+  
+  # Baseline
+  a0 ~ dnorm(y.mean, 1 / (y.sd * 5) ^ 2)
+  
+  #EFFECTS
+  
+  #MEANS
+  
+  sigma.r <- 1 + sigma.mode * sigma.l
+  sigma.l <- ( sigma.mode + sqrt(sigma.mode ^ 2 + 4 * sigma.sd ^ 2) ) / (2 * sigma.sd ^ 2)
+  sigma.mode ~ dgamma(x.gamma.prior[1], x.gamma.prior[2])
+  sigma.sd ~ dgamma(x.gamma.prior[1], x.gamma.prior[2])
+  nu <- nu.prec + 1
+  nu.prec  ~ dexp(1 / 29)
+}

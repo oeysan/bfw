@@ -1,0 +1,60 @@
+# R for travis: see documentation at https://docs.travis-ci.com/user/languages/r
+
+language: r
+sudo: required
+cache: packages
+jdk: 
+  - oraclejdk8
+  - oraclejdk9
+
+before_install:
+  - sudo add-apt-repository ppa:marutter/rrutter -y
+  - sudo apt-get update
+  - sudo apt-get install r-cran-runjags
+
+after_success: "coveralls"
+
+r:
+  - release
+  - devel
+
+env:
+  global:
+    - CRAN: http://cran.rstudio.com
+    - WARNINGS_ARE_ERRORS=1
+    - R_BUILD_ARGS=--no-manual 
+    - R_CHECK_ARGS=--no-vignettes
+    - R_CHECK_FORCE_SUGGESTS_=false
+    - R_CHECK_ARGS=--no-manual --as-cran 
+
+r_github_packages:
+  - Rexamine/stringi
+
+apt_packages:
+  - libv8-dev
+
+r_packages:
+  - coda
+  - MASS
+  - runjags
+  - ggplot2
+  - knitr
+  - lavaan
+  - officer
+  - plyr
+  - png
+  - psych
+  - rmarkdown
+  - rvg
+  - scales
+
+notifications:
+  email:
+    on_success: change
+    on_failure: change
+
+r_github_packages:
+  - r-lib/covr
+
+after_success:
+  - Rscript -e 'covr::coveralls()'

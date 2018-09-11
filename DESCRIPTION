@@ -1,6 +1,6 @@
 Package: bfw
-Version: 0.1.0.9000
-Date: 2018-06-20
+Version: 0.2.0
+Date: 2018-09-11
 Title: Bayesian Framework for Computational Modeling
 Authors@R: person( "Øystein Olav","Skaar", email="bayesianfw@gmail.com", role=c("aut","cre"))
 Maintainer: Øystein Olav Skaar <bayesianfw@gmail.com>
@@ -26,16 +26,15 @@ Suggests:
          lavaan (>= 0.6-1),
          officer (>= 0.3.1),
          plyr (>= 1.8.4),
+         png (>= 0.1-7),
          psych (>= 1.7.8),
          rmarkdown (>= 1.10),
-         robust (>= 0.4-18),
          rvg (>= 0.1.9),
-         scales (>= 0.5.0),
-         truncnorm (>= 1.0-8)
+         scales (>= 0.5.0)
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.0
 VignetteBuilder: knitr
 NeedsCompilation: no
 Packaged: 2018-06-13 09:55:29 UTC; Melkor

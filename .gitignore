@@ -1,0 +1,13 @@
+Meta
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+*.Rmd
+README.html
+cran-comments.md
+/doc/*.
+/doc/*.html
+/doc/*.Rmd
+/doc/*.R
+.Rbuildignore

@@ -4,18 +4,25 @@
 \alias{StatsCovariate}
 \title{Covariate}
 \usage{
-StatsCovariate(y, y.names, DF, params, initial.list, ...)
+StatsCovariate(y, y.names, x, x.names, DF, params, initial.list,
+  jags.model, ...)
 }
 \arguments{
 \item{y}{criterion variable(s), Default: NULL}
 
 \item{y.names}{optional names for criterion variable(s), Default: NULL}
 
+\item{x}{predictor variable(s), Default: NULL}
+
+\item{x.names}{optional names for predictor variable(s), Default: NULL}
+
 \item{DF}{data to analyze}
 
 \item{params}{define parameters to observe, Default: NULL}
 
 \item{initial.list}{initial values for analysis, Default: list()}
+
+\item{jags.model}{specify which module to use}
 
 \item{...}{further arguments passed to or from other methods}
 }

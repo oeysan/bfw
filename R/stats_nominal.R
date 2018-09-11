@@ -8,6 +8,7 @@
 #' @param initial.list initial values for analysis, Default: list()
 #' @param model.name name of model used
 #' @param jags.model specify which module to use
+#' @param custom.model define a custom model to use (e.g., string or text file (.txt), Default: NULL
 #' @param ... further arguments passed to or from other methods
 #' @examples
 #' # Use cats data
@@ -53,33 +54,34 @@
 #' @export
 
 StatsNominal <- function(x,
-                     x.names,
-                     DF,
-                     params,
-                     job.group,
-                     initial.list,
-                     model.name,
-                     jags.model,
-                     ...
+                         x.names,
+                         DF,
+                         params,
+                         job.group,
+                         initial.list,
+                         model.name,
+                         jags.model,
+                         custom.model,
+                         ...
 ) {
-
+  
   # Fetch x parameters
   x <- TrimSplit(x)
   x.names <- if (length(x.names)) TrimSplit(x.names) else CapWords(x)
-
+  
   # Create crosstable for x parameters
   x.data  <- as.data.frame(table(DF[, x]))
   names(x.data) <- c(x.names, "Freq") #add names
-
+  
   # Set at n data
   n.data <- x.data
-
+  
   # name.contrasts for creating contrasts
   name.contrasts <- unique(lapply(DF[,x], function (x) as.list(levels(x))))
-
+  
   # Create job names from contrast names
   single.names <- lapply(name.contrasts, function (x) unlist(x))
-
+  
   # combine names from list 1 and 2
   combined.names <- lapply(1:length(single.names), function (i) {
     if (i<3) {
@@ -89,7 +91,7 @@ StatsNominal <- function(x,
       single.names[[i]]
     }
   })
-
+  
   # Reverse combinations from first naming list
   reversed.names <- lapply(1:length(single.names), function (i) {
     if (i<3) {
@@ -99,42 +101,37 @@ StatsNominal <- function(x,
       single.names[[i]]
     }
   })
-
+  
   # Final job names
   job.names <- list(single.names, combined.names, reversed.names)
-
+  
   # Number of X parameters
   n.x <- length(name.contrasts)
-
+  
   # Number of observations
   n <- sum(x.data[,ncol(x.data)])
-
+  
   y.data <- x.data[, ncol(x.data)] # Frequencies
-  Ncell <- length(y.data) # Number of cells
+  n.cell <- length(y.data) # Number of cells
   q.levels  <- apply(as.matrix(x.data[,1:n.x]), 2, function(x) length(unique(x[!is.na(x)]))) #Number of categories per x
   x.data <- as.matrix(expand.grid(lapply(q.levels, function (x) seq(x)))) # x as numeric
-
-  Ncell <- length(y.data) # Number of cells
-  q.levels  <- apply(x.data, 2, function(x) length(unique(x[!is.na(x)]))) #Number of categories per x
   xC    <- lapply(1:n.x, function (i) t(combn(unique(x.data[,i]),2))) #combinations of categorices within each x
-
+  
   # Prior distributions
-  yLogMean = log(sum(y.data) / Ncell )
-  yLogSD = log( sd(c(rep(0, Ncell - 1), sum(y.data))))
-  aGammaShRa = unlist(GammaDist(mode = yLogSD, sd = 2 * yLogSD))
-
+  log.mean = log(sum(y.data) / n.cell )
+  log.sd = log( sd(c(rep(0, n.cell - 1), sum(y.data))))
+  gamma.prior = unlist(GammaDist(mode = log.sd, sd = 2 * log.sd))
+  
   # Create data for Jags
   data.list <- list(
     y = y.data,
     x = x.data,
-    Ncell = Ncell,
+    n.cell = n.cell,
     q.levels = q.levels,
-    yLogMean = yLogMean,
-    yLogSD = yLogSD,
-    aGammaShRa = aGammaShRa
+    log.mean = log.mean,
+    log.sd = log.sd,
+    gamma.prior = gamma.prior
   )
-  # Remove empty elements
-  data.list <- data.list[lapply(data.list,length)>0]
 
   # Paramter(s) of interest according to number of variables
   if(length(params)) {
@@ -145,18 +142,195 @@ StatsNominal <- function(x,
                 paste0(paste0("e",seq(n.x),collapse=""),"p"),
                 paste0("o",seq(n.x),collapse=""),
                 paste0(paste0("o",seq(n.x),collapse=""),"p")
-                )
+    )
   }
-
-  if (n.x>1) {
-    # Find relevant model according to number of x
-    if ( grepl("_robust", model.name) ) {
-      model.name <- gsub("_robust",paste0(n.x, "_robust"),model.name)
+  
+  # Create combinations of factors
+  factors <- lapply(seq(n.x), function  (i) {
+    as.matrix(t(combn(seq(n.x), i)))
+  })
+  
+  # Create factor list
+  factors.additive <- paste(lapply(factors, function (x) {
+    paste(apply(x, 1, function (y) {
+      factor <- paste0("a",y,collapse="")
+      matrix.pos <- paste0(sprintf("x[i,%s]",y),collapse=",")
+      sprintf("%s[%s]",factor,matrix.pos)
+    }),collapse="+\n")
+  }),collapse="+\n")
+  
+  # Create effects
+  effects <- paste(lapply(factors, function (x) {
+    paste(apply(x, 1, function (x) {
+      factor <- paste0("a",x,collapse="")
+      factor.gamma <- sprintf("\n%s.sd ~ dgamma(gamma.prior[1], gamma.prior[2])", factor)
+      
+      start <- paste(lapply(1:length(x), function (i) {
+        sprintf("for (%s in 1:q.levels[%s]) {\n", letters[10+i] , x[i])
+      }),collapse="")
+      
+      dist <- sprintf("%s[%s] ~ dnorm(0.0, 1 / %s ^ 2)",
+                      factor , 
+                      paste(letters[seq(11,10+length(x))],collapse=",") , 
+                      paste0(factor,".sd")
+      )
+      
+      end <- paste(lapply(1:length(x), function (j) { 
+        paste0( "\n" , "}" ) 
+      }),collapse="")
+      
+      paste (start,dist,end,factor.gamma)
+      
+    }),collapse="\n\n")
+  }),collapse="\n\n")
+  
+  # Create means matrix
+  means <- paste(apply(tail(factors,1)[[1]], 1, function (x) {
+    
+    get.letters <- letters[(10+length(x))+seq(length(x))]
+    
+    start <- paste(lapply(1:length(x), function (i) {
+      sprintf("for (%s in 1:q.levels[%s]) {\n", get.letters[i] , x[i])
+    }),collapse="")
+    
+    end <- paste(lapply(rev(seq(x)), function (j) { 
+      paste0( "\n" , "}" ) 
+    }),collapse="")
+    
+    means <- paste(lapply(factors, function (x) {
+      paste(apply(x, 1, function (y) {
+        factor <- paste0("a",y,collapse="")
+        matrix.pos <- paste0(get.letters[y],collapse=",")
+        sprintf("%s[%s]",factor,matrix.pos)
+      }),collapse=paste("+\n"))
+    }),collapse=paste("+\n"))
+    means <- sprintf("%s[%s] <- a0+\n%s",
+                     paste0("m",x,collapse=""),
+                     paste(get.letters,collapse=","),
+                     means)
+    
+    paste(start,means,end)
+    
+  }),collapse="\n\n")
+  
+  # Create predicted matrix
+  predicted <- paste(apply(tail(factors,1)[[1]], 1, function (x) {
+    
+    get.letters <- letters[(10+length(x))+seq(length(x))]
+    letters <- paste(get.letters,collapse=",")
+    parameter <- paste0("o",x,collapse="")
+    
+    start <- paste(lapply(1:length(x), function (i) {
+      sprintf("for (%s in 1:q.levels[%s]) {\n", get.letters[i] , x[i])
+    }),collapse="")
+    
+    end <- paste(lapply(rev(seq(x)), function (j) { 
+      paste0( "\n" , "}" ) 
+    }),collapse="")
+    
+    predicted <- sprintf("%s[%s] <- exp(%s[%s])", 
+                         parameter,
+                         letters,
+                         paste0("m",x,collapse=""),
+                         letters
+    )
+    
+    predicted.prob <- sprintf("%sp[%s] <- ( %s[%s] / sum ( %s[%s] ) ) * 100", 
+                              parameter,
+                              letters,
+                              parameter,
+                              letters,
+                              parameter,
+                              paste(sprintf("1:q.levels[%s]", seq(length(x))),collapse=",\n")
+                              
+    )
+    
+    paste0(start , predicted , "\n" , predicted.prob , end)
+    
+  }),collapse="\n\n")
+  
+  # Create expected matrix
+  expected <- paste(apply(tail(factors,1)[[1]], 1, function (x) {
+    
+    get.letters <- letters[(10+length(x))+seq(length(x))]
+    letters <- paste(get.letters,collapse=",")
+    parameter <- paste0("o",x,collapse="")
+    
+    start <- paste(lapply(1:length(x), function (i) {
+      sprintf("for (%s in 1:q.levels[%s]) {\n", get.letters[i] , x[i])
+    }),collapse="")
+    
+    end <- paste(lapply(rev(seq(x)), function (j) { 
+      paste0( "\n" , "}" ) 
+    }),collapse="")
+    
+    
+    if (length(get.letters)>1) { 
+    
+        if (length(get.letters)>2) { 
+          conditional <- paste(" ," , paste(get.letters[3:length(get.letters)],collapse=" , "))
+        } else { 
+          conditional <- "" 
+        }
+        
+        part.a <- sprintf("%s , 1:q.levels[%s]%s" , 
+                          get.letters[1] ,
+                          get.letters[2] ,
+                          conditional
+                          
+                          
+        )
+        part.b <- sprintf("1:q.levels[%s] , %s%s" , 
+                          get.letters[1] ,
+                          get.letters[2] ,
+                          conditional
+        )
+        part.c <- sprintf("1:q.levels[%s] , 1:q.levels[%s]%s" , 
+                          get.letters[1] , 
+                          get.letters[2] , 
+                          conditional
+        )
+        
+        expected <- sprintf("%s[%s] <- ( ( sum( %s[%s] ) *  \n sum( %s[%s] ) ) / \n sum( %s[%s] ) )", 
+                            paste0("e",x,collapse=""),
+                            letters,
+                            parameter,
+                            part.a,
+                            parameter,
+                            part.b,
+                            parameter,
+                            part.c
+                            
+        ) 
     } else {
-      model.name <-  paste0(model.name,n.x)
+        expected <- sprintf("%s[%s] <- sum( %s[ 1:q.levels[1] ] ) / q.levels[1]" , 
+                            paste0("e",x,collapse=""),
+                            letters,
+                            parameter
+        )
     }
-    jags.model <- ReadFile( model.name , data.format = "txt" )
-  }
+    
+    expected.prob <- sprintf("%sp[%s] <- ( %s[%s] / sum ( %s[%s] ) ) * 100", 
+                             paste0("e",x,collapse=""),
+                             letters,
+                             paste0("e",x,collapse=""),
+                             letters,
+                             parameter,
+                             paste(sprintf("1:q.levels[%s]", seq(length(x))),collapse=",\n")
+                             
+    )
+    
+    paste0(start , expected , "\n" , expected.prob , end)
+    
+  }),collapse="\n\n")
+  
+  # Replace placeholders in jags model with created values
+  model.name <-  paste0(model.name,n.x)
+  jags.model <- gsub("\\#FACTORS", factors.additive, jags.model)
+  jags.model <- gsub("\\#EFFECTS", effects, jags.model)
+  jags.model <- gsub("\\#MEANS", means, jags.model)
+  jags.model <- gsub("\\#PREDICTED", predicted, jags.model)
+  jags.model <- gsub("\\#EXPECTED", expected, jags.model)
 
   # Create name list
   name.list <- list(
@@ -164,7 +338,7 @@ StatsNominal <- function(x,
     job.names = job.names,
     model.name = model.name
   )
-
+  
   # Return data list
   return (list(
     data.list = data.list,

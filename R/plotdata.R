@@ -307,7 +307,6 @@ PlotData <- function(data.MCMC = NULL,
     } )
   }
 
-
   # number of plots
   n.plots <- length(plot.variables)
 

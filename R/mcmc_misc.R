@@ -119,7 +119,7 @@ ContrastNames <- function(items , job.names , col.names) {
   }
 
   return (names)
-
+  
 }
 
 #' @title Matrix Combinations
@@ -215,154 +215,169 @@ MergeMCMC <- function (pat , project.dir = "Results/" , data.sets) {
 #' @export
 #' @importFrom utils combn
 
-RunContrasts <- function(contrast.type , q.levels , use.contrast , contrasts , data , job.names) {
-  contrast.type <- TrimSplit(contrast.type)
+RunContrasts <- function(contrast.type, 
+                         q.levels, 
+                         use.contrast, 
+                         contrasts, 
+                         data,
+                         job.names) {
+  
   col.names <- colnames(data)
-
-  contrast.list <- lapply(contrast.type, function (contrast.type) {
-
-    q.seq <- seq(length(q.levels))
-    if (!is.null(contrasts)) q.seq <- q.seq[q.seq %in% as.numeric(TrimSplit(contrasts)) ]
-
-    contrasts.col <- unlist(lapply(1:length(q.seq), function (i) {
-      apply(utils::combn(q.seq,i),2,function (y) paste0(contrast.type,y,collapse=""))
-    }))
-
-    lapply(contrasts.col, function (x) {
-
-      var <- ParseNumber(x)
-      q <- length(var)
-      select.cols <- grep(paste0("\\b",x,"\\b"),colnames(data))
-
-      if (contrast.type == "m")  select.sigma <- grep(paste0("\\b",gsub("m", "s", x),"\\b"),colnames(data))
-
-      if ( (use.contrast == "between" & contrast.type != "o") | q == 1) {
-
-        grid <- matrix(1:length(select.cols),ncol=q.levels[var[1]],byrow = TRUE)
-        done.contrasts <- lapply(1:nrow(grid), function (i) {
-
-          x <- t(utils::combn(grid[i,],2))
-
-          lapply(1:nrow(x), function (i) {
-
-            if (contrast.type == "m") {
-              m <- as.matrix((( data[ , select.cols[x[i,1]] ]   - data[ , select.cols[x[i,2]] ]  ) /
-                                sqrt((data[ , select.sigma[x[i,1]] ]^2 + data[ , select.sigma[x[i,2]] ]^2) / 2)))
-            } else if (contrast.type == "o") {
-              m <- as.matrix( data[ , select.cols[x[i,1] ] ] / data[ , select.cols[x[i,2] ] ] )
-            } else {
-              m <- as.matrix( data[ , select.cols[x[i,1] ] ] - data[ , select.cols[x[i,2] ] ] )
-            }
-
-            colnames(m) <- ContrastNames(select.cols[x[i,]],job.names,col.names)
-
-            return (m)
-          })
-        })
-      } else if (use.contrast == "within" | contrast.type == "o") {
-
-        grid <- expand.grid(lapply(q.levels[var], function (x) seq(x)))
-        grid.combn <- expand.grid(lapply(seq(var)[-2], function (i) {
-          lapply(seq(q.levels[var[i]]), function (j) {
-            sprintf("grid[,%s] == %s",i,j)
-          })
-        }))
-        done.contrasts <- lapply(1:nrow(grid.combn), function (k) {
-          x <- utils::combn( select.cols[ eval(parse(text=paste(unlist(grid.combn[k,]),collapse="&"))) ] , 2 )
-          if (contrast.type == "m") x.sigma <- utils::combn( select.sigma[ eval(parse(text=paste(unlist(grid.combn[k,]),collapse="&"))) ] , 2 )
-          lapply(1:ncol(x), function (l) {
-
-            if (contrast.type == "m") {
-              m <- as.matrix((( data[, x[1,l] ] - data[, x[2,l] ]  ) /
-                                sqrt((data[, x.sigma[1,l] ]^2 + data[, x.sigma[2,l] ]^2) / 2)))
-            } else if (contrast.type == "o") {
-              m <- as.matrix( data[, x[1,l] ] / data[, x[2,l] ] )
-            } else {
-              m <- as.matrix( data[, x[1,l] ] - data[, x[2,l] ] )
-            }
-
-            colnames(m) <- ContrastNames(x[,l],job.names,col.names)
-
-            return (m)
-          })
-        })
-      } else if (use.contrast == "mixed") {
-
-        x <- as.matrix(t(utils::combn(select.cols,2)))
-        if (contrast.type == "m") x.sigma <- as.matrix(t(combn(select.sigma,2)))
-
-        done.contrasts <- lapply(1:nrow(x), function (i) {
-
+  q.seq <- seq(length(q.levels))
+  if (!is.null(contrasts)) q.seq <- q.seq[q.seq %in% as.numeric(TrimSplit(contrasts)) ]
+    
+  contrasts.col <- unlist(lapply(1:length(q.seq), function (i) {
+    apply(utils::combn(q.seq,i),2,function (y) paste0(contrast.type,y,collapse=""))
+  }))
+  
+  if (contrast.type == "b" ) {
+    print.type <- "sum-to-zero coefficients"
+  } else if (contrast.type == "m" ) {
+    print.type <- "mean differences"
+  } else if (contrast.type == "o" ) {
+    print.type <- "odds and odds-ratios" 
+  }
+  
+  cat(paste0("\nCalculate " , print.type , "\n")) 
+  contrasts.start.time  <- Sys.time()
+  done.contrasts <- lapply(1:length(contrasts.col), function (col) {
+   
+    x <- contrasts.col[[col]]
+    var <- ParseNumber(x)
+    q <- length(var)
+    select.cols <- grep(paste0("\\b",x,"\\b"),colnames(data))
+        
+    if (contrast.type == "m")  select.sigma <- grep(paste0("\\b",gsub("m", "s", x),"\\b"),colnames(data))
+    
+    if ( (use.contrast == "between" & contrast.type != "o") | q == 1) {
+      
+      grid <- matrix(1:length(select.cols),ncol=q.levels[var[1]],byrow = TRUE)
+      done.contrasts <- lapply(1:nrow(grid), function (i) {
+        
+        x <- t(utils::combn(grid[i,],2))
+        
+        lapply(1:nrow(x), function (i) {
+          
           if (contrast.type == "m") {
-            m <- as.matrix((( data[ , x[i,1] ]  - data[ , x[i,2] ] ) /
-                              sqrt((data[ , x.sigma[i,1] ]^2 + data[ , x.sigma[i,2] ]^2) / 2)))
+            m <- as.matrix((( data[ , select.cols[x[i,1]] ]   - data[ , select.cols[x[i,2]] ]  ) /
+                              sqrt((data[ , select.sigma[x[i,1]] ]^2 + data[ , select.sigma[x[i,2]] ]^2) / 2)))
+          } else if (contrast.type == "o") {
+            m <- as.matrix( data[ , select.cols[x[i,1] ] ] / data[ , select.cols[x[i,2] ] ] )
           } else {
-            m <- as.matrix( data[ , x[i,1] ] - data[ , x[i,2] ] )
+            m <- as.matrix( data[ , select.cols[x[i,1] ] ] - data[ , select.cols[x[i,2] ] ] )
           }
-
-          colnames(m) <- ContrastNames(x[i,],job.names,col.names)
-
+          
+          colnames(m) <- ContrastNames(select.cols[x[i,]],job.names,col.names)
+          if (contrast.type == "o") colnames(m) <- paste0("Odds: ", colnames(m)) 
+          
           return (m)
         })
-      }
-
-      if (contrast.type == "o" & q>1) {
-
-        # Sort odds by first column in matrix
-        odds <- lapply(seq(q.levels[var[1]]), function (l) {
-          do.call(cbind,FlattenList(done.contrasts[ seq(l,length(done.contrasts),length(seq(q.levels[var[1]]))) ] ))
+      })
+    } else if (use.contrast == "within" | contrast.type == "o") {
+      
+      grid <- expand.grid(lapply(q.levels[var], function (x) seq(x)))
+      grid.combn <- expand.grid(lapply(seq(var)[-2], function (i) {
+        lapply(seq(q.levels[var[i]]), function (j) {
+          sprintf("grid[,%s] == %s",i,j)
         })
-
-        # Compute odds ratio from odds
-        odds.ratio <- combn(seq(q.levels[var[1]]),2)
-        odds.ratio <- apply(odds.ratio, 2, function (x) {
-          lapply(1:ncol(odds[[1]]), function (i) {
-
-            # Odds ratio
-            m <- as.matrix(odds[[x[1]]][,i] / odds[[x[2]]][,i])
-            # Reversed odds ratio
-            m.rev <- as.matrix(odds[[x[2]]][,i] / odds[[x[1]]][,i])
-
-            # Add names (pretty code...)
-            a <- TrimSplit(colnames(odds[[x[1]]])[i],sep="vs.")
-            b <- TrimSplit(colnames(odds[[x[2]]])[i],sep="vs.")
-            colnames(m) <- paste( paste(a[1],b[1],sep="/"), a[2], sep=" vs. ")
-            colnames(m.rev) <- paste( paste(b[1],a[1],sep="/"), a[2], sep=" vs. ")
-            cbind(m,m.rev)
-          })
+      }))
+      done.contrasts <- lapply(1:nrow(grid.combn), function (k) {
+        x <- utils::combn( select.cols[ eval(parse(text=paste(unlist(grid.combn[k,]),collapse="&"))) ] , 2 )
+        if (contrast.type == "m") x.sigma <- utils::combn( select.sigma[ eval(parse(text=paste(unlist(grid.combn[k,]),collapse="&"))) ] , 2 )
+        lapply(1:ncol(x), function (l) {
+          
+          if (contrast.type == "m") {
+            m <- as.matrix((( data[, x[1,l] ] - data[, x[2,l] ]  ) /
+                              sqrt((data[, x.sigma[1,l] ]^2 + data[, x.sigma[2,l] ]^2) / 2)))
+          } else if (contrast.type == "o") {
+            m <- as.matrix( data[, x[1,l] ] / data[, x[2,l] ] )
+          } else {
+            m <- as.matrix( data[, x[1,l] ] - data[, x[2,l] ] )
+          }
+          
+          colnames(m) <- ContrastNames(x[,l],job.names,col.names)
+          
+          return (m)
         })
-
-        # Flatten and cbind odds
-        odds <- do.call(cbind,FlattenList(odds))
-
-        # Flatten and cbind odds ratios
-        odds.ratio <-  do.call(cbind,FlattenList(odds.ratio))
-
-        # Compute effect size from odds ratio (Chinn, 2000)
-        effect.size <- apply(odds.ratio, 2, function (x) log(x) / ( pi / sqrt(3) ))
-
-        # Define columns
-        colnames(odds) <- paste0("Odds: ", colnames(odds))
-        colnames(odds.ratio) <- paste0("Odds ratio: ", colnames(odds.ratio))
-        colnames(effect.size) <- paste0("Effect size: ", colnames(effect.size))
-
-        # Final matrix
-        done.contrasts <- list(odds,odds.ratio,effect.size)
-      }
-
-      done.contrasts <- do.call(cbind,FlattenList(done.contrasts))
-      if (contrast.type == "b") colnames(done.contrasts) <- paste0("Beta difference: ",colnames(done.contrasts))
-      if (contrast.type == "m") colnames(done.contrasts) <- paste0("Effect size: ",colnames(done.contrasts))
-
-      return (done.contrasts)
-
-    })
+      })
+    } else if (use.contrast == "mixed") {
+      
+      x <- as.matrix(t(utils::combn(select.cols,2)))
+      if (contrast.type == "m") x.sigma <- as.matrix(t(combn(select.sigma,2)))
+      
+      done.contrasts <- lapply(1:nrow(x), function (i) {
+        
+        if (contrast.type == "m") {
+          m <- as.matrix((( data[ , x[i,1] ]  - data[ , x[i,2] ] ) /
+                            sqrt((data[ , x.sigma[i,1] ]^2 + data[ , x.sigma[i,2] ]^2) / 2)))
+        } else {
+          m <- as.matrix( data[ , x[i,1] ] - data[ , x[i,2] ] )
+        }
+        
+        colnames(m) <- ContrastNames(x[i,],job.names,col.names)
+        
+        return (m)
+      })
+    }
+    
+    if (contrast.type == "o" & q>1) {
+      
+      # Sort odds by first column in matrix
+      odds <- lapply(seq(q.levels[var[1]]), function (l) {
+        do.call(cbind,FlattenList(done.contrasts[ seq(l,length(done.contrasts),
+                                                  length(seq(q.levels[var[1]]))) ] ))
+      })
+      
+      # Compute odds ratio from odds
+      odds.ratio <- combn(seq(q.levels[var[1]]),2)
+      odds.ratio <- apply(odds.ratio, 2, function (x) {
+        lapply(1:ncol(odds[[1]]), function (i) {
+          
+          # Odds ratio
+          m <- as.matrix(odds[[x[1]]][,i] / odds[[x[2]]][,i])
+          # Reversed odds ratio
+          m.rev <- as.matrix(odds[[x[2]]][,i] / odds[[x[1]]][,i])
+          
+          # Add names (pretty code...)
+          a <- TrimSplit(colnames(odds[[x[1]]])[i],sep="vs.")
+          b <- TrimSplit(colnames(odds[[x[2]]])[i],sep="vs.")
+          colnames(m) <- paste( paste(a[1],b[1],sep="/"), a[2], sep=" vs. ")
+          colnames(m.rev) <- paste( paste(b[1],a[1],sep="/"), a[2], sep=" vs. ")
+          cbind(m,m.rev)
+        })
+      })
+      
+      # Flatten and cbind odds
+      odds <- do.call(cbind,FlattenList(odds))
+      
+      # Flatten and cbind odds ratios
+      odds.ratio <-  do.call(cbind,FlattenList(odds.ratio))
+      
+      # Compute effect size from odds ratio (Chinn, 2000)
+      effect.size <- apply(odds.ratio, 2, function (x) log(x) / ( pi / sqrt(3) ))
+      
+      # Define columns
+      colnames(odds) <- paste0("Odds: ", colnames(odds))
+      colnames(odds.ratio) <- paste0("Odds ratio: ", colnames(odds.ratio))
+      colnames(effect.size) <- paste0("Effect size: ", colnames(effect.size))
+      
+      # Final matrix
+      done.contrasts <- list(odds,odds.ratio,effect.size)
+    }
+    
+    done.contrasts <- do.call(cbind,FlattenList(done.contrasts))
+    if (contrast.type == "b") colnames(done.contrasts) <- paste0("Beta difference: ",colnames(done.contrasts))
+    if (contrast.type == "m") colnames(done.contrasts) <- paste0("Effect size: ",colnames(done.contrasts))
+    
+    ETA( contrasts.start.time , col , length(contrasts.col) )
+    
+    return (done.contrasts)
+    
   })
 
   # cbind and return contrasts
-  contrast.list <- do.call(cbind,FlattenList(contrast.list))
-  return (contrast.list)
-
+  do.call(cbind,FlattenList(done.contrasts))
+  
 }
 
 #' @title Sum to Zero

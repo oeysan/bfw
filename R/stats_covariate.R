@@ -2,9 +2,12 @@
 #' @description Covariate estimations (including correlation and Cronbach's alpha)
 #' @param y criterion variable(s), Default: NULL
 #' @param y.names optional names for criterion variable(s), Default: NULL
+#' @param x predictor variable(s), Default: NULL
+#' @param x.names optional names for predictor variable(s), Default: NULL
 #' @param DF data to analyze
 #' @param params define parameters to observe, Default: NULL
 #' @param initial.list initial values for analysis, Default: list()
+#' @param jags.model specify which module to use
 #' @param ... further arguments passed to or from other methods
 #' @return covariate, correlation and (optional) Cronbach's alpha
 #' @examples
@@ -103,83 +106,117 @@
 #' @export
 #' @importFrom stats complete.cases
 StatsCovariate <- function(y,
-                      y.names,
-                      DF,
-                      params,
-                      initial.list,
-                      ...
-) {
+                           y.names,
+                           x,
+                           x.names,
+                           DF,
+                           params,
+                           initial.list,
+                           jags.model,
+                           ...
+) { 
 
   # Select variables to analyze
   y <- TrimSplit(y)
-
-  # If empty create job name
-  if (is.null(job.title)) job.title <- CapWords(paste(y,collapse="-"))
-
+  x <- TrimSplit(x)
+  
   # If empty create name list
-  job.names <- if (!is.null(y.names)) TrimSplit(y.names) else CapWords(colnames(DF[,y]))
-
-  # If x.names and x are of unequal length
-  if ( length(job.names) != length(y) ) {
+  y.names <- if (!is.null(y.names)) TrimSplit(y.names) else CapWords(y)
+  x.names <- if (!is.null(x.names)) TrimSplit(x.names) else CapWords(x)
+  job.names <- c(y.names,x.names)
+  
+  # If y.names and y are of unequal length
+  if ( length(y.names) != length(y) ) {
     warning("y.names and y have unequal length. Using variable names.")
-    job.names <- CapWords(colnames(DF[,y]))
+    y.names <- CapWords(y)
   }
-
-  # Create matrix
-  y <- DF[,y]
-
+  
+  # If x.names and x are of unequal length
+  if ( length(x.names) != length(x) ) {
+    warning("x.names and x have unequal length. Using variable names.")
+    x.names <- CapWords(x)
+  }
+  
+  # Select columns from data frame
+  y.data <- DF[, c(y,x)]
+  
   # Number of items
-  q <- length(y[1, ])
-
-  # Number of dimension permutations 8! / (8 - 2)!= 56
-  m1 <- t(combn(1:q, 2))
-
+  q <- ncol(y.data)
+  
+  # Create pairwise combinations if y and x are defined
+  if (length(x)) {
+    m1 <- as.matrix(do.call(rbind,lapply(y, function (z) {
+      m <- expand.grid(z,x)
+      matrix(unlist(lapply(unlist(m), function (m) { 
+        which(m == colnames(y.data))
+      } )), ncol = 2 )
+    })))
+    # Or permutations if only y is defined
+  } else {
+    # Number of dimension permutations
+    m1 <- t(combn(1:q, 2))
+  }
+  
   # Permutations as a continuous matrix
   m2 <- matrix(1:length(m1), length(m1) / 2, 2, byrow = TRUE)
-
+  
   # Create matrix of pairwise combinations of variables
-  y <- lapply(1:nrow(m1), function (i) {
-    m <- cbind( y[ , m1[i,1] ] , y[ , m1[i,2] ] )
+  y.data <- lapply(1:nrow(m1), function (i) {
+    m <- cbind( y.data[ , m1[i,1] ] , y.data[ , m1[i,2] ] )
     m[stats::complete.cases(m) , ]
   } )
-
+  
   # Number of observations in each y
-  n <- unlist(lapply(y,nrow))
-
+  n <- unlist(lapply(y.data,nrow))
+  
   # Max length of y
   n.max <- max(n)
-
+  
   # Final data matrix
-  y <- do.call(cbind,lapply(y, function(x) {
+  y.data <- do.call(cbind,lapply(y.data, function(x) {
     rbind(x, matrix(NA, nrow=n.max-nrow(x), ncol=2) )
   }))
-
-  # Create crosstable for y parameters
-  n.data <- data.frame(t(combn(job.names, 2)),n)
-
+  
+  # Create n data for y and x variables
+  if (length(x)) {
+    n.data <- data.frame(do.call(rbind,lapply(y.names, function (z) {
+      m <- expand.grid(z,x.names)
+      data.frame(m,n)
+    })))
+  } else {
+    # Create n data for y variables
+    n.data <- data.frame(t(combn(job.names, 2)),n)
+  }
+  
   # Paramter(s) of interest
   params <- if(length(params)) TrimSplit(params) else c("cor")
-
+  
+  # Add Cronbach's alpha if requested
+  if ("Alpha" %in% params) {
+    alpha <- "Alpha <- q / (q - 1) * (1 - sum(diag[]) / (sum(cov)))"
+    jags.model <- gsub("\\#ALPHA", alpha , jags.model)
+  }
+  
   # Create data for Jags
   data.list <- list(
     n = n,
     q = q,
-    y = y,
+    y = y.data,
     m1 = m1,
     m2 = m2
   )
-
+  
   # Create name list
   name.list <- list(
     job.names = job.names
   )
-
+  
   # Return data list
   return (list(
     data.list = data.list,
     name.list = name.list,
     params = params,
+    jags.model = jags.model,
     n.data = n.data
   ))
-
 }

@@ -1,0 +1,16 @@
+model {
+  for (i in 1:n.cell) {
+    y[i] ~ dpois(lambda[i])
+    lambda[i] <- exp(a0 + #FACTORS)
+  }
+  
+  a0 ~ dnorm(log.mean, 1 / (log.sd * 2) ^ 2)
+  
+  #EFFECTS
+  
+  #MEANS
+  
+  #PREDICTED
+  
+  #EXPECTED
+} 

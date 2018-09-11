@@ -12,10 +12,12 @@
 #' @export
 
 CapWords <- function(s, strict = FALSE) {
-  cap <- function(s) paste(toupper(substring(s, 1, 1)), {
-    s <- substring(s, 2); if(strict) tolower(s) else s
-  }, sep = "", collapse = " " )
-  sapply(strsplit(s, split = " "), cap, USE.NAMES = !is.null(names(s)))
+  if (length(s)) {
+    cap <- function(s) paste(toupper(substring(s, 1, 1)), {
+      s <- substring(s, 2); if(strict) tolower(s) else s
+    }, sep = "", collapse = " " )
+    sapply(strsplit(s, split = " "), cap, USE.NAMES = !is.null(names(s)))
+  }
 }
 
 #' @title Distinct Colors
@@ -142,7 +144,7 @@ DistinctColors <- function(range, random = FALSE) {
 
 FlattenList <- function(li, rm.duplicated = TRUE, unname.li = TRUE, rm.empty = TRUE) {
   # process argument
-  f <- function (l) if( class(l) == 'list') lapply(l, f) else enquote(l)
+  f <- function (l) if( class(l) == 'list') sapply(l, f) else enquote(l)
   # evaluate argument
   fi <- lapply(lapply(unlist(f(li)), eval),unlist)
   if (rm.duplicated) fi <- fi[!duplicated(fi)]
@@ -381,7 +383,7 @@ ReadFile <- function(file = NULL ,
 
 RemoveEmpty <- function (x) {
   x <- Trim(x[!is.na(x)])
-  x[!x == ""]
+  x <- x[!x == ""]
 }
 
 #' @title Remove Spaces
@@ -466,24 +468,6 @@ FileName <- function ( project = "Project" ,
 #'
 #' # Print plots
 #' ParsePlot(plot.data)
-#' # Plots are displayed in three separate windows
-#' @examples
-#' # Create three plots
-#' plot.data <- lapply(1:3, function (i) {
-#'   # Open new device
-#'   grDevices::dev.new()
-#'   # Print plot
-#'   plot(1:i)
-#'   # Record plot
-#'   p <- grDevices::recordPlot()
-#'   # Turn off graphics device drive
-#'   grDevices::dev.off()
-#'   return (p)
-#' } )
-#'
-#' # Print plots
-#' ParsePlot(plot.data)
-#' # Plots are displayed in three separate windows
 #' \donttest{
 #' # Save plots as png with a4 layout and return file names
 #' project.dir <- tempdir()
@@ -499,14 +483,13 @@ FileName <- function ( project = "Project" ,
 #' # [1] "\\Temp/Project-Testing-Plot01-1528833217.png"
 #' # [2] "\\Temp/Project-Testing-Plot02-1528833217.png"
 #' # [3] "\\Temp/Project-Testing-Plot03-1528833217.png"
-#' }
-#' \donttest{
 #' # Save plots as single PowerPoint (default) and return file names
 #' project.dir <- tempdir()
 #' project.name <- FileName(name="Testing")
 #' ParsePlot(plot.data,
 #'           project.dir = project.dir,
 #'           project.name = project.name,
+#'           vector.graphic = FALSE,
 #'           graphic.type = "pptx",
 #'           layout = "pw",
 #'           save.data = TRUE,
@@ -521,9 +504,12 @@ FileName <- function ( project = "Project" ,
 #' \code{\link[grDevices]{graphics.off}},
 #' \code{\link[grDevices]{dev.list}},
 #' \code{\link[grDevices]{dev.off}}
+#' \code{\link[graphics]{par}}
+#' \code{\link[graphics]{plot}}
 #' @rdname ParsePlot
 #' @export
 #' @importFrom grDevices dev.new recordPlot setEPS graphics.off dev.list dev.off
+#' @importFrom graphics par plot
 
 ParsePlot <- function (plot.data,
                        project.dir = "Results/",
@@ -547,38 +533,84 @@ ParsePlot <- function (plot.data,
   # If single plot add plot to list
   if (typeof(plot.data[[1]]) != "list") plot.data <- list(plot.data)
   # Check if plot
-  if (length((plot.data[[1]])) !=  3) stop("This is not a plot.")
+  if (length((plot.data[[1]])) != 3) stop("This is not a plot.")
   # Count number of plots
   n.plots <- length(plot.data)
   
-   # Trim and lowercase graphic type
-  graphic.type <- Trim(tolower(graphic.type))
-  if (graphic.type == "ppt") graphic.type <- "pptx"
-  if (graphic.type == "jpg") graphic.type <- "jpeg"
+  # Trim and split plot size
+  plot.size <- as.numeric(TrimSplit(plot.size))
   
-  # If using PowerPoint, check if 'officer' and 'rvg' are installed
-  if (graphic.type == "pptx" & vector.graphic &
-      !requireNamespace("officer", quietly = TRUE) &
-      !requireNamespace("rvg", quietly = TRUE)) {
-    cat("\nThe function need packages 'officer' and 'rvg' to create PowerPoint with vector graphics.\n",
-        "Defaults to 'pdf'.\n")    
-    graphic.type <- "pdf" 
-  } else if (graphic.type == "pptx" & vector.graphic &
-             !requireNamespace("rvg", quietly = TRUE)) {
-    cat("\nThe function need package 'rvg' to create PowerPoint with vector graphics.\n",
-        "Defaults to PowerPoint with raster graphics.\n")     
-    vector.graphic <- FALSE
-  } else if (graphic.type == "pptx" & 
-             !vector.graphic & !requireNamespace("officer", quietly = TRUE)) {
-    cat("\nThe function need packages 'officer' to create PowerPoint.\n",
-        "Defaults to 'pdf'.\n")    
-    graphic.type <- "pdf" 
-  }
-
-  # Set graphics device driver (if eps/ps set postscript else use file name extension)
-  dev.type <- if (graphic.type == "eps" | graphic.type == "ps") "postscript" else graphic.type
+  # Use width / height if aspect ratio is not defined
+  if (is.null(plot.aspect)) plot.aspect <- plot.size[[1]] / plot.size[[2]]
+  # Extract width of page
+  page.width <- Layout(layout,layout.inverse)[1]
+  # Extract height of page
+  page.height <- Layout(layout,layout.inverse)[2]
+  # Aspect ratio of page
+  page.aspect <- page.width / page.height
+  # If aspect ratio of page is creater than the aspect rataio of plot adjust width factor
+  width.factor <- if (page.aspect > plot.aspect) plot.aspect / page.aspect else 1
+  # If aspect ratio of page is creater than the aspect rataio of plot adjust height factor
+  height.factor <- if (page.aspect > plot.aspect) 1 else page.aspect / plot.aspect
+  # Define width of plot based on scaling and page width and width factor
+  plot.width <- ( scaling / 100 ) * ( page.width * width.factor )
+  # Define height of plot based on scaling and page heighbt and height factor
+  plot.height <- ( scaling / 100 ) * ( page.height * height.factor )
+  
+  plot.start.time  <- Sys.time()
+  
+  # Print plots save data is not selected
+  if (!save.data) {
     
-  if (save.data) {
+    cat("\nPrinting images. Please wait.\n")
+    invisible(lapply(seq(n.plots), function (i) {
+      # Open new graphics device
+      grDevices::dev.new(width=plot.width,
+                         height=plot.height,
+                         noRStudioGD = TRUE,
+                         res=ppi,
+                         units="in")
+      # Print plot                   
+      print(plot.data[[i]])
+      
+      ETA(plot.start.time , i , n.plots)
+      
+    }))
+    
+    # Else parse plots for saving
+  } else {
+    
+    # Trim and lowercase graphic type
+    graphic.type <- Trim(tolower(graphic.type))
+    if (graphic.type == "ppt") graphic.type <- "pptx"
+    if (graphic.type == "jpg") graphic.type <- "jpeg"
+    
+    # Check if 'png', officer' and 'rvg' are installed
+    if (graphic.type == "pptx" & vector.graphic &
+        !requireNamespace("officer", quietly = TRUE) &
+        !requireNamespace("rvg", quietly = TRUE)) {
+      warning("\nThe function need packages 'officer' and 'rvg' to create PowerPoint with vector graphics.\n",
+              "Defaults to 'pdf'.\n")    
+      graphic.type <- "pdf" 
+    } else if (graphic.type == "pptx" & vector.graphic &
+               !requireNamespace("rvg", quietly = TRUE)) {
+      warning("\nThe function need package 'rvg' to create PowerPoint with vector graphics.\n",
+              "Defaults to PowerPoint with raster graphics.\n")     
+      vector.graphic <- FALSE
+    } else if (graphic.type == "pptx" & 
+               !vector.graphic & !requireNamespace("officer", quietly = TRUE)) {
+      warning("\nThe function need packages 'officer' to create PowerPoint.\n",
+              "Defaults to 'pdf'.\n")    
+      graphic.type <- "pdf" 
+    } else if (!vector.graphic & !requireNamespace("png", quietly = TRUE) &
+               (graphic.type == "pdf" | graphic.type == "postscript" )) {
+      warning("\nThe function need the 'png' package to create raster graphics for pdf and postscript \n",
+              "Defaults to 'vector'.\n")    
+      vector.graphic <- TRUE
+    }
+    
+    # Set graphics device driver (if eps/ps set postscript else use file name extension)
+    dev.type <- if (graphic.type == "eps" | graphic.type == "ps") "postscript" else graphic.type
     
     # If necessary add trailing slash to project directory
     if ( tail(TrimSplit(project.dir,""),1) != "/") {
@@ -591,10 +623,9 @@ ParsePlot <- function (plot.data,
     }
     
     # Decide whether to use singular or plural in plot name
-    if (one.file & ( graphic.type == "ps" |
-                     graphic.type == "eps" |
-                     graphic.type == "pdf" |
-                     graphic.type == "pptx" ) ) {
+    if (one.file & ( dev.type == "postscript" |
+                     dev.type == "pdf" |
+                     dev.type == "pptx" ) ) {
       plot.type <- "-Plot"
     } else {
       plot.type <- "-Plot%02d"
@@ -621,187 +652,202 @@ ParsePlot <- function (plot.data,
     }
     
     # if multiple files and PowerPoint, change %02d to regular numerics
-    if (!one.file & graphic.type == "pptx") {
+    if (!one.file & dev.type == "pptx") {
       padded.vector <- PadVector(seq(n.plots))
       project.name <- unlist(lapply(padded.vector, function (i) gsub("%02d",i,project.name) ) )
     }
     
     # Create final file name
     file.name <- paste0(project.dir,project.name)
-  }
-  
-  # Trim and split plot size
-  plot.size <- as.numeric(TrimSplit(plot.size))
-  
-  # Use width / height if aspect ratio is not defined
-  if (is.null(plot.aspect)) plot.aspect <- plot.size[[1]] / plot.size[[2]]
-  # Extract width of page
-  page.width <- Layout(layout,layout.inverse)[1]
-  # Extract height of page
-  page.height <- Layout(layout,layout.inverse)[2]
-  # Aspect ratio of page
-  page.aspect <- page.width / page.height
-  # If aspect ratio of page is creater than the aspect rataio of plot adjust width factor
-  width.factor <- if (page.aspect > plot.aspect) plot.aspect / page.aspect else 1
-  # If aspect ratio of page is creater than the aspect rataio of plot adjust height factor
-  height.factor <- if (page.aspect > plot.aspect) 1 else page.aspect / plot.aspect
-  # Define width of plot based on scaling and page width and width factor
-  plot.width <- ( scaling / 100 ) * ( page.width * width.factor )
-  # Define height of plot based on scaling and page heighbt and height factor
-  plot.height <- ( scaling / 100 ) * ( page.height * height.factor )
-  
-  if (!save.data) {
-    # Print plots
-    print.plot <- lapply(plot.data, function (x) {
-      # Open new graphics device
-      grDevices::dev.new(width=plot.width,
-                         height=plot.height,
-                         noRStudioGD = TRUE,
-                         res=ppi,
-                         units="in")
-      print(x)
-    })
-  } else if (dev.type == "pptx" & save.data) {
     
-    lapply(1:length(file.name), function (i) {
+    # Create raster graphics for postscript, pdf and PowerPoint
+    if (!vector.graphic & (dev.type == "postscript" | 
+                            dev.type == "pdf" | 
+                            dev.type == "pptx") ) {
+                           
+      cat("\nConverting vector to raster graphics. Please wait.\n")
+      tmp.file <- lapply(seq(n.plots), function (i) {
       
-      plot.data <- lapply(plot.data, function (x) {
-        # Open new graphics device
-        grDevices::dev.new(width=plot.width,
-                           height=plot.height,
-                           res=ppi,
-                           units="in")
-        # Print plots
-        print(x)
-        # Record graphics device
-        p <- grDevices::recordPlot()
-        grDevices::dev.off()
-        return (p)
-      } )
-      
-      # Number of documents in PowerPoint file
-      create.document <- if (one.file) seq(n.plots) else i
-      
-      # Define font type
-      if (font.type == "serif") font.type <- "Times New Roman"
-      
-      # Select template
-      template <- if (layout == "pt") "legacy" else "widescreen" 
-      template.file <- paste0(system.file(package = 'bfw'),"/extdata/templates/",template,".pptx")
-      
-      # Create PowerPoint document
-      document <- officer::read_pptx(template.file)
-      
-      # Create slides
-      lapply(create.document, function (j) {
+        raster.start.time  <- Sys.time()
         
-        # Add new slide
-        document <- officer::add_slide(document, "Blank", "Office Theme")
+        # Create tmp file
+        tmp.file <- tempfile(fileext = ".png")
+        # Open png device
+        grDevices::png(tmp.file,
+                       width = plot.width,
+                       height = plot.height,
+                       family = font.type,
+                       pointsize = point.size,
+                       res = ppi,
+                       units = units)
+        # Print plot
+        print(plot.data[[i]])
+        # close png device
+        invisible(grDevices::dev.off())
         
-        # If Vector graphics use rvg
-        if (vector.graphic) { 
-          
-          # Create slide
-          document <- rvg::ph_with_vg(document, 
-                                      print(plot.data[[j]]),
-                                      fonts = list(font.type),
-                                      type = NULL,
-                                      pointsize = point.size,
-                                      offx = (page.width - plot.width) / 2,
-                                      offy = (page.height - plot.height) / 2,
-                                      width = plot.width,
-                                      height = plot.height
-                                      
-          )
-        # Else use png device
-        } else {
+        ETA(raster.start.time , i , n.plots)
         
-          # Create tmp file
-          tmp.file <- tempfile(fileext = ".png")
-          # Open png device
-          grDevices::png(tmp.file,
-                         width = plot.width,
-                         height = plot.height,
-                         family = font.type,
-                         pointsize = point.size,
-                         res = ppi,
-                         units = units)
-          # Print plot
-          print(plot.data[[j]])
-          # close png device
-          if (!is.null(grDevices::dev.list())) invisible(grDevices::dev.off())
-          
-          # Add image to slide
-          document <- officer::ph_with_img_at(x = document, 
-                                              src = tmp.file,
-                                              width = plot.width,
-                                              height = plot.height,
-                                              left = (page.width - plot.width) / 2,
-                                              top = (page.height - plot.height) / 2 )
-        }
+        return (tmp.file)
         
       })
       
-      # Write file
-      invisible(print(document, target = file.name[[i]]))
-      
-      # Empty temp folder 
-      unlink(paste0(tempdir(),"/*"),force=TRUE,recursive=TRUE)
-      
-    })
-    
-  } else if (save.data) {
-    
-    # Convert inches to pixles
-    if (units == "px" & (dev.type != "pdf" | dev.type != "postscript")) {
-      plot.width <- plot.width * ppi
-      plot.height <- plot.height * ppi
     }
     
-    # Convert inches to cm
-    if (units == "cm" & (dev.type != "pdf" | dev.type != "postscript")) {
-      plot.width <- plot.width * 2.54
-      plot.height <- plot.height * 2.54
-    }
-    
-    if (graphic.type == "ps" | graphic.type == "eps" | graphic.type == "pdf") {
+    # Save plots for other formats than PowerPoint
+    if (dev.type != "pptx") {
       
-      if (graphic.type == "eps") grDevices::setEPS()
-      dev.par <- sprintf("grDevices::%s(
-                         file.name,
-                         width = plot.width,
-                         height = plot.height,
-                         family = font.type,
-                         pointsize = point.size,
-                         onefile = one.file,
-                         paper = 'special',
-                         pagecentre = TRUE)", dev.type)
-    } else {
-      dev.par <- sprintf("grDevices::%s(
-                         file.name,
-                         width = plot.width,
-                         height = plot.height,
-                         family = font.type,
-                         pointsize = point.size,
-                         res = ppi,
-                         units = units)", dev.type)
+      # Convert inches to pixles
+      if (units == "px" & (dev.type != "pdf" | dev.type != "postscript")) {
+        plot.width <- plot.width * ppi
+        plot.height <- plot.height * ppi
+      }
       
+      # Convert inches to cm
+      if (units == "cm" & (dev.type != "pdf" | dev.type != "postscript")) {
+        plot.width <- plot.width * 2.54
+        plot.height <- plot.height * 2.54
+      }
       
-    }
-    
-    # Evaluate and run graphics device drive
-    eval(parse(text=dev.par))
-    # Print plots
-    print.plot <- lapply(plot.data, function (x) print(x) )
+      if (dev.type == "postscript" |  dev.type == "pdf" ) {
+        
+        if (graphic.type == "eps") grDevices::setEPS()
+        dev.par <- sprintf("grDevices::%s(
+                           file.name,
+                           width = plot.width,
+                           height = plot.height,
+                           family = font.type,
+                           pointsize = point.size,
+                           onefile = one.file,
+                           paper = 'special',
+                           pagecentre = TRUE)", dev.type)
+        
+        # Other graphic decvices
+      } else {
+        dev.par <- sprintf("grDevices::%s(
+                           file.name,
+                           width = plot.width,
+                           height = plot.height,
+                           family = font.type,
+                           pointsize = point.size,
+                           res = ppi,
+                           units = units)", dev.type)
+      }
+      
+      # Evaluate and run graphics device drive
+      eval(parse(text=dev.par))
+      
+      # If raster for ps/pdf
+      cat(paste0("\nSaving plots as " , graphic.type , ". Please wait.\n"))
+      if (!vector.graphic & (dev.type == "postscript" | 
+                             dev.type == "pdf") ) {
+        
+        print.plot <- lapply(seq(n.plots), function (k) {
+          plotPNG <- png::readPNG(tmp.file[[k]])
+          graphics::par(mai=c(0,0,0,0))
+          graphics::plot(c(0,1),c(0,1),type="n")
+          graphics::rasterImage(plotPNG,0,0,1,1)
+          
+          ETA(plot.start.time , k , n.plots)
+          
+        })
+        invisible(grDevices::dev.off())
+        
+      } else {
+        
+        print.plot <- lapply(seq(n.plots), function (k) {
+          print(plot.data[[k]]) 
+          
+          ETA(plot.start.time , k , n.plots)
+        })
+        invisible(grDevices::dev.off())
+        
+      }
+            
+      # Save PowerPoint plots
+      } else {
+        
+        cat(paste0("\nSaving plots as " , graphic.type , ". Please wait.\n"))
+        lapply(1:length(file.name), function (i) {
+        
+         if (vector.graphic) {
+           plot.data <- lapply(plot.data, function (x) {
+              # Open new graphics device
+              grDevices::dev.new(width=plot.width,
+                                 height=plot.height,
+                                 res=ppi,
+                                 noRStudioGD = TRUE,
+                                 units="in")
+              # Print plots
+              print(x)
+              # Record graphics device
+              p <- grDevices::recordPlot()
+              grDevices::dev.off()
+              return (p)
+            } )
+          }
+          
+          # Number of documents in PowerPoint file
+          create.document <- if (one.file) seq(n.plots) else i
+          
+          # Define font type
+          if (font.type == "serif") font.type <- "Times New Roman"
+          
+          # Select template
+          template <- if (layout == "pt") "legacy" else "widescreen" 
+          template.file <- paste0(system.file(package = 'bfw'),"/extdata/templates/",template,".pptx")
+          
+          # Create PowerPoint document
+          document <- officer::read_pptx(template.file)
+                    
+          # Create slides
+          lapply(create.document, function (j) {
+            
+            # Add new slide
+            document <- officer::add_slide(document, "Blank", "Office Theme")
+            
+            # If Vector graphics use rvg
+            if (vector.graphic) { 
+             
+              # Create slide
+              document <- rvg::ph_with_vg(document, 
+                                          print(plot.data[[j]]),
+                                          fonts = list(font.type),
+                                          type = NULL,
+                                          pointsize = point.size,
+                                          offx = (page.width - plot.width) / 2,
+                                          offy = (page.height - plot.height) / 2,
+                                          width = plot.width,
+                                          height = plot.height
+                                          
+              )
+              # Else use png device
+            } else {
+              
+              # Add image to slide
+              document <- officer::ph_with_img_at(x = document, 
+                                                  src = tmp.file[[j]],
+                                                  width = plot.width,
+                                                  height = plot.height,
+                                                  left = (page.width - plot.width) / 2,
+                                                  top = (page.height - plot.height) / 2 )
+            }
+            
+            ETA(plot.start.time , j , n.plots)
+            
+          })
+          
+          # Write file
+          invisible(print(document, target = file.name[[i]]))
+          
+        })
+        
+      }
   }
   
   if (save.data) {
-    cat("Saving plots. Closing windows.")
-    # Close all graphics
-    grDevices::graphics.off()
-    # Turn off graphics device drive
-    if (!is.null(grDevices::dev.list())) invisible(grDevices::dev.off())
-    
+    # Empty temp folder 
+    if (exists("tmp.file")) unlink(paste0(tempdir(),"/*"),force=TRUE,recursive=TRUE)
+
     # If requested, return file names
     if (return.files) {
       if (grepl("%02d", file.name[[1]])) file.name <- sprintf(file.name,1:n.plots)
@@ -845,7 +891,7 @@ Trim <- function(s, multi = TRUE) {
 #' @rdname TrimSplit
 #' @export
 
-TrimSplit <- function(x ,
+TrimSplit <- function(x,
                       sep = ",",
                       fixed = FALSE,
                       perl = FALSE,
@@ -857,7 +903,8 @@ TrimSplit <- function(x ,
   # Unlist and trim vector elements
   x <- Trim(unlist(x))
   # If selected remove empty elements
-  if (rm.empty) x <- RemoveEmpty(x) 
+  if (rm.empty) x <- RemoveEmpty(x)
+  if (identical(x, character(0))) x <- NULL
   
   return (x)
   
@@ -886,4 +933,87 @@ VectorSub <- function ( pattern , replacement , string ) {
                              modified.string)
   })
   if (is.na(modified.string)) NULL else modified.string
+}
+
+#' @title Tidy Code
+#' @description Small function that clears up messy code
+#' @param tidy.code Messy code that needs cleaning
+#' @param jags logical. If TRUE run code as JAGS model, Default: TRUE
+#' @return (Somewhat) tidy code
+#' @examples
+#' messy <- "code <- function( x ) {
+#' print (x ) }"
+#' cat(messy)
+#' code <- function( x ) {
+#' print (x ) }
+#' cat ( TidyCode(messy, jags = FALSE) )
+#' code <- function(x) {
+#'    print(x)
+#' }
+#' @rdname TidyCode
+#' @export
+
+TidyCode <- function(tidy.code,
+                     jags = TRUE) {
+  
+
+  # if the code is a jags model replace model with placeholder
+  if (jags) {
+    tidy.code <- gsub("data[[:space:]]+\\{", "if (TidyJagsData) {" , tidy.code)
+    tidy.code <- gsub("model[[:space:]]+\\{", "if (TidyJagsModel) {" , tidy.code)
+  }
+  
+  # Extract blocks from cod
+  tidy.code <- TrimSplit(tidy.code,"\\\n")
+  
+  # Wrap comments prior to parsing
+  invisible(lapply(grep("\\#",tidy.code), function (i){
+    tidy.code[i] <<- sprintf("invisible(\"StartPreParse%sEndPreParse\")" , tidy.code[i])
+  }))
+  
+  # Parse code
+  tidy.code <- base::parse(text = tidy.code, keep.source = FALSE)
+  
+  # Collapse parsed function into a vector
+  tidy.code <- sapply(tidy.code, function(e) { 
+    paste(base::deparse(e, getOption("width")), collapse = "\n")
+  })
+  
+  # remove spaces between commas
+  tidy.code <- gsub("\\s*\\,\\s*", "," , tidy.code)
+  
+  # Revert comments (remove invisibility)
+  tidy.code <- gsub("invisible\\(\\\"StartPreParse" , "" , tidy.code)
+  tidy.code <- gsub("EndPreParse\\\")" , "" , tidy.code)
+  
+  # If jags replace placeholder
+  if (jags) {
+    tidy.code <- gsub("if \\(TidyJagsData\\)", "data" , tidy.code)
+    tidy.code <- gsub("if \\(TidyJagsModel\\)", "model" , tidy.code)
+  }
+  
+  return (tidy.code)
+}
+
+#' @title ETA
+#' @description Print estimated time for arrival (ETA)
+#' @param start.time Start time (preset variable with Sys.time())
+#' @param i incremental steps towards total
+#' @param total Total number of steps
+#' @seealso
+#' \code{\link[utils]{flush.console}}
+#' @rdname ETA
+#' @export
+#' @importFrom utils flush.console
+
+ETA <- function (start.time, i , total) {
+  eta <- Sys.time() + ( (total - i) * ((Sys.time() - start.time) / i) )
+  eta.message <- sprintf("Progress: %.02f%% (%s/%s). ETA: %s ", 
+                         (i * 100) / total,
+                         i,
+                         total,
+                         format(eta,"%d.%m.%Y - %H:%M:%S"))
+  cat("\r" , eta.message , sep="")
+  utils::flush.console()
+  if (i == total) cat("\n")
 }

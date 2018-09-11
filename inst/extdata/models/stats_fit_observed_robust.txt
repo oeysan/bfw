@@ -1,0 +1,70 @@
+model {
+  for(i in 1:n) {
+    # Measurement model
+    for(j in 1:q) {
+      y[i,j] ~ dt(mu[i,j], 1 / error[j] , nu.mu[j])
+    }
+    # Structural model
+    for(k in 1:lat) {
+      eta[i,k] ~ dt(mu.eta[i,k], 1 / psi[k] , nu.eta[k])
+    }
+  }
+  
+  for(i in 1:n) {
+    # Mu definition
+    for (j in 1:q) {
+      mu[i , j] <- mu.alpha[j] + lam[j] * eta[i , factor.seq[j] ]
+    }
+    
+    # Regression model
+    # Note. 'REGRESSIONMODEL' is replaced by the R script
+    
+    #REGRESSIONMODEL
+    
+  }
+  
+  # Priors on beta coefficients 
+  for (j in 1:length(b.priors[,1])) {
+    zbeta[ b.priors[j,1] , b.priors[j,2] ] <- beta[ b.priors[j,1] , b.priors[j,2] ] *
+                                              ( eta.sd[ b.priors[j,2] ] / eta.sd[ b.priors[j,1] ] )
+  } 
+  
+  # Standard deviation for eta
+  for (k in 1:lat) {
+    eta.sd[k] <- max(sd(eta[,k]),0.0001)
+  }
+  
+  # Priors on errors and mu precision
+  for(j in 1:q) {
+    error[j] <- 1 / error.prec[j]
+    error.prec[j] ~ dgamma(1 , 0.5)
+    mu.alpha[j] ~ dnorm(0 , 0.0001)
+    nu.mu[j] <- nu.mu.prec[j] + 1
+    nu.mu.prec[j] ~ dexp(1 / 29)
+  }
+  
+  # Priors on eta precisions, alpha and fixed factor loadings
+  for(k in 1:lat) {
+    psi[k] <- 1 / psi.prec[k]
+    psi.prec[k] ~ dgamma(1 , 0.5)
+    lam[ cl[ k , 1] ] <- 1
+    alpha[k] <- 0
+    nu.eta[k] <- nu.eta.prec[k] + 1
+    nu.eta.prec[k] ~ dexp(1 / 29)
+  }
+  
+  # Priors on free factor loadings
+  for (l in 1:length(fl)) {
+    lam[ fl[l] ] ~ dnorm(0 , 0.001)
+  }
+  
+  # Priors on beta coefficients 
+  for (m in 1:length(b.priors[,1])) {
+    beta[ b.priors[m,1] , b.priors[m,2] ] ~ dnorm(0 , 0.001)
+  } 
+  
+  # Additional computations
+  # Note. 'ADDITIONAL' is replaced by the R script
+  
+  #ADDITIONAL
+}
