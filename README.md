@@ -3,11 +3,11 @@
 
 # bfw: Bayesian Framework for Computational Modeling
 
-<img src="man/figures/logo.png" style="float: right; width: 200px" />
+<img src="man/figures/logo.png" width="250px" align="right" />
 
-[![update](https://img.shields.io/badge/Reviewed-2018.09.13%20@%2014:05:53-purple.svg)](https://github.com/oeysan/bfw)
+[![update](https://img.shields.io/badge/Reviewed-2018.09.13%20@%2015:16:07-purple.svg)](https://github.com/oeysan/bfw)
 [![cran\_version](https://www.r-pkg.org/badges/version/bfw)](https://cran.r-project.org/package=bfw)
-[![github\_version](https://img.shields.io/badge/GitHub-0.2.0-red.svg?style=flat-square)](https://github.com/oeysan/bfw)
+[![github\_version](https://img.shields.io/badge/GitHub-0.2.0.9001-red.svg?style=flat-square)](https://github.com/oeysan/bfw)
 [![licence](https://img.shields.io/badge/Licence-MIT-blue.svg)](https://github.com/oeysan/bfw/blob/master/LICENSE.md)
 [![status](https://travis-ci.org/oeysan/bfw.svg?branch=master)](https://travis-ci.org/oeysan/bfw)
 
@@ -26,7 +26,7 @@ initial version only support plotting mean data (including repeated
 measures), future releases will support other types of visualizations.
 
 Users are encouraged to apply justified priors by modifying existing
-JAGS models found in `extdata/Models` or by adding custom models.
+JAGS models found in `extdata/models` or by adding custom models.
 Similarly, one might modify models to conduct posterior predictive
 checks (see Kruschke, 2013). The purpose of the framework is not to
 provide generic modules suitable for all circumstances, but rather act
