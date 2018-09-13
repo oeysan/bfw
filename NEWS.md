@@ -1,6 +1,24 @@
+# bfw 0.2.0.9002
+
+## Moderate
+
+* Fixed `ParsePlot` to accommodate ggplots.
+    + `PlotData` now returns `ggplot2` and not `grDevices::recordPlot()`
+    
+## Minor
+
+* Added a second badge, a more informative badge, 'cos why not.
+    
+# bfw 0.2.0.9001
+
+## Minor
+
+* Some typos
+
 # bfw 0.2.0.9000
 
 ## Minor
+
 * Added a badge because all the cool kids have them
 * Fixed small inconsistencies in ParsePlot parameters (i.e., type png with layout pw).
     + Defaults are now rasterized pdf on a4 layout with 12 pointsize.
@@ -28,6 +46,7 @@
     + `burnin.steps`, the number of burnin iterations, NOT including the adaptive iterations to use for the simulation.
 
 ## Minor
+
 * Added a small `ETA` function to display running time of functions
 * Made feedback from MCMC functions more informative
 * Fixed `custom model` in `settings`

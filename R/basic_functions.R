@@ -532,9 +532,12 @@ ParsePlot <- function (plot.data,
                        ...) {
   
   # If single plot add plot to list
-  if (typeof(plot.data[[1]]) != "list") plot.data <- list(plot.data)
+  if (any(class(plot.data[[1]]) != "list")) plot.data <- list(plot.data)
+
   # Check if plot
-  if (length((plot.data[[1]])) != 3) stop("This is not a plot.")
+  if (all(inherits(plot.data[[1]], "ggplot"), 
+          inherits(plot.data[[1]], "recordedplot"))) stop("This is not a plot.")
+  
   # Count number of plots
   n.plots <- length(plot.data)
   
@@ -558,6 +561,7 @@ ParsePlot <- function (plot.data,
   # Define height of plot based on scaling and page heighbt and height factor
   plot.height <- ( scaling / 100 ) * ( page.height * height.factor )
   
+  # Set start time
   plot.start.time  <- Sys.time()
   
   # Print plots save data is not selected

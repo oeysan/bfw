@@ -467,18 +467,7 @@ PlotData <- function(data.MCMC = NULL,
                                                   axis.ticks.x=element_blank())}
     )
 
-    # Open new device
-    grDevices::dev.new()
-    # Print plot
-    print (plot)
-    # Record plot
-    recorded.plot <- grDevices::recordPlot()
-    # Close all graphics
-    grDevices::graphics.off()
-    # Turn off graphics device drive
-    if (!is.null(grDevices::dev.list())) invisible(grDevices::dev.off())
-
-    return (recorded.plot)
+    return (plot)
 
   })
 
