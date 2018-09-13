@@ -1,9 +1,9 @@
 Package: bfw
-Version: 0.2.0
+Version: 0.2.0.9000
 Date: 2018-09-11
 Title: Bayesian Framework for Computational Modeling
-Authors@R: person( "Ã˜ystein Olav","Skaar", email="bayesianfw@gmail.com", role=c("aut","cre"))
-Maintainer: Ã˜ystein Olav Skaar <bayesianfw@gmail.com>
+Authors@R: person( "Øystein Olav","Skaar", email="bayesianfw@gmail.com", role=c("aut","cre"))
+Maintainer: Øystein Olav Skaar <bayesianfw@gmail.com>
 URL: https://github.com/oeysan/bfw/
 BugReports: https://github.com/oeysan/bfw/issues/
 Description: Derived from the work of Kruschke (2015, <ISBN:9780124058880>),
@@ -30,7 +30,9 @@ Suggests:
          psych (>= 1.7.8),
          rmarkdown (>= 1.10),
          rvg (>= 0.1.9),
-         scales (>= 0.5.0)
+         scales (>= 0.5.0),
+         testthat (>= 2.0.0),
+         covr (>= 3.1.0)
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
@@ -38,4 +40,4 @@ RoxygenNote: 6.1.0
 VignetteBuilder: knitr
 NeedsCompilation: no
 Packaged: 2018-06-13 09:55:29 UTC; Melkor
-Author: Ã˜ystein Olav Skaar [aut, cre]
+Author: Øystein Olav Skaar [aut, cre]

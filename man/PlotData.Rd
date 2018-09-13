@@ -8,10 +8,10 @@ PlotData(data.MCMC = NULL, data.type = "Mean", job.title = NULL,
   run.repeated = FALSE, run.split = FALSE, y.split = FALSE,
   ribbon.plot = TRUE, monochrome = TRUE, plot.colors = c("#495054",
   "#e3e8ea"), y.text = "Score", x.text = NULL,
-  project.dir = "Results/", save.data = FALSE, graphic.type = "pptx",
+  project.dir = "Results/", save.data = FALSE, graphic.type = "pdf",
   plot.size = "15,10", scaling = 100, plot.aspect = NULL,
-  vector.graphic = TRUE, point.size = 15, font.type = "serif",
-  one.file = TRUE, ppi = 300, units = "in", layout = "pw",
+  vector.graphic = FALSE, point.size = 12, font.type = "serif",
+  one.file = TRUE, ppi = 300, units = "in", layout = "a4",
   layout.inverse = FALSE, ...)
 }
 \arguments{
@@ -41,7 +41,7 @@ PlotData(data.MCMC = NULL, data.type = "Mean", job.title = NULL,
 
 \item{save.data}{logical, indicating whether or not to save data, Default: FALSE}
 
-\item{graphic.type}{type of graphics to use (e.g., pdf, png, ps), Default: 'pptx'}
+\item{graphic.type}{type of graphics to use (e.g., pdf, png, ps), Default: 'pdf'}
 
 \item{plot.size}{size of plot, Default: '15,10'}
 
@@ -49,9 +49,9 @@ PlotData(data.MCMC = NULL, data.type = "Mean", job.title = NULL,
 
 \item{plot.aspect}{aspect of plot, Default: NULL}
 
-\item{vector.graphic}{logical, indicating whether or not visualizations should be vector or raster graphics, Default: TRUE}
+\item{vector.graphic}{logical, indicating whether or not visualizations should be vector or raster graphics, Default: FALSE}
 
-\item{point.size}{point size used for visualizations, Default: 15}
+\item{point.size}{point size used for visualizations, Default: 12}
 
 \item{font.type}{font type used for visualizations, Default: 'serif'}
 
@@ -61,7 +61,7 @@ PlotData(data.MCMC = NULL, data.type = "Mean", job.title = NULL,
 
 \item{units}{define unit of length used for visualizations, Default: 'in'}
 
-\item{layout}{define a layout size for visualizations, Default: 'pw'}
+\item{layout}{define a layout size for visualizations, Default: 'a4'}
 
 \item{layout.inverse}{logical, indicating whether or not to inverse layout (e.g., landscape) , Default: FALSE}
 

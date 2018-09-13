@@ -13,17 +13,17 @@
 #' @param x.text label on x axis, Default: NULL
 #' @param project.dir define where to save data, Default: 'Results/'
 #' @param save.data logical, indicating whether or not to save data, Default: FALSE
-#' @param graphic.type type of graphics to use (e.g., pdf, png, ps), Default: 'pptx'
+#' @param graphic.type type of graphics to use (e.g., pdf, png, ps), Default: 'pdf'
 #' @param plot.size size of plot, Default: '15,10'
 #' @param scaling scale size of plot, Default: 100
 #' @param plot.aspect aspect of plot, Default: NULL
-#' @param vector.graphic logical, indicating whether or not visualizations should be vector or raster graphics, Default: TRUE
-#' @param point.size point size used for visualizations, Default: 15
+#' @param vector.graphic logical, indicating whether or not visualizations should be vector or raster graphics, Default: FALSE
+#' @param point.size point size used for visualizations, Default: 12
 #' @param font.type font type used for visualizations, Default: 'serif'
 #' @param one.file logical, indicating whether or not visualizations should be placed in one or several files, Default: TRUE
 #' @param ppi define pixel per inch used for visualizations, Default: 300
 #' @param units define unit of length used for visualizations, Default: 'in'
-#' @param layout define a layout size for visualizations, Default: 'pw'
+#' @param layout define a layout size for visualizations, Default: 'a4'
 #' @param layout.inverse logical, indicating whether or not to inverse layout (e.g., landscape) , Default: FALSE
 #' @param ... further arguments passed to or from other methods
 #' @seealso
@@ -76,17 +76,17 @@ PlotData <- function(data.MCMC = NULL,
                      x.text = NULL,
                      project.dir = "Results/",
                      save.data = FALSE,
-                     graphic.type = "pptx",
+                     graphic.type = "pdf",
                      plot.size = "15,10",
                      scaling = 100,
                      plot.aspect = NULL,
-                     vector.graphic = TRUE,
-                     point.size = 15,
+                     vector.graphic = FALSE,
+                     point.size = 12,
                      font.type = "serif",
                      one.file = TRUE,
                      ppi = 300,
                      units = "in",
-                     layout = "pw",
+                     layout = "a4",
                      layout.inverse = FALSE,
                      ...
 ) {

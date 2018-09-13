@@ -1,12 +1,12 @@
 Fit Observed Data
 ================
 Øystein Olav Skaar
-2018-09-11
+2018-09-13
 
-Fit Observed Data
------------------
+## Fit Observed Data
 
-Enjoy this brief demonstration of the fit observed data module (i.e., a simple mediation model).
+Enjoy this brief demonstration of the fit observed data module (i.e., a
+simple mediation model).
 
 Also, please see [Fit Latent Data](fit_latent_data.md).
 
@@ -215,7 +215,7 @@ round(bayesian.jitter.fit$summary.MCMC[,3:7],3)
 #> PPP                                     0.991    20   0.988   0.992 1000
 ```
 
-### Let's add some noise to the observed data
+### Let’s add some noise to the observed data
 
 ``` r
 biased.sigma <-matrix(c(1,1,0,1,1,0,0,0,1),3,3)
@@ -236,7 +236,7 @@ biased.jitter.data <- rbind(jitter.data, jitter.noise)
 ``` r
 biased.jitter.fit <- lavaan::sem(model, data = biased.jitter.data)
 lavaan::summary(biased.jitter.fit)
-#> lavaan 0.6-2 ended normally after 247 iterations
+#> lavaan 0.6-2 ended normally after 254 iterations
 #> 
 #>   Optimization method                           NLMINB
 #>   Number of free parameters                         33

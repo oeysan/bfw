@@ -1,44 +1,64 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-bfw: Bayesian Framework for Computational Modeling
-==================================================
 
-[![update](https://img.shields.io/badge/Reviewed-2018.09.11%20@%2011:44:10-purple.svg)](https://github.com/oeysan/bfw) [![cran\_version](https://www.r-pkg.org/badges/version/bfw)](https://cran.r-project.org/package=bfw) [![github\_version](https://img.shields.io/badge/GitHub-0.2.0-red.svg?style=flat-square)](https://github.com/oeysan/bfw) [![licence](https://img.shields.io/badge/Licence-MIT-blue.svg)](https://github.com/oeysan/bfw/blob/master/LICENSE.md) [![status](https://travis-ci.org/oeysan/bfw.svg?branch=master)](https://travis-ci.org/oeysan/bfw) [![coverall](https://coveralls.io/repos/github/oeysan/bfw/badge.svg?branch=master)](https://coveralls.io/github/oeysan/bfw?branch=master)
+# bfw: Bayesian Framework for Computational Modeling
 
-The purpose of `bfw` is to establish a framework for conducting Bayesian analysis, using MCMC and JAGS (Plummer, 2003). The framework provides several modules to conduct linear and non-linear (hierarchical) analyses, and allows the use of custom functions and complex JAGS models.
+<img src="man/figures/logo.png" style="float: right; width: 200px" />
 
-Derived from the excellent work of Kruschke (2015), the goal of the framework is to easily estimate parameter values and the stability of estimates from the *highest density interval* (HDI), make null value assessment through *region of practical equivalence testing* (ROPE) and conduct convergence diagnostics (e.g., Gelman & Rubin, 1992). Though the initial version only support plotting mean data (including repeated measures), future releases will support other types of visualizations.
+[![update](https://img.shields.io/badge/Reviewed-2018.09.13%20@%2014:05:53-purple.svg)](https://github.com/oeysan/bfw)
+[![cran\_version](https://www.r-pkg.org/badges/version/bfw)](https://cran.r-project.org/package=bfw)
+[![github\_version](https://img.shields.io/badge/GitHub-0.2.0-red.svg?style=flat-square)](https://github.com/oeysan/bfw)
+[![licence](https://img.shields.io/badge/Licence-MIT-blue.svg)](https://github.com/oeysan/bfw/blob/master/LICENSE.md)
+[![status](https://travis-ci.org/oeysan/bfw.svg?branch=master)](https://travis-ci.org/oeysan/bfw)
 
-Users are encouraged to apply justified priors by modifying existing JAGS models found in `extdata/Models` or by adding custom models. Similarly, one might modify models to conduct posterior predictive checks (see Kruschke, 2013). The purpose of the framework is not to provide generic modules suitable for all circumstances, but rather act as a platform for modifying or developing models for a given project.
+The purpose of `bfw` is to establish a framework for conducting Bayesian
+analysis, using MCMC and JAGS (Plummer, 2003). The framework provides
+several modules to conduct linear and non-linear (hierarchical)
+analyses, and allows the use of custom functions and complex JAGS
+models.
 
-List of current modules
------------------------
+Derived from the excellent work of Kruschke (2015), the goal of the
+framework is to easily estimate parameter values and the stability of
+estimates from the *highest density interval* (HDI), make null value
+assessment through *region of practical equivalence testing* (ROPE) and
+conduct convergence diagnostics (e.g., Gelman & Rubin, 1992). Though the
+initial version only support plotting mean data (including repeated
+measures), future releases will support other types of visualizations.
 
--   Bernoulli trials
--   Covariate estimations (including correlation and Cronbach's alpha)
--   Fit observed and latent data (e.g., SEM, CFA, mediation models)
--   Bayesian equivalent of Cohen's kappa
--   Mean and standard deviation estimations
--   Predict metric values (cf., ANOVA)
--   Predict nominal values (cf., chi-square test)
--   Simple, multiple and hierarchical regression
--   Softmax regression (i.e., multinomial logistic regression)
+Users are encouraged to apply justified priors by modifying existing
+JAGS models found in `extdata/Models` or by adding custom models.
+Similarly, one might modify models to conduct posterior predictive
+checks (see Kruschke, 2013). The purpose of the framework is not to
+provide generic modules suitable for all circumstances, but rather act
+as a platform for modifying or developing models for a given project.
 
-Prerequisites
--------------
+## List of current modules
 
--   JAGS (&gt;=4.3.0): <http://mcmc-jags.sourceforge.net/>
--   Java JDK (&gt;=1.4): <https://www.java.com/en/download/manual.jsp>
+  - Bernoulli trials
+  - Covariate estimations (including correlation and Cronbach’s alpha)
+  - Fit observed and latent data (e.g., SEM, CFA, mediation models)
+  - Bayesian equivalent of Cohen’s kappa
+  - Mean and standard deviation estimations
+  - Predict metric values (cf., ANOVA)
+  - Predict nominal values (cf., chi-square test)
+  - Simple, multiple and hierarchical regression
+  - Softmax regression (i.e., multinomial logistic regression)
 
-Dependencies
-------------
+## Prerequisites
 
-Dependencies are automatically installed from CRAN. By default, outdated dependencies are automatically upgraded.
+  - JAGS (\>=4.3.0): <http://mcmc-jags.sourceforge.net/>
+  - Java JDK (\>=1.4): <https://www.java.com/en/download/manual.jsp>
 
-Installing
-----------
+## Dependencies
 
-You can install `bfw` from GitHub. If you already have a previous version of `bfw` installed, using the command below will update to the latest development version.
+Dependencies are automatically installed from CRAN. By default, outdated
+dependencies are automatically upgraded.
+
+## Installing
+
+You can install `bfw` from GitHub. If you already have a previous
+version of `bfw` installed, using the command below will update to the
+latest development version.
 
 #### Development version ([GitHub](https://github.com/oeysan/bfw/))
 
@@ -46,7 +66,8 @@ You can install `bfw` from GitHub. If you already have a previous version of `bf
 devtools::install_github("oeysan/bfw")
 ```
 
-Please note that stable versions are hosted at CRAN, whereas GitHub versions are in active development.
+Please note that stable versions are hosted at CRAN, whereas GitHub
+versions are in active development.
 
 #### Stable version ([CRAN](https://CRAN.R-project.org/package=bfw))
 
@@ -56,13 +77,14 @@ utils::install.packages("bfw")
 
 #### Issues
 
-Please report any bugs/issues [here](https://github.com/oeysan/bfw/issues/)
+Please report any bugs/issues
+[here](https://github.com/oeysan/bfw/issues/)
 
-Example 1: Normal distributed data
-----------------------------------
+## Example 1: Normal distributed data
 
-Compute mean and standard deviation estimates.
-Please see manual for more examples.
+Compute mean and standard deviation estimates.  
+Please see manual for more
+examples.
 
 ``` r
 # Apply MASS to create normal distributed data with mean = 0 and standard deviation = 1
@@ -113,8 +135,7 @@ round(mcmc.robust$summary.MCMC[,c(3:6,9:12)],3)
 #> sigma[1]: Y 0.933 10275  0.749 1.115      0    100      0 100
 ```
 
-Example 2: Same data but with outliers
---------------------------------------
+## Example 2: Same data but with outliers
 
 ``` r
 # Add 10 outliers, each with a value of 10.
@@ -158,7 +179,7 @@ round(biased.mcmc.robust$summary.MCMC[,c(3:6,9:12)],3)
 #> sigma[1]: Y 0.679 17597  0.512 0.903      0 99.128   0.872 110
 ```
 
-### The cost of conducting robust estimates
+## The cost of conducting robust estimates
 
 ``` r
 # Running time for normal distribution analyis
@@ -169,10 +190,11 @@ biased.mcmc.robust$run.time[2] - biased.mcmc.robust$run.time[1]
 #> Time difference of 59.3 secs
 ```
 
-Example 3: Using custom function and model
-------------------------------------------
+## Example 3: Custom function and model
 
-Shamelessly adapted from [here](http://jamescurran.co.nz/2014/06/bayesian-modelling-of-left-censored-data-using-jags/) (credits to James Curran).
+Shamelessly adapted from
+[here](http://jamescurran.co.nz/2014/06/bayesian-modelling-of-left-censored-data-using-jags/)
+(credits to James Curran).
 
 ``` r
 # Create a function for left-censored data
@@ -239,21 +261,29 @@ round(custom.mcmc$summary.MCMC[,c(3,5,6,9:12)],3)
 #>     1.03     1.00     1.06     7.64    14.33    78.03 10000.00
 ```
 
-License
--------
+## License
 
-This project is licensed under the MIT License - see [LICENSE.md](LICENSE.md) for details
+This project is licensed under the MIT License - see
+[LICENSE.md](LICENSE.md) for details
 
-Acknowledgments
----------------
+## Acknowledgments
 
--   John Kruschke for his overall amazing work, and especially for his workshop at ICPSR 2016. It opened my eyes to Bayesian statistics.
--   Martyn Plummer for his work on JAGS. Cheers!
+  - John Kruschke for his overall amazing work, and especially for his
+    workshop at ICPSR 2016. It opened my eyes to Bayesian statistics.
+  - Martyn Plummer for his work on JAGS. Cheers\!
 
-References
-----------
+## References
 
--   Gelman, A., & Rubin, D. B. (1992). Inference from Iterative Simulation Using Multiple Sequences. *Statistical Science*, *7*(4), 457-472. <https://doi.org/10.1214/ss/1177011136>
--   Kruschke, J. K. (2013). Posterior predictive checks can and should be Bayesian: Comment on Gelman and Shalizi, 'Philosophy and the practice of Bayesian statistics'. *British Journal of Mathematical and Statistical Psychology*, *66*(1), 4556. <https://doi.org/10.1111/j.2044-8317.2012.02063.x>
--   Kruschke, J. K. (2015). *Doing Bayesian data analysis: a tutorial with R, JAGS, and Stan*. Academic Press: Boston.
--   Plummer, M. (2003). JAGS A program for analysis of Bayesian graphical models using Gibbs sampling (Version 4.3.0). Retrieved from <http://mcmc-jags.sourceforge.net/>
+  - Gelman, A., & Rubin, D. B. (1992). Inference from Iterative
+    Simulation Using Multiple Sequences. *Statistical Science*, *7*(4),
+    457-472. <https://doi.org/10.1214/ss/1177011136>
+  - Kruschke, J. K. (2013). Posterior predictive checks can and should
+    be Bayesian: Comment on Gelman and Shalizi, ‘Philosophy and the
+    practice of Bayesian statistics’. *British Journal of Mathematical
+    and Statistical Psychology*, *66*(1), 4556.
+    <https://doi.org/10.1111/j.2044-8317.2012.02063.x>
+  - Kruschke, J. K. (2015). *Doing Bayesian data analysis: a tutorial
+    with R, JAGS, and Stan*. Academic Press: Boston.
+  - Plummer, M. (2003). JAGS A program for analysis of Bayesian
+    graphical models using Gibbs sampling (Version 4.3.0). Retrieved
+    from <http://mcmc-jags.sourceforge.net/>

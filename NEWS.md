@@ -1,3 +1,10 @@
+# bfw 0.2.0.9000
+
+## Minor
+* Added a badge because all the cool kids have them
+* Fixed small inconsistencies in ParsePlot parameters (i.e., type png with layout pw).
+    + Defaults are now rasterized pdf on a4 layout with 12 pointsize.
+
 # bfw 0.2.0
 
 ## Critical

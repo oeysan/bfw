@@ -19,10 +19,10 @@ bfw(y = NULL, y.names = NULL, x = NULL, x.names = NULL,
   data.set = "AllData", data.format = "csv", raw.data = FALSE,
   run.robust = FALSE, merge.MCMC = FALSE, run.diag = FALSE,
   sep = ",", monochrome = TRUE, plot.colors = c("#495054",
-  "#e3e8ea"), graphic.type = "pptx", plot.size = "15,10",
-  scaling = 100, plot.aspect = NULL, vector.graphic = TRUE,
-  point.size = 15, font.type = "serif", one.file = TRUE, ppi = 300,
-  units = "in", layout = "pw", layout.inverse = FALSE,
+  "#e3e8ea"), graphic.type = "pdf", plot.size = "15,10",
+  scaling = 100, plot.aspect = NULL, vector.graphic = FALSE,
+  point.size = 12, font.type = "serif", one.file = TRUE, ppi = 300,
+  units = "in", layout = "a4", layout.inverse = FALSE,
   silent = FALSE, ...)
 }
 \arguments{
@@ -118,7 +118,7 @@ bfw(y = NULL, y.names = NULL, x = NULL, x.names = NULL,
 
 \item{plot.colors}{range of color to use, Default: c("#495054", "#e3e8ea")}
 
-\item{graphic.type}{type of graphics to use (e.g., pdf, png, ps), Default: 'pptx'}
+\item{graphic.type}{type of graphics to use (e.g., pdf, png, ps), Default: 'pdf'}
 
 \item{plot.size}{size of plot, Default: '15,10'}
 
@@ -126,9 +126,9 @@ bfw(y = NULL, y.names = NULL, x = NULL, x.names = NULL,
 
 \item{plot.aspect}{aspect of plot, Default: NULL}
 
-\item{vector.graphic}{logical, indicating whether or not visualizations should be vector or raster graphics, Default: TRUE}
+\item{vector.graphic}{logical, indicating whether or not visualizations should be vector or raster graphics, Default: FALSE}
 
-\item{point.size}{point size used for visualizations, Default: 15}
+\item{point.size}{point size used for visualizations, Default: 12}
 
 \item{font.type}{font type used for visualizations, Default: 'serif'}
 
@@ -138,7 +138,7 @@ bfw(y = NULL, y.names = NULL, x = NULL, x.names = NULL,
 
 \item{units}{define unit of length used for visualizations, Default: 'in'}
 
-\item{layout}{define a layout size for visualizations, Default: 'pw'}
+\item{layout}{define a layout size for visualizations, Default: 'a4'}
 
 \item{layout.inverse}{logical, indicating whether or not to inverse layout (e.g., landscape) , Default: FALSE}
 

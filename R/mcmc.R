@@ -18,17 +18,17 @@
 #' @param sep symbol to separate data (e.g., comma-delimited), Default: ','
 #' @param monochrome logical, indicating whether or not to use monochrome colors, else use \link[bfw]{DistinctColors}, Default: TRUE
 #' @param plot.colors range of color to use, Default: c("#495054", "#e3e8ea")
-#' @param graphic.type type of graphics to use (e.g., pdf, png, ps), Default: 'pptx'
+#' @param graphic.type type of graphics to use (e.g., pdf, png, ps), Default: 'pdf'
 #' @param plot.size size of plot, Default: '15,10'
 #' @param scaling scale size of plot, Default: 100
 #' @param plot.aspect aspect of plot, Default: NULL
-#' @param vector.graphic logical, indicating whether or not visualizations should be vector or raster graphics, Default: TRUE
-#' @param point.size point size used for visualizations, Default: 15
+#' @param vector.graphic logical, indicating whether or not visualizations should be vector or raster graphics, Default: FALSE
+#' @param point.size point size used for visualizations, Default: 12
 #' @param font.type font type used for visualizations, Default: 'serif'
 #' @param one.file logical, indicating whether or not visualizations should be placed in one or several files, Default: TRUE
 #' @param ppi define pixel per inch used for visualizations, Default: 300
 #' @param units define unit of length used for visualizations, Default: 'in'
-#' @param layout define a layout size for visualizations, Default: 'pw'
+#' @param layout define a layout size for visualizations, Default: 'a4'
 #' @param layout.inverse logical, indicating whether or not to inverse layout (e.g., landscape) , Default: FALSE
 #' @param ... further arguments passed to or from other methods
 #' @return list containing MCMC chains , MCMC chains as matrix , summary of MCMC, list of name used, list of data, the jags model, running time of analysis and names of saved files
@@ -66,17 +66,17 @@ RunMCMC <- function(jags.model,
                     sep,
                     monochrome = TRUE,
                     plot.colors = c("#495054", "#e3e8ea"),
-                    graphic.type = "png", 
+                    graphic.type = "pdf", 
                     plot.size = "15,10",
                     scaling = 100, 
                     plot.aspect = NULL, 
-                    vector.graphic = TRUE, 
-                    point.size = 15, 
+                    vector.graphic = FALSE, 
+                    point.size = 12, 
                     font.type = "serif", 
                     one.file = TRUE, 
                     ppi = 300,
                     units = "in",
-                    layout = "pw",
+                    layout = "a4",
                     layout.inverse = FALSE,
                     ...
 ) {

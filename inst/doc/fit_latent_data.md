@@ -1,12 +1,12 @@
 Fit Latent Data
 ================
 Øystein Olav Skaar
-2018-09-11
+2018-09-13
 
-Fit Latent Data
----------------
+## Fit Latent Data
 
-Enjoy this brief demonstration of the fit latent data module (i.e., a simple mediation model).
+Enjoy this brief demonstration of the fit latent data module (i.e., a
+simple mediation model).
 
 Also, please see [Fit Observed Data](fit_observed_data.md).
 

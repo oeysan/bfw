@@ -421,15 +421,16 @@ RemoveSpaces <- function(x) gsub("[[:space:]]", "", x)
 FileName <- function ( project = "Project" ,
                        subset = NULL ,
                        type = NULL ,
-                       name = "Name",
+                       name = NULL,
                        unix = TRUE ,
                        ...) {
-  sName <- paste0(project, subset)
-  if(length(type)) sName <- paste(sName, type, sep="-")
+  save.name <- paste0(project, subset)
+  if(length(type)) save.name <- paste(save.name, type, sep="-")
   unix <- if (unix) paste0("-" , as.integer(Sys.time()) )
-  sName <- RemoveSpaces(CapWords(paste0(sName, "-", name, unix)))
+  if (length(name)) name <- paste0("-" , name)
+  save.name <- RemoveSpaces(CapWords(paste0(save.name, name, unix)))
   
-  return (sName)
+  return (save.name)
 }
 
 #' @title Parse Plot
@@ -438,17 +439,17 @@ FileName <- function ( project = "Project" ,
 #' @param project.dir define where to save data, Default: 'Results/'
 #' @param project.name define name of project, Default: 'FileName(name="Plot")'
 #' @param save.data logical, indicating whether or not to save data, Default: FALSE
-#' @param graphic.type type of graphics to use (e.g., pdf, png, ps), Default: 'pptx'
+#' @param graphic.type type of graphics to use (e.g., pdf, png, ps), Default: 'pdf'
 #' @param plot.size size of plot, Default: '15,10'
 #' @param scaling scale size of plot, Default: 100
 #' @param plot.aspect aspect of plot, Default: NULL
-#' @param vector.graphic logical, indicating whether or not visualizations should be vector or raster graphics, Default: TRUE
-#' @param point.size point size used for visualizations, Default: 15
+#' @param vector.graphic logical, indicating whether or not visualizations should be vector or raster graphics, Default: FALSE
+#' @param point.size point size used for visualizations, Default: 12
 #' @param font.type font type used for visualizations, Default: 'serif'
 #' @param one.file logical, indicating whether or not visualizations should be placed in one or several files, Default: TRUE
 #' @param ppi define pixel per inch used for visualizations, Default: 300
 #' @param units define unit of length used for visualizations, Default: 'in'
-#' @param layout define a layout size for visualizations, Default: 'pw'
+#' @param layout define a layout size for visualizations, Default: 'a4'
 #' @param layout.inverse logical, indicating whether or not to inverse layout (e.g., landscape) , Default: FALSE
 #' @param return.files logical, indicating whether or not to return saved file names
 #' @param ... further arguments passed to or from other methods
@@ -514,18 +515,18 @@ FileName <- function ( project = "Project" ,
 ParsePlot <- function (plot.data,
                        project.dir = "Results/",
                        project.name = FileName(name="Plot"),
-                       graphic.type = "pptx",
+                       graphic.type = "pdf",
                        plot.size = "15,10",
                        scaling = 100,
                        plot.aspect = NULL,
                        save.data = FALSE,
-                       vector.graphic = TRUE,
-                       point.size = 15,
+                       vector.graphic = FALSE,
+                       point.size = 12,
                        font.type = "serif",
                        one.file = TRUE,
                        ppi = 300,
                        units = "in",
-                       layout = "pw",
+                       layout = "a4",
                        layout.inverse = FALSE,
                        return.files = FALSE,
                        ...) {

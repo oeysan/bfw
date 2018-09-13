@@ -1,12 +1,12 @@
 Plot Data
 ================
 Øystein Olav Skaar
-2018-09-11
+2018-09-13
 
-Plot Data
----------
+## Plot Data
 
-Enjoy this brief demonstration of the plot data module
+Enjoy this brief demonstration of the plot data
+module
 
 ### First we simulate some data and estimate means and standard deviations
 
@@ -40,7 +40,7 @@ bfw::PlotData(mcmc, run.repeated = TRUE)
 
 ### Plot the data as repeated measures
 
-<img src="../inst/extdata/data/ProjectAllData-Mean-StagesOfCheese-Plot01-1528465133.png" alt="plot1" width="800" />
+![plot1](../extdata/data/ProjectAllData-Mean-StagesOfCheese-Plot01-1528465133.png)
 
 ### Lets add some noise
 
@@ -70,9 +70,9 @@ bfw::PlotData(noise.mcmc, run.repeated = TRUE)
 
 ### Plot the noise as repeated measures
 
-<img src="../inst/extdata/data/ProjectAllData-Mean-StagesOfCheese-Plot01-1528466639.png" alt="plot2" width="800" />
+![plot2](../extdata/data/ProjectAllData-Mean-StagesOfCheese-Plot01-1528466639.png)
 
-### Let's add a group
+### Let’s add a group
 
 ``` r
 combined.data <- as.data.frame(rbind(cbind(data,"Y"), cbind(noise,"X") ), stringsAsFactors=FALSE)
@@ -116,4 +116,4 @@ bfw::PlotData(combined.data, run.split = TRUE, run.repeated = TRUE ,  monochrome
 
 ### Plot the split data
 
-<img src="../inst/extdata/data/ProjectAllData-Mean-StagesOfCheese-Plot01-1528467502.png" alt="plot3" width="800" />
+![plot3](../extdata/data/ProjectAllData-Mean-StagesOfCheese-Plot01-1528467502.png)

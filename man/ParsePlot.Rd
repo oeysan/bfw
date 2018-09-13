@@ -5,11 +5,11 @@
 \title{Parse Plot}
 \usage{
 ParsePlot(plot.data, project.dir = "Results/",
-  project.name = FileName(name = "Plot"), graphic.type = "pptx",
+  project.name = FileName(name = "Plot"), graphic.type = "pdf",
   plot.size = "15,10", scaling = 100, plot.aspect = NULL,
-  save.data = FALSE, vector.graphic = TRUE, point.size = 15,
+  save.data = FALSE, vector.graphic = FALSE, point.size = 12,
   font.type = "serif", one.file = TRUE, ppi = 300, units = "in",
-  layout = "pw", layout.inverse = FALSE, return.files = FALSE, ...)
+  layout = "a4", layout.inverse = FALSE, return.files = FALSE, ...)
 }
 \arguments{
 \item{plot.data}{a list of plots}
@@ -18,7 +18,7 @@ ParsePlot(plot.data, project.dir = "Results/",
 
 \item{project.name}{define name of project, Default: 'FileName(name="Plot")'}
 
-\item{graphic.type}{type of graphics to use (e.g., pdf, png, ps), Default: 'pptx'}
+\item{graphic.type}{type of graphics to use (e.g., pdf, png, ps), Default: 'pdf'}
 
 \item{plot.size}{size of plot, Default: '15,10'}
 
@@ -28,9 +28,9 @@ ParsePlot(plot.data, project.dir = "Results/",
 
 \item{save.data}{logical, indicating whether or not to save data, Default: FALSE}
 
-\item{vector.graphic}{logical, indicating whether or not visualizations should be vector or raster graphics, Default: TRUE}
+\item{vector.graphic}{logical, indicating whether or not visualizations should be vector or raster graphics, Default: FALSE}
 
-\item{point.size}{point size used for visualizations, Default: 15}
+\item{point.size}{point size used for visualizations, Default: 12}
 
 \item{font.type}{font type used for visualizations, Default: 'serif'}
 
@@ -40,7 +40,7 @@ ParsePlot(plot.data, project.dir = "Results/",
 
 \item{units}{define unit of length used for visualizations, Default: 'in'}
 
-\item{layout}{define a layout size for visualizations, Default: 'pw'}
+\item{layout}{define a layout size for visualizations, Default: 'a4'}
 
 \item{layout.inverse}{logical, indicating whether or not to inverse layout (e.g., landscape) , Default: FALSE}
 

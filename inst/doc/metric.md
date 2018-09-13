@@ -1,14 +1,14 @@
 Predict Metric
 ================
 Øystein Olav Skaar
-2018-09-11
+2018-09-13
 
-Predict Metric
---------------
+## Predict Metric
 
 Enjoy this brief demonstration of the predict metric module
 
-First, we steal Field's (2017) dancing cat example (please see [Cats.R](extdata/Data/Cats.R))
+First, we steal Field’s (2017) dancing cat example (please see
+[Cats.R](extdata/Data/Cats.R))
 
 ``` r
 # Define data
@@ -41,7 +41,7 @@ print(aggregate.data, digits = 3)
 #> 8 Affection   Yes      Good        5.734      0.809
 ```
 
-### Next we'll run the Bayesian model to analyze the cats
+### Next we’ll run the Bayesian model to analyze the cats
 
 ``` r
 # Use the three categorical variables and mixed contrast.
@@ -111,9 +111,13 @@ round(normal$summary.MCMC[grep("Effect size:",
 # Effect size: Food/Affection @ Yes @ Good              1.899  1.586  2.196  524
 ```
 
-### Uhm. That's a lot of obscure output
+### Uhm. That’s a lot of obscure output
 
-Let's try to break it down. For instance, the effect size is an approximation of Cohen's *d*. Now, if we take a look at **Effect size: Food/Affection vs. No/Yes vs. Evil/Good**, it clearly indicate a large, negative effect of some sort. From the aggregate table at the beginning of the vignette, we can try to interpret the result.
+Let’s try to break it down. For instance, the effect size is an
+approximation of Cohen’s *d*. Now, if we take a look at **Effect size:
+Food/Affection vs. No/Yes vs. Evil/Good**, it clearly indicate a large,
+negative effect of some sort. From the aggregate table at the beginning
+of the vignette, we can try to interpret the result.
 
 ``` r
 # Let's print the aggregate table again.
@@ -129,13 +133,26 @@ print(aggregate.data, digits = 3)
 #> 8 Affection   Yes      Good        5.734      0.809
 ```
 
-First, we can see that regardless of whether the evil cats dance or not, they prefer food (*M* = 4.98) as reward over affection (*M* = 1.73). Second we can see that good cats prefer affection (*M* = 5.63) over food (*M* = 2.43). Furthermore, we can also infer that evil cats that dance (*M* = 2.02) rate their owners about the same as evil cats that do not dance (*M* = 2.11). Good cats, similarly have fairly equal ratings regardless of whether they dance (*M* = 2.88) or not (*M* = 2.77). Finally, evil cats (*M* = 2.07) rate their owners somewhat lower than good cats (*M* = 2.83), as seen by **Effect size: Evil/Good** = -1.60.
+First, we can see that regardless of whether the evil cats dance or not,
+they prefer food (*M* = 4.98) as reward over affection (*M* = 1.73).
+Second we can see that good cats prefer affection (*M* = 5.63) over food
+(*M* = 2.43). Furthermore, we can also infer that evil cats that dance
+(*M* = 2.02) rate their owners about the same as evil cats that do not
+dance (*M* = 2.11). Good cats, similarly have fairly equal ratings
+regardless of whether they dance (*M* = 2.88) or not (*M* = 2.77).
+Finally, evil cats (*M* = 2.07) rate their owners somewhat lower than
+good cats (*M* = 2.83), as seen by **Effect size: Evil/Good** = -1.60.
 
-From the results we can claim that evil cats, in general, rate their owners higher if they get food rather than affection (*d* = -4.01), and that the opposite is true for good cats (*d* = -1.91).
+From the results we can claim that evil cats, in general, rate their
+owners higher if they get food rather than affection (*d* = -4.01), and
+that the opposite is true for good cats (*d* = -1.91).
 
-**Please note that by conducting mixed contrasts results will include both between and within contrasts, in addition to any possible combination (including ones that does not necessarily give any meaning).**
+**Please note that by conducting mixed contrasts results will include
+both between and within contrasts, in addition to any possible
+combination (including ones that does not necessarily give any
+meaning).**
 
-References
-----------
+## References
 
--   Field, A. (2017). *Discovering statistics using IBM SPSS statistics (5th edition).* Thousand Oaks, CA: SAGE Publications.
+  - Field, A. (2017). *Discovering statistics using IBM SPSS statistics
+    (5th edition).* Thousand Oaks, CA: SAGE Publications.
