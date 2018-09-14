@@ -1,7 +1,7 @@
 Fit Latent Data
 ================
 Øystein Olav Skaar
-2018-09-13
+2018-09-14
 
 ## Fit Latent Data
 

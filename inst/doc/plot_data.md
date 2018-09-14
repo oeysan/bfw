@@ -1,7 +1,7 @@
 Plot Data
 ================
 Øystein Olav Skaar
-2018-09-13
+2018-09-14
 
 ## Plot Data
 
@@ -40,7 +40,8 @@ bfw::PlotData(mcmc, run.repeated = TRUE)
 
 ### Plot the data as repeated measures
 
-![plot1](../extdata/data/ProjectAllData-Mean-StagesOfCheese-Plot01-1528465133.png)
+![plot1](../inst/extdata/data/ProjectAllData-Mean-StagesOfCheese-Plot01-1528465133.png
+"fig:")
 
 ### Lets add some noise
 
@@ -70,9 +71,10 @@ bfw::PlotData(noise.mcmc, run.repeated = TRUE)
 
 ### Plot the noise as repeated measures
 
-![plot2](../extdata/data/ProjectAllData-Mean-StagesOfCheese-Plot01-1528466639.png)
+![plot2](../inst/extdata/data/ProjectAllData-Mean-StagesOfCheese-Plot01-1528466639.png
+"fig:")
 
-### Let’s add a group
+### Let's add a group
 
 ``` r
 combined.data <- as.data.frame(rbind(cbind(data,"Y"), cbind(noise,"X") ), stringsAsFactors=FALSE)
@@ -116,4 +118,5 @@ bfw::PlotData(combined.data, run.split = TRUE, run.repeated = TRUE ,  monochrome
 
 ### Plot the split data
 
-![plot3](../extdata/data/ProjectAllData-Mean-StagesOfCheese-Plot01-1528467502.png)
+![plot3](../inst/extdata/data/ProjectAllData-Mean-StagesOfCheese-Plot01-1528467502.png
+"fig:")

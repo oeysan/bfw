@@ -1,13 +1,13 @@
 Predict Metric
 ================
 Øystein Olav Skaar
-2018-09-13
+2018-09-14
 
 ## Predict Metric
 
 Enjoy this brief demonstration of the predict metric module
 
-First, we steal Field’s (2017) dancing cat example (please see
+First, we steal Field's (2017) dancing cat example (please see
 [Cats.R](extdata/Data/Cats.R))
 
 ``` r
@@ -41,7 +41,7 @@ print(aggregate.data, digits = 3)
 #> 8 Affection   Yes      Good        5.734      0.809
 ```
 
-### Next we’ll run the Bayesian model to analyze the cats
+### Next we'll run the Bayesian model to analyze the cats
 
 ``` r
 # Use the three categorical variables and mixed contrast.
@@ -111,11 +111,11 @@ round(normal$summary.MCMC[grep("Effect size:",
 # Effect size: Food/Affection @ Yes @ Good              1.899  1.586  2.196  524
 ```
 
-### Uhm. That’s a lot of obscure output
+### Uhm. That's a lot of obscure output
 
-Let’s try to break it down. For instance, the effect size is an
-approximation of Cohen’s *d*. Now, if we take a look at **Effect size:
-Food/Affection vs. No/Yes vs. Evil/Good**, it clearly indicate a large,
+Let's try to break it down. For instance, the effect size is an
+approximation of Cohen's *d*. Now, if we take a look at **Effect size:
+Food/Affection vs. No/Yes vs. Evil/Good**, it clearly indicate a large,
 negative effect of some sort. From the aggregate table at the beginning
 of the vignette, we can try to interpret the result.
 

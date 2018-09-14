@@ -1,7 +1,7 @@
 Regression
 ================
 Øystein Olav Skaar
-2018-09-13
+2018-09-14
 
 ## Regression
 
@@ -35,22 +35,19 @@ summary(stats::lm(y ~ x, data=data.frame(data)))
 #> stats::lm(formula = y ~ x, data = data.frame(data))
 #> 
 #> Residuals:
-#>     Min      1Q  Median      3Q     Max 
-#> -2.1645 -0.6169 -0.0112  0.6460  2.4460 
+#>      Min       1Q   Median       3Q      Max 
+#> -2.04822 -0.52733  0.08872  0.59843  1.86069 
 #> 
 #> Coefficients:
-#>                           Estimate             Std. Error t value
-#> (Intercept) -0.0000000000000000139  0.0870432686210995676    0.00
-#> x            0.4999999999999996114  0.0874817765279706366    5.72
-#>               Pr(>|t|)    
-#> (Intercept)          1    
-#> x           0.00000012 ***
+#>              Estimate Std. Error t value Pr(>|t|)    
+#> (Intercept) 1.842e-17  8.704e-02   0.000        1    
+#> x           5.000e-01  8.748e-02   5.715 1.18e-07 ***
 #> ---
 #> Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 #> 
-#> Residual standard error: 0.87 on 98 degrees of freedom
-#> Multiple R-squared:  0.25,   Adjusted R-squared:  0.242 
-#> F-statistic: 32.7 on 1 and 98 DF,  p-value: 0.000000118
+#> Residual standard error: 0.8704 on 98 degrees of freedom
+#> Multiple R-squared:   0.25,  Adjusted R-squared:  0.2423 
+#> F-statistic: 32.67 on 1 and 98 DF,  p-value: 1.18e-07
 ```
 
 ### Then the regression results using the Bayesian model
@@ -93,7 +90,7 @@ biased.data <- rbind(data,noise)
 ``` r
 # Correlation
 stats::cor(biased.data)[2]
-#> [1] -0.498
+#> [1] -0.4984437
 
 # Regression
 summary(stats::lm(y ~ x, data=data.frame(biased.data)))
@@ -102,19 +99,19 @@ summary(stats::lm(y ~ x, data=data.frame(biased.data)))
 #> stats::lm(formula = y ~ x, data = data.frame(biased.data))
 #> 
 #> Residuals:
-#>    Min     1Q Median     3Q    Max 
-#> -5.272 -0.921  0.240  1.014  3.737 
+#>     Min      1Q  Median      3Q     Max 
+#> -5.2719 -0.8151  0.0270  0.8217  3.1083 
 #> 
 #> Coefficients:
-#>             Estimate Std. Error t value    Pr(>|t|)    
-#> (Intercept)  -0.0983     0.1487   -0.66        0.51    
-#> x            -0.4984     0.0867   -5.75 0.000000098 ***
+#>             Estimate Std. Error t value Pr(>|t|)    
+#> (Intercept) -0.09834    0.14868  -0.661     0.51    
+#> x           -0.49844    0.08669  -5.750 9.75e-08 ***
 #> ---
 #> Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 #> 
-#> Residual standard error: 1.49 on 100 degrees of freedom
-#> Multiple R-squared:  0.248,  Adjusted R-squared:  0.241 
-#> F-statistic: 33.1 on 1 and 100 DF,  p-value: 0.0000000975
+#> Residual standard error: 1.492 on 100 degrees of freedom
+#> Multiple R-squared:  0.2484, Adjusted R-squared:  0.2409 
+#> F-statistic: 33.06 on 1 and 100 DF,  p-value: 9.754e-08
 ```
 
 ### Finally, using Bayesian model with robust estimates

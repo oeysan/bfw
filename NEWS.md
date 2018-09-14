@@ -1,3 +1,9 @@
+# bfw 0.2.0.9003
+
+## Minor
+
+* Fixed issue of line break after HTML tags when rendering Rmd files.
+
 # bfw 0.2.0.9002
 
 ## Moderate
