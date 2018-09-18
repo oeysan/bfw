@@ -1,29 +1,47 @@
+# bfw 0.2.0.9004
+
+### Feature
+
+* Added `nominal` and `circlize` (using the `circlize` package) plot types
+    + `mean` plots are now seperated from main `PlotData` function
+    + `ParsePlot` and `PlotData` functions are also seperated
+
+#### Critical 
+
+* Fixed an error in `nominal` function
+
 # bfw 0.2.0.9003
 
-## Minor
+#### Minor
+
+* Fixed variables namnes in `nominal` function when using only 1 variable
+
+# bfw 0.2.0.9003
+
+#### Minor
 
 * Fixed issue of line break after HTML tags when rendering Rmd files.
 
 # bfw 0.2.0.9002
 
-## Moderate
+#### Moderate
 
 * Fixed `ParsePlot` to accommodate ggplots.
     + `PlotData` now returns `ggplot2` and not `grDevices::recordPlot()`
     
-## Minor
+#### Minor
 
 * Added a second badge, a more informative badge, 'cos why not.
     
 # bfw 0.2.0.9001
 
-## Minor
+#### Minor
 
 * Some typos
 
 # bfw 0.2.0.9000
 
-## Minor
+#### Minor
 
 * Added a badge because all the cool kids have them
 * Fixed small inconsistencies in ParsePlot parameters (i.e., type png with layout pw).
@@ -31,11 +49,11 @@
 
 # bfw 0.2.0
 
-## Critical
+#### Critical
 
 * Optimized `RunContrasts` to allow larger MCMC simulations
 
-## Moderate 
+#### Moderate 
 
 * Optimized `ParsePlot` to handle large amounts of plots
 * Added `png` package to `Suggests` to handle rasterized graphics for pdf/ps.
@@ -51,7 +69,7 @@
     + `adapt.steps`, the number of adaptive iterations to use at the start of each simulation
     + `burnin.steps`, the number of burnin iterations, NOT including the adaptive iterations to use for the simulation.
 
-## Minor
+#### Minor
 
 * Added a small `ETA` function to display running time of functions
 * Made feedback from MCMC functions more informative
@@ -63,7 +81,7 @@
 
 # bfw 0.1.0
 
-## Moderate
+#### Moderate
 
 * Migrated from the orphaned `ReporteRs` to `officer` (thanks to Professor Brian Ripley at University of Oxford for notifying me)
     + Added two PowerPoint templates `legacy` (4:3) and `widescreen` (16:9)
@@ -77,7 +95,7 @@
     + scales
     + truncnorm
     
-## Minor
+#### Minor
 
 * Modified title of package from `Computational Modelling` to `Computational Modeling` to conform with US spelling
 * Recoded diagnostics, making the code more efficent.

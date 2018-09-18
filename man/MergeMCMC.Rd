@@ -20,6 +20,6 @@ Merged MCMC chains
 Merge two or more MCMC simulations
 }
 \seealso{
-\code{\link[utils]{tail}}
+\code{\link[utils]{head}}
  \code{\link[runjags]{combine.mcmc}}
 }

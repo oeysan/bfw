@@ -38,5 +38,9 @@ StatsMetric(y, y.names, x, x.names, DF, params, job.group, initial.list,
 Bayesian alternative to ANOVA
 }
 \seealso{
-\code{\link[stats]{complete.cases}},\code{\link[stats]{sd}},\code{\link[stats]{aggregate}},\code{\link[stats]{median}}
+\code{\link[stats]{complete.cases}},
+\code{\link[stats]{sd}},
+\code{\link[stats]{aggregate}},
+\code{\link[stats]{median}}
+\code{\link[utils]{head}}
 }

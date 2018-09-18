@@ -1,104 +1,63 @@
-#' @title Plot Data
-#' @description Plot data as violin plot visualizing density, box plots to display HDI, whiskers to display standard deviation
-#' @param data.MCMC data to plot data from, Default: NULL
-#' @param data.type define what kind of data is being used, Default: 'Mean'
-#' @param job.title title of analysis, Default: NULL
+#' @title Plot Mean
+#' @description Create a (repeated) mean plot
+#' @param data MCMC data to plot
+#' @param monochrome logical, indicating whether or not to use monochrome colors, else use \link[bfw]{DistinctColors}, Default: TRUE
+#' @param plot.colors range of color to use, Default: c("#495054", "#e3e8ea")
+#' @param font.type font type used for visualizations, Default: 'serif'
 #' @param run.repeated logical, indicating whether or not to use repeated measures plot, Default: FALSE
 #' @param run.split logical, indicating whether or not to use split violin plot and compare distribution between groups, Default: FALSE
 #' @param y.split logical, indicating whether or not to split within (TRUE) or between groups, Default: FALSE
 #' @param ribbon.plot logical, indicating whether or not to use ribbon plot for HDI, Default: TRUE
-#' @param monochrome logical, indicating whether or not to use monochrome colors, else use \link[bfw]{DistinctColors}, Default: TRUE
-#' @param plot.colors range of color to use, Default: c("#495054", "#e3e8ea")
 #' @param y.text label on y axis, Default: 'Score'
 #' @param x.text label on x axis, Default: NULL
-#' @param project.dir define where to save data, Default: 'Results/'
-#' @param save.data logical, indicating whether or not to save data, Default: FALSE
-#' @param graphic.type type of graphics to use (e.g., pdf, png, ps), Default: 'pdf'
-#' @param plot.size size of plot, Default: '15,10'
-#' @param scaling scale size of plot, Default: 100
-#' @param plot.aspect aspect of plot, Default: NULL
-#' @param vector.graphic logical, indicating whether or not visualizations should be vector or raster graphics, Default: FALSE
-#' @param point.size point size used for visualizations, Default: 12
-#' @param font.type font type used for visualizations, Default: 'serif'
-#' @param one.file logical, indicating whether or not visualizations should be placed in one or several files, Default: TRUE
-#' @param ppi define pixel per inch used for visualizations, Default: 300
-#' @param units define unit of length used for visualizations, Default: 'in'
-#' @param layout define a layout size for visualizations, Default: 'a4'
-#' @param layout.inverse logical, indicating whether or not to inverse layout (e.g., landscape) , Default: FALSE
-#' @param ... further arguments passed to or from other methods
-#' @seealso
-#' \code{\link[ggplot2]{ggproto}},
-#' \code{\link[ggplot2]{aes}},
-#' \code{\link[ggplot2]{element_blank}},
-#' \code{\link[ggplot2]{element_line}},
-#' \code{\link[ggplot2]{element_rect}},
-#' \code{\link[ggplot2]{element_text}},
-#' \code{\link[ggplot2]{geom_boxplot}},
-#' \code{\link[ggplot2]{geom_errorbar}},
-#' \code{\link[ggplot2]{geom_line}},
-#' \code{\link[ggplot2]{geom_ribbon}},
-#' \code{\link[ggplot2]{geom_violin}},
-#' \code{\link[ggplot2]{ggplot}},
-#' \code{\link[ggplot2]{scale_fill_manual}},
-#' \code{\link[ggplot2]{scale_x_discrete}},
-#' \code{\link[ggplot2]{theme}},
-#' \code{\link[ggplot2]{layer}},
-#' \code{\link[ggplot2]{labs}}
-#' \code{\link[plyr]{arrange}}
-#' \code{\link[plyr]{rbind.fill}}
-#' \code{\link[scales]{zero_range}}
-#' \code{\link[grid]{grobTree}},
-#' \code{\link[grid]{grobName}},
-#' \code{\link[grid]{unit}}
-#' \code{\link[stats]{approxfun}}
-#' \code{\link[utils]{tail}}
-#' \code{\link[grDevices]{colorRampPalette}},
-#' \code{\link[grDevices]{dev.new}},
-#' \code{\link[grDevices]{recordPlot}},
-#' \code{\link[grDevices]{graphics.off}},
-#' \code{\link[grDevices]{dev.list}},
-#' \code{\link[grDevices]{dev.off}}
-#' @rdname PlotData
-#' @export
+#' @seealso 
+#'  \code{\link[ggplot2]{ggproto}},
+#'  \code{\link[ggplot2]{ggplot2-ggproto}},
+#'  \code{\link[ggplot2]{aes}},
+#'  \code{\link[ggplot2]{margin}},
+#'  \code{\link[ggplot2]{geom_boxplot}},
+#'  \code{\link[ggplot2]{geom_crossbar}},
+#'  \code{\link[ggplot2]{geom_path}},
+#'  \code{\link[ggplot2]{geom_ribbon}},
+#'  \code{\link[ggplot2]{geom_violin}},
+#'  \code{\link[ggplot2]{ggplot}},
+#'  \code{\link[ggplot2]{scale_manual}},
+#'  \code{\link[ggplot2]{scale_x_discrete}},
+#'  \code{\link[ggplot2]{theme}},
+#'  \code{\link[ggplot2]{layer}},
+#'  \code{\link[ggplot2]{labs}}
+#'  \code{\link[plyr]{arrange}},
+#'  \code{\link[plyr]{rbind.fill}}
+#'  \code{\link[scales]{zero_range}}
+#'  \code{\link[grid]{grid.grob}},
+#'  \code{\link[grid]{grobName}},
+#'  \code{\link[grid]{unit}}
+#'  \code{\link[stats]{approxfun}}
+#'  \code{\link[grDevices]{colorRamp}}
+#' @rdname PlotMean
+#' @export 
+#' @importFrom grid grobTree grobName unit
 #' @importFrom stats approxfun
-#' @importFrom utils tail
-#' @importFrom grDevices colorRampPalette dev.new recordPlot graphics.off dev.list dev.off
-PlotData <- function(data.MCMC = NULL,
-                     data.type = "Mean",
-                     job.title = NULL,
-                     run.repeated = FALSE,
-                     run.split = FALSE,
-                     y.split = FALSE ,
-                     ribbon.plot = TRUE,
-                     monochrome = TRUE,
-                     plot.colors = c("#495054", "#e3e8ea"),
-                     y.text = "Score",
-                     x.text = NULL,
-                     project.dir = "Results/",
-                     save.data = FALSE,
-                     graphic.type = "pdf",
-                     plot.size = "15,10",
-                     scaling = 100,
-                     plot.aspect = NULL,
-                     vector.graphic = FALSE,
-                     point.size = 12,
-                     font.type = "serif",
-                     one.file = TRUE,
-                     ppi = 300,
-                     units = "in",
-                     layout = "a4",
-                     layout.inverse = FALSE,
-                     ...
-) {
+#' @importFrom grDevices colorRampPalette
 
-
+PlotMean <- function (data,
+                      monochrome = TRUE,
+                      plot.colors = c("#495054", "#e3e8ea"),
+                      font.type = "serif",                     
+                      run.repeated = FALSE,
+                      run.split = FALSE,
+                      y.split = FALSE ,
+                      ribbon.plot = TRUE,
+                      y.text = "Score",
+                      x.text = NULL) {
+                      
   # Check if ggplots is installed
   if (!requireNamespace("ggplot2", quietly = TRUE) |
       !requireNamespace("scales", quietly = TRUE) |
       !requireNamespace("plyr", quietly = TRUE) |
       !requireNamespace("grid", quietly = TRUE)) {
     stop("Packages \"ggplot2\", \"grid\", \"plyr\" and \"scales\" are needed for this function to work. Please install them.",
-    call. = FALSE)
+         call. = FALSE)
   }
   
   # Define ggplot2 elements
@@ -129,10 +88,10 @@ PlotData <- function(data.MCMC = NULL,
                        xminv = data$x - data$violinwidth * (data$x - data$xmin),
                        xmaxv = data$x + data$violinwidth * (data$xmax - data$x) )
     groups <- data[1,"group"]
-
+    
     x.var <- if ( groups %% 2 == 1 ) data$xminv else data$xmaxv
     y.var <- if ( groups %% 2 == 1 ) data$y else -data$y
-
+    
     n.data <- plyr::arrange(transform( data, x = x.var), y.var)
     n.data <- rbind(n.data[1, ], n.data, n.data[nrow(n.data), ], n.data[1, ])
     n.data[c(1,nrow(n.data)-1,nrow(n.data)), "x"] <- round(n.data[1, "x"])
@@ -148,12 +107,12 @@ PlotData <- function(data.MCMC = NULL,
     } else {
       grob <- GeomPolygon$draw_panel(n.data, ...)
     }
-
+    
     grob$name <- grid::grobName(grob, "geom_splitviolin")
     return (grob)
-
+    
   } )
-
+  
   cQuantile <- function (data, draw_quantiles, split = FALSE, groups = NULL) {
     dens <- cumsum(data$density)/sum(data$density)
     ecdf <- stats::approxfun(dens, data$y)
@@ -169,7 +128,7 @@ PlotData <- function(data.MCMC = NULL,
                  y = rep(ys, each = 2), group = rep(ys, each = 2))
     }
   }
-
+  
   geom_splitviolin <- function (mapping = NULL,
                                 data = NULL,
                                 stat = "ydensity",
@@ -182,7 +141,7 @@ PlotData <- function(data.MCMC = NULL,
                                 inherit.aes = TRUE,
                                 ...
   ) {
-
+    
     ggplot2::layer(data = data,
                    mapping = mapping,
                    stat = stat,
@@ -197,35 +156,21 @@ PlotData <- function(data.MCMC = NULL,
                                  ...
                    ) )
   }
-
-  # Find MCMC data
-  if (is.null(data.MCMC)) {
-    get.pattern <- sprintf(".*(%s.*%s).*", data.type, RemoveSpaces(CapWords(job.title)))
-    find.file <- list.files(paste0(project.dir,"MCMC/"), pattern = toString(get.pattern))
-    data.MCMC <- utils::tail(find.file[order(find.file)],1)
-    # Seledct MCMC data
-    data.MCMC <- readRDS(paste0(project.dir,"MCMC/",data.MCMC))
-  }
-
+  
   # Extract save name
-  project.name <- data.MCMC$name.list$project.name
-
-  # Create results directory
-  if (!dir.exists(project.dir) & save.data) {
-    dir.create(project.dir)
-  }
-
+  project.name <- data$name.list$project.name
+  
   # Get variables definitions from storage
-  summary.MCMC <- data.MCMC$summary.MCMC
-  n <- data.MCMC$data.list$n
-  q <- data.MCMC$data.list$q
-  y <- data.MCMC$data.list$y
-  job.names <- data.MCMC$name.list$job.names
-  job.title <- data.MCMC$name.list$job.title
-  y.names <- data.MCMC$name.list$y.names
-  x.names <- data.MCMC$name.list$x.names
-  x.li <- data.MCMC$name.list$x.li
-
+  summary.MCMC <- data$summary.MCMC
+  n <- data$data.list$n
+  q <- data$data.list$q
+  y <- data$data.list$y
+  job.names <- data$name.list$job.names
+  job.title <- data$name.list$job.title
+  y.names <- data$name.list$y.names
+  x.names <- data$name.list$x.names
+  x.li <- data$name.list$x.li
+  
   # y length
   y.length <- length(y.names)
   # by sequence
@@ -256,10 +201,10 @@ PlotData <- function(data.MCMC = NULL,
   plot.variables <- lapply(1:max(plot.sequence), function (i) matrix(which(plot.sequence %in% i) ) )
   # Create data frame with group indices and Bayesian statistics
   plot.data <- plyr::rbind.fill(lapply(1:q, function (i) {
-
+    
     x.names <- if (!i %in% y.position) x.names[x.groups[i]] else NA
     sub.names <- if (!i %in% y.position) sub.names[(repeated.position-1)[i]] else NA
-
+    
     data.frame(
       y.names = y.names[y.groups[i]],
       x.names = x.names,
@@ -280,9 +225,9 @@ PlotData <- function(data.MCMC = NULL,
       sd.upper.mode = summary.MCMC[i, 3] + summary.MCMC[i+q, 3],
       sd.upper.max = summary.MCMC[i, 6] + summary.MCMC[i+q, 6]
     )
-
+    
   }))
-
+  
   # Create list of number of split violin plots and variables per plot
   ## Repeated split plots
   if (run.split & run.repeated) {
@@ -306,13 +251,13 @@ PlotData <- function(data.MCMC = NULL,
       t(combn(seq(i,q,max(y.sequence)),2))
     } )
   }
-
+  
   # number of plots
   n.plots <- length(plot.variables)
-
+  
   # run all plots
   run.plots <- lapply(1:n.plots, function (i) {
-
+    
     # i in n plots
     plot.variables <- plot.variables[[i]]
     # observations
@@ -321,11 +266,11 @@ PlotData <- function(data.MCMC = NULL,
     y.names <- plot.data[ c(plot.variables) , "y.names"]
     x.names <- plot.data[ c(plot.variables) , "x.names"]
     sub.names <- plot.data[ c(plot.variables) , "sub.names"]
-
+    
     # Define names for the various combination of plots (split, repeated, normal)
     ## Beware! Hasty and messy coding
     if ( (run.split & !y.split & !run.repeated) | !run.repeated ) job.names <- y.names
-
+    
     if (run.repeated & run.split) {
       plotTitle <- paste(job.title, "by", x.names)
       label.groups <- y.names
@@ -342,11 +287,11 @@ PlotData <- function(data.MCMC = NULL,
       plotTitle <- paste(job.names, "by", x.names)
       label.groups <- unique(sub.names)
     }
-
+    
     # define colors
     n.colors <- if (run.repeated & run.split) length(unique(sub.names)) else length(label.groups)
     plot.colors <- if (monochrome) grDevices::colorRampPalette(plot.colors)(n.colors) else DistinctColors(1:n.colors)
-
+    
     # create xtick names
     if (run.split) {
       x.ticks <- unique(plot.data[,1])
@@ -356,7 +301,7 @@ PlotData <- function(data.MCMC = NULL,
         bquote(atop(.(as.character(group[i])),"("*italic("n")==.(n[i])*")"))
       })
     }
-
+    
     # group names
     if (run.repeated & run.split) {
       label.groups <- unique(sub.names)
@@ -365,7 +310,7 @@ PlotData <- function(data.MCMC = NULL,
     label.groups <- lapply(1:length(label.groups), function (i) {
       bquote(.(as.character(label.groups[i]))~"("*italic("n")==.(n[i])*")")
     })
-
+    
     # box data sizes and positions
     if (run.split) {
       size.prop <- matrix(prop.table(plot.data[ c(plot.variables) , "n"  ]),ncol=2)
@@ -381,7 +326,7 @@ PlotData <- function(data.MCMC = NULL,
       if (nrow(plot.variables)==2) size <- size / 1.5
       x.pos <- seq(nrow(plot.variables))
     }
-
+    
     # more group namings
     if (run.repeated & !run.split) {
       groups <- plot.data[c(plot.variables), "y.names" ]
@@ -390,26 +335,26 @@ PlotData <- function(data.MCMC = NULL,
     } else {
       groups <- c(plot.variables)
     }
-
+    
     # Violin data
     violin.data <- data.frame(
       x = rep(seq(nrow(plot.variables)), each = nrow(y)),
       y = c(y[, c(plot.variables)]),
       groups = rep(groups, each = nrow(y))
     )
-
+    
     # Box data (Bayesian statistics)
     plot.data <- do.call(cbind,lapply(1:ncol(plot.variables), function (i) {
       t <- plot.data[ c(plot.variables[,i]) , match("sd.lower.max",names(plot.data)):ncol(plot.data)]
       if (i>1) colnames(t) <- paste0(colnames(t),i)
       return (t)
     } ) )
-
+    
     # Create factors and remove NA
     violin.data$x <- factor(violin.data$x)
     violin.data$groups <- factor(violin.data$groups)
     violin.data <- violin.data[complete.cases(violin.data), ]
-
+    
     sd.lower.max <- violin.data$sd.lower.max
     sd.lower.mode <- violin.data$sd.lower.mode
     sd.lower.min <- violin.data$sd.lower.min
@@ -429,26 +374,42 @@ PlotData <- function(data.MCMC = NULL,
     sd.upper.mode2 <- violin.data$sd.upper.mode2
     sd.upper.max2 <- violin.data$sd.upper.max2
     x <- violin.data$x
-
+    
     # Create plot
-    plot <- suppressWarnings( ggplot(plot.data) +
+    plot <- suppressWarnings(ggplot(plot.data) +
     {if (!run.split) geom_violin(data=violin.data, aes(x, y, fill=groups), draw_quantiles = 0.5, alpha = 0.9, trim=FALSE, lwd=0.1)}+
     {if (run.split) geom_splitviolin(data=violin.data, aes(x, y, fill = groups), alpha = 0.9, trim=FALSE, lwd=0.1)}+
     {if (ribbon.plot & run.repeated) geom_ribbon(aes(x=x.pos, ymin = mean.lower.hdi, ymax = mean.upper.hdi), alpha=0.3)}+
     {if (ribbon.plot & run.repeated & run.split) geom_ribbon(aes(x=x.pos2, ymin = mean.lower.hdi2, ymax = mean.upper.hdi2), alpha=0.3)}+
     {if (run.repeated) geom_line(aes(x=x.pos, y=mean.mode), lwd=0.1 )}+
     {if (run.repeated & run.split) geom_line(aes(x=x.pos2, y=mean.mode2), lwd=0.1 )}+
-      geom_boxplot(aes(x=x.pos, ymin = sd.lower.min, lower = mean.lower.hdi, middle = mean.mode, upper = mean.upper.hdi, ymax = sd.upper.min, width = size), stat = "identity", lwd=0.1)+
+      geom_boxplot(aes(x=x.pos, 
+                       ymin = sd.lower.min, 
+                       lower = mean.lower.hdi, 
+                       middle = mean.mode, 
+                       upper = mean.upper.hdi, 
+                       ymax = sd.upper.min, 
+                       width = size), 
+                   stat = "identity", 
+                   lwd=0.1)+
       geom_errorbar(aes(x=x.pos, ymin = sd.upper.min, ymax = sd.upper.max), lwd=0.05, width = 0.05)+
       geom_errorbar(aes(x=x.pos, ymin = sd.upper.mode, ymax = sd.upper.mode), lwd=0.05, width = 0.1)+
       geom_errorbar(aes(x=x.pos, ymin = sd.lower.min, ymax = sd.lower.max), lwd=0.05, width = 0.05)+
       geom_errorbar(aes(x=x.pos, ymin = sd.lower.mode, ymax = sd.lower.mode), lwd=0.05, width = 0.1)+
-      {if (run.split) geom_boxplot(aes(x=x.pos2, ymin = sd.lower.min2, lower = mean.lower.hdi2, middle = mean.mode2, upper = mean.upper.hdi2, ymax = sd.upper.min2, width = size2), stat = "identity", lwd=0.1)}+
-      {if (run.split) geom_errorbar(aes(x=x.pos2, ymin = sd.upper.min2, ymax = sd.upper.max2), lwd=0.05, width = 0.05)}+
-      {if (run.split) geom_errorbar(aes(x=x.pos2, ymin = sd.upper.mode2, ymax = sd.upper.mode2), lwd=0.05, width = 0.1)}+
-      {if (run.split) geom_errorbar(aes(x=x.pos2, ymin = sd.lower.min2, ymax = sd.lower.max2), lwd=0.05, width = 0.05)}+
-      {if (run.split) geom_errorbar(aes(x=x.pos2, ymin = sd.lower.mode2, ymax = sd.lower.mode2), lwd=0.05, width = 0.1)}+
-      {if (!run.split | run.repeated & run.split) scale_x_discrete(labels=x.ticks)}+
+      {if (run.split) geom_boxplot(aes(x=x.pos2, 
+                                       ymin = sd.lower.min2, 
+                                       lower = mean.lower.hdi2, 
+                                       middle = mean.mode2, 
+                                       upper = mean.upper.hdi2, 
+                                       ymax = sd.upper.min2, 
+                                       width = size2), 
+                                   stat = "identity", 
+                                   lwd=0.1)}+
+                                   {if (run.split) geom_errorbar(aes(x=x.pos2, ymin = sd.upper.min2, ymax = sd.upper.max2), lwd=0.05, width = 0.05)}+
+                                   {if (run.split) geom_errorbar(aes(x=x.pos2, ymin = sd.upper.mode2, ymax = sd.upper.mode2), lwd=0.05, width = 0.1)}+
+                                   {if (run.split) geom_errorbar(aes(x=x.pos2, ymin = sd.lower.min2, ymax = sd.lower.max2), lwd=0.05, width = 0.05)}+
+                                   {if (run.split) geom_errorbar(aes(x=x.pos2, ymin = sd.lower.mode2, ymax = sd.lower.mode2), lwd=0.05, width = 0.1)}+
+                                   {if (!run.split | run.repeated & run.split) scale_x_discrete(labels=x.ticks)}+
       scale_fill_manual(labels = label.groups , values = plot.colors)+
       ggplot2::labs(title=plotTitle ,x=x.text, y = y.text)+
       theme(legend.position="top",
@@ -456,7 +417,7 @@ PlotData <- function(data.MCMC = NULL,
             legend.key = element_rect(size = 1),
             legend.title=element_blank(),
             plot.title = element_text(lineheight=.8, face="bold", hjust = 0.5),
-            text = element_text(family="serif"),
+            text = element_text(family=font.type),
             panel.background = element_blank(),
             panel.grid.major.x = element_blank(),
             axis.text.x = element_text(lineheight = 9),
@@ -465,30 +426,8 @@ PlotData <- function(data.MCMC = NULL,
             {if (!run.split) theme(legend.position = "none")}+
             {if (run.split & !run.repeated) theme(axis.text.x=element_blank(),
                                                   axis.ticks.x=element_blank())}
-    )
-
-    return (plot)
-
+    )                                           
+    
   })
-
-  #  Parse plots
-  parse.plot <- ParsePlot(run.plots,
-                          project.dir = project.dir,
-                          project.name = project.name,
-                          graphic.type = graphic.type,
-                          plot.size = plot.size,
-                          save.data = save.data,
-                          vector.graphic = vector.graphic,
-                          point.size = point.size,
-                          font.type = "serif",
-                          one.file = one.file,
-                          scaling = scaling,
-                          layout = layout,
-                          layout.inverse = layout.inverse,
-                          units = units,
-                          ppi = ppi
-  )
-
-  parse.plot <- c(Plots = run.plots ,  Location = parse.plot)
-
+  
 }

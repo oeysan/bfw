@@ -156,5 +156,5 @@ main settings for bfw
 Settings act like the main framework for bfw, connecting function, model and JAGS.
 }
 \seealso{
-\code{\link[utils]{tail}},\code{\link[utils]{modifyList}},\code{\link[utils]{capture.output}}
+\code{\link[utils]{head}},\code{\link[utils]{modifyList}},\code{\link[utils]{capture.output}}
 }

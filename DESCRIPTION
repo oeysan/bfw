@@ -1,6 +1,6 @@
 Package: bfw
-Version: 0.2.0.9003
-Date: 2018-09-14
+Version: 0.2.0.9004
+Date: 2018-09-18
 Title: Bayesian Framework for Computational Modeling
 Authors@R: person( "Øystein Olav","Skaar", email="bayesianfw@gmail.com", role=c("aut","cre"))
 Maintainer: Øystein Olav Skaar <bayesianfw@gmail.com>
@@ -21,6 +21,8 @@ Imports: coda (>= 0.19-1),
          MASS (>= 7.3-47),
          runjags (>= 2.0.4-2)         
 Suggests:
+         covr (>= 3.1.0),
+         circlize (>= 0.4.4),
          ggplot2 (>= 2.2.1),
          knitr (>= 1.20),
          lavaan (>= 0.6-1),
@@ -31,8 +33,7 @@ Suggests:
          rmarkdown (>= 1.10),
          rvg (>= 0.1.9),
          scales (>= 0.5.0),
-         testthat (>= 2.0.0),
-         covr (>= 3.1.0)
+         testthat (>= 2.0.0)
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true

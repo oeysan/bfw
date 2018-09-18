@@ -68,11 +68,11 @@ StatsNominal <- function(x,
   # Fetch x parameters
   x <- TrimSplit(x)
   x.names <- if (length(x.names)) TrimSplit(x.names) else CapWords(x)
-  
+    
   # Create crosstable for x parameters
   x.data  <- as.data.frame(table(DF[, x]))
   names(x.data) <- c(x.names, "Freq") #add names
-  
+    
   # Set at n data
   n.data <- x.data
   
@@ -115,6 +115,7 @@ StatsNominal <- function(x,
   n.cell <- length(y.data) # Number of cells
   q.levels  <- apply(as.matrix(x.data[,1:n.x]), 2, function(x) length(unique(x[!is.na(x)]))) #Number of categories per x
   x.data <- as.matrix(expand.grid(lapply(q.levels, function (x) seq(x)))) # x as numeric
+    if (n.x == 1) colnames(x.data) <- x.names # Add column name if only 1 x
   xC    <- lapply(1:n.x, function (i) t(combn(unique(x.data[,i]),2))) #combinations of categorices within each x
   
   # Prior distributions
@@ -185,7 +186,7 @@ StatsNominal <- function(x,
   }),collapse="\n\n")
   
   # Create means matrix
-  means <- paste(apply(tail(factors,1)[[1]], 1, function (x) {
+  means <- paste(apply(utils::tail(factors,1)[[1]], 1, function (x) {
     
     get.letters <- letters[(10+length(x))+seq(length(x))]
     
@@ -214,7 +215,7 @@ StatsNominal <- function(x,
   }),collapse="\n\n")
   
   # Create predicted matrix
-  predicted <- paste(apply(tail(factors,1)[[1]], 1, function (x) {
+  predicted <- paste(apply(utils::tail(factors,1)[[1]], 1, function (x) {
     
     get.letters <- letters[(10+length(x))+seq(length(x))]
     letters <- paste(get.letters,collapse=",")
@@ -250,7 +251,7 @@ StatsNominal <- function(x,
   }),collapse="\n\n")
   
   # Create expected matrix
-  expected <- paste(apply(tail(factors,1)[[1]], 1, function (x) {
+  expected <- paste(apply(utils::tail(factors,1)[[1]], 1, function (x) {
     
     get.letters <- letters[(10+length(x))+seq(length(x))]
     letters <- paste(get.letters,collapse=",")
@@ -273,23 +274,9 @@ StatsNominal <- function(x,
           conditional <- "" 
         }
         
-        part.a <- sprintf("%s , 1:q.levels[%s]%s" , 
-                          get.letters[1] ,
-                          get.letters[2] ,
-                          conditional
-                          
-                          
-        )
-        part.b <- sprintf("1:q.levels[%s] , %s%s" , 
-                          get.letters[1] ,
-                          get.letters[2] ,
-                          conditional
-        )
-        part.c <- sprintf("1:q.levels[%s] , 1:q.levels[%s]%s" , 
-                          get.letters[1] , 
-                          get.letters[2] , 
-                          conditional
-        )
+        part.a <- sprintf("%s , 1:q.levels[2]%s" , get.letters[1] , conditional)
+        part.b <- sprintf("1:q.levels[1] , %s%s" , get.letters[2] , conditional)
+        part.c <- sprintf("1:q.levels[1] , 1:q.levels[2]%s" , conditional)
         
         expected <- sprintf("%s[%s] <- ( ( sum( %s[%s] ) *  \n sum( %s[%s] ) ) / \n sum( %s[%s] ) )", 
                             paste0("e",x,collapse=""),
@@ -323,6 +310,9 @@ StatsNominal <- function(x,
     paste0(start , expected , "\n" , expected.prob , end)
     
   }),collapse="\n\n")
+  
+  
+
   
   # Replace placeholders in jags model with created values
   model.name <-  paste0(model.name,n.x)

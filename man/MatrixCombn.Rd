@@ -4,12 +4,14 @@
 \alias{MatrixCombn}
 \title{Matrix Combinations}
 \usage{
-MatrixCombn(m, s, lvl, rm.last = TRUE, row.means = TRUE)
+MatrixCombn(m, s, p = NULL, lvl, rm.last = TRUE, row.means = TRUE)
 }
 \arguments{
 \item{m}{matrix to combine}
 
-\item{s}{stem name of columns to use (e.g., "m" for mean)}
+\item{s}{stem first name of columns to use (e.g., "m" for mean)}
+
+\item{p}{stem last name of columns to use (e.g., "p" for proportions)}
 
 \item{lvl}{number of levels per column}
 

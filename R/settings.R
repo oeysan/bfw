@@ -63,7 +63,7 @@
 #' @return data from MCMC \link[bfw]{RunMCMC}
 #' @details Settings act like the main framework for bfw, connecting function, model and JAGS.
 #' @seealso
-#'  \code{\link[utils]{tail}},\code{\link[utils]{modifyList}},\code{\link[utils]{capture.output}}
+#'  \code{\link[utils]{head}},\code{\link[utils]{modifyList}},\code{\link[utils]{capture.output}}
 #' @rdname bfw
 #' @export
 #' @importFrom utils tail modifyList capture.output
@@ -133,7 +133,7 @@ bfw <- function(y = NULL,
   bfw.dir <- find.package("bfw", lib.loc=NULL, quiet = TRUE)
 
   # If necessary add trailing slash to project directory
-  if ( tail(TrimSplit(project.dir,""),1) != "/") {
+  if ( utils::tail(TrimSplit(project.dir,""),1) != "/") {
     project.dir <- paste0(project.dir,"/")
   }
 
@@ -246,6 +246,7 @@ bfw <- function(y = NULL,
     project.name = project.name,
     project.dir = project.dir,
     project.data = project.data,
+    data.set = data.set,
     job.title = job.title,
     job.names = job.names,
     job.group = job.group,
@@ -258,8 +259,8 @@ bfw <- function(y = NULL,
     burnin.steps = burnin.steps,
     jags.model = jags.model,
     jags.seed = jags.seed,
-    jags.method <- jags.method,
-    jags.chains <- jags.chains
+    jags.method = jags.method,
+    jags.chains = jags.chains
   )
   
   # Update name list with name list from function

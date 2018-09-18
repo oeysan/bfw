@@ -230,8 +230,9 @@ RunMCMC <- function(jags.model,
       contrast.type <- c("b","o")
       # Create matrix combiantions for models with multiple factors
       if (length(q.levels)>1) { 
-        odds <- MatrixCombn(matrix.MCMC, "o", q.levels, row.means=FALSE)
-        matrix.MCMC <- cbind(matrix.MCMC, odds)
+        odds <- MatrixCombn(matrix.MCMC, "o", lvl = q.levels, row.means=FALSE)
+        expected.observed <- MatrixCombn(matrix.MCMC, "e,o", "p", q.levels, row.means=FALSE)
+        matrix.MCMC <- cbind(matrix.MCMC, cbind(odds, expected.observed))
       }                                                                                        
     }
     # Add effect size cohen's d for metric model
@@ -239,7 +240,7 @@ RunMCMC <- function(jags.model,
       contrast.type <- c("b","m")
       # Create matrix combiantions for models with multiple factors
       if (length(q.levels)>1) {
-        mean.diff <- MatrixCombn(matrix.MCMC, "m,s",  q.levels)
+        mean.diff <- MatrixCombn(matrix.MCMC, "m,s", lvl = q.levels)
         matrix.MCMC <- cbind(matrix.MCMC, mean.diff)
       }
     }

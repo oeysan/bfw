@@ -7,9 +7,9 @@
 <a href="man/figures/logo2.png" id="logo2" title="Logo II"><img src="man/figures/logo2.png" width="250px" alt="Logo II" /></a>
 </p>
 <p align="center">
-<a href="NEWS.md" id="news" title="News"><img src="https://img.shields.io/badge/News-2018.09.14 @ 11:20:11-purple.svg" alt="News" /></a>
+<a href="NEWS.md" id="news" title="News"><img src="https://img.shields.io/badge/News-2018.09.18 @ 19:35:09-purple.svg" alt="News" /></a>
 <a href="https://CRAN.R-project.org/package=bfw" id="cran" title="CRAN Version"><img src="https://www.r-pkg.org/badges/version/bfw" alt="CRAN Version" /></a>
-<a href="https://github.com/oeysan/bfw" id="github" title="GitHub Version"><img src="https://img.shields.io/badge/GitHub-0.2.0.9003-red.svg?style=flat-square" alt="GitHub Version" /></a>
+<a href="https://github.com/oeysan/bfw" id="github" title="GitHub Version"><img src="https://img.shields.io/badge/GitHub-0.2.0.9004-red.svg?style=flat-square" alt="GitHub Version" /></a>
 <br/>
 <a href="LICENSE.md" id="license" title="License"><img src="https://img.shields.io/badge/Licence-MIT-blue.svg" alt="License" /></a>
 <a href="https://travis-ci.org/oeysan/bfw" id="travis" title="Build Status"><img src="https://travis-ci.org/oeysan/bfw.svg?branch=master" alt="Build Status" /></a>
@@ -150,22 +150,22 @@ Example 2: Same data but with outliers
 
     # Run normal distribution analyis on biased data
     biased.mcmc <- bfw(project.data = biased.data,
-                    y = "y",
-                    saved.steps = 50000,
-                    jags.model = "mean",
-                    jags.seed = 102,
-                    ROPE = c(-0.5,0.5),
-                    silent = TRUE)
-
-    # Run t-distribution analysis on biased data
-    biased.mcmc.robust <- bfw(project.data = biased.data,
                        y = "y",
                        saved.steps = 50000,
                        jags.model = "mean",
-                       jags.seed = 103,
+                       jags.seed = 102,
                        ROPE = c(-0.5,0.5),
-                       run.robust =TRUE,
                        silent = TRUE)
+
+    # Run t-distribution analysis on biased data
+    biased.mcmc.robust <- bfw(project.data = biased.data,
+                              y = "y",
+                              saved.steps = 50000,
+                              jags.model = "mean",
+                              jags.seed = 103,
+                              ROPE = c(-0.5,0.5),
+                              run.robust =TRUE,
+                              silent = TRUE)
 
     # Use psych to describe the biased data
     psych::describe(biased.data)[,c(2:12)]
@@ -216,13 +216,14 @@ Shamelessly adapted from
       )
 
       # Return data list
-      return ( list (
-        params = "lambda",
-        initial.list = initial.list,
-        data.list = data.list,
-        n.data = as.matrix(n)
-      ))
-
+      return (
+        list (
+          params = "lambda",
+          initial.list = initial.list,
+          data.list = data.list,
+          n.data = as.matrix(n)
+          )
+        )
     }
 
     # Create a model
@@ -232,7 +233,6 @@ Shamelessly adapted from
           is.above.LOD[i] ~ dinterval(x[i], LOD[i])
           x[i] ~ dexp(lambda)
         }
-
         lambda ~ dgamma(0.001, 0.001)
       }
     "
@@ -243,12 +243,12 @@ Shamelessly adapted from
 
     # Run analysis
     custom.mcmc <- bfw(project.data = project.data,
-                custom.function = custom.function,
-                custom.model = custom.model,
-                     saved.steps = 50000,
-                     jags.seed = 100,
-                     ROPE = c(1.01,1.05),
-                silent = TRUE)
+                       custom.function = custom.function,
+                       custom.model = custom.model,
+                       saved.steps = 50000,
+                       jags.seed = 100,
+                       ROPE = c(1.01,1.05),
+                       silent = TRUE)
 
     # Print analysis
     round(custom.mcmc$summary.MCMC[,c(3,5,6,9:12)],3)
@@ -260,10 +260,11 @@ The cost of conducting robust estimates
 
     # Running time for normal distribution analyis
     biased.mcmc$run.time[2] - biased.mcmc$run.time[1]
-    #> Time difference of 7.78 secs
+    #> Time difference of 9.83 secs
+
     # Running time for t-distribution analysis
     biased.mcmc.robust$run.time[2] - biased.mcmc.robust$run.time[1]
-    #> Time difference of 59.3 secs
+    #> Time difference of 55.6 secs
 
 License
 -------
