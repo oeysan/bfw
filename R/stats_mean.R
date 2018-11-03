@@ -12,13 +12,13 @@
 #' @rdname StatsMean
 #' @export 
 
-StatsMean <- function(y,
-                      y.names,
-                      x,
-                      x.names,
+StatsMean <- function(y = NULL,
+                      y.names = NULL,
+                      x = NULL,
+                      x.names = NULL,
                       DF,
-                      params,
-                      initial.list,
+                      params = NULL,
+                      initial.list = list(),
                       ...
 ) {
 

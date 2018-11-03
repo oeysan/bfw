@@ -6,6 +6,7 @@
 #' @param x.names optional names for predictor variable(s), Default: NULL
 #' @param DF data to analyze
 #' @param params define parameters to observe, Default: NULL
+#' @param job.group for some hierarchical models with several layers of parameter names (e.g., latent and observed parameters), Default: NULL
 #' @param initial.list initial values for analysis, Default: list()
 #' @param jags.model specify which module to use
 #' @param ... further arguments passed to or from other methods
@@ -105,13 +106,14 @@
 #' @rdname StatsCovariate
 #' @export
 #' @importFrom stats complete.cases
-StatsCovariate <- function(y,
-                           y.names,
-                           x,
-                           x.names,
+StatsCovariate <- function(y = NULL,
+                           y.names = NULL,
+                           x = NULL,
+                           x.names = NULL,
                            DF,
-                           params,
-                           initial.list,
+                           params = NULL,
+                           job.group = NULL,
+                           initial.list = list(),
                            jags.model,
                            ...
 ) { 
@@ -181,22 +183,16 @@ StatsCovariate <- function(y,
   if (length(x)) {
     n.data <- data.frame(do.call(rbind,lapply(y.names, function (z) {
       m <- expand.grid(z,x.names)
-      data.frame(m,n)
+      data.frame(m,n, stringsAsFactors = FALSE)
     })))
   } else {
     # Create n data for y variables
-    n.data <- data.frame(t(combn(job.names, 2)),n)
+    n.data <- data.frame(t(combn(job.names, 2)),n, stringsAsFactors = FALSE)
   }
-  
+    
   # Paramter(s) of interest
   params <- if(length(params)) TrimSplit(params) else c("cor")
-  
-  # Add Cronbach's alpha if requested
-  if ("Alpha" %in% params) {
-    alpha <- "Alpha <- q / (q - 1) * (1 - sum(diag[]) / (sum(cov)))"
-    jags.model <- gsub("\\#ALPHA", alpha , jags.model)
-  }
-  
+    
   # Create data for Jags
   data.list <- list(
     n = n,
@@ -206,8 +202,25 @@ StatsCovariate <- function(y,
     m2 = m2
   )
   
+  # Define name group
+  if (is.null(job.group)) job.group <- list ( c("cov","cor") , c("Alpha") )
+    
+  # Add Cronbach's alpha if requested
+  if ("Alpha" %in% params) {
+    alpha <- "Alpha <- q / (q - 1) * (1 - sum(diag[]) / (sum(cov)))"
+    jags.model <- gsub("\\#ALPHA", alpha , jags.model)
+    job.names <- list(list(job.names) , list("Tau-equivalent reliability"))
+    alpha.n <- c( rep("Alpha" ,  ncol(n.data)-1) , 
+                  mean(n.data[ ,  ncol(n.data)]) )
+    n.data <- rbind(n.data , alpha.n)
+  }
+  
+  # Make certain n column in n.data is numeric
+  n.data$n <- as.numeric(n.data$n)
+    
   # Create name list
   name.list <- list(
+    job.group = job.group,
     job.names = job.names
   )
   

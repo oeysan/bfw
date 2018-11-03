@@ -22,18 +22,18 @@
 #' @rdname StatsMetric
 #' @export
 #' @importFrom stats complete.cases sd aggregate median
-StatsMetric <- function(y,
-                        y.names,
-                        x,
-                        x.names,
+StatsMetric <- function(y = NULL,
+                        y.names = NULL,
+                        x = NULL,
+                        x.names = NULL,
                         DF,
-                        params,
-                        job.group,
-                        initial.list,
+                        params = NULL,
+                        job.group = NULL,
+                        initial.list = list(),
                         model.name,
                         jags.model,
-                        custom.model,
-                        run.robust,
+                        custom.model = NULL,
+                        run.robust = FALSE,
                         ...
 ) {
   

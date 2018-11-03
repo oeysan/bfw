@@ -16,16 +16,16 @@
 #' @rdname StatsRegression
 #' @export
 #' @importFrom stats complete.cases
-StatsRegression <- function(y,
-                           y.names,
-                           x,
-                           x.names,
-                           x.steps,
-                           x.blocks,
+StatsRegression <- function(y = NULL,
+                           y.names = NULL,
+                           x = NULL,
+                           x.names = NULL,
+                           x.steps = NULL,
+                           x.blocks = NULL,
                            DF,
-                           params,
-                           job.group,
-                           initial.list,
+                           params = NULL,
+                           job.group = NULL,
+                           initial.list = list(),
                            ...
 ) {
 
@@ -41,25 +41,29 @@ StatsRegression <- function(y,
   # Number of datapoints
   n <- dim(x.matrix)[1]
 
-  # Number of blocks
-  if (is.null(x.blocks)) x.blocks <- 1
+  # Number of steps
+  x.steps <- if (is.null(x.steps)) 1 else as.numeric(x.steps)
 
   # Number of variables per block
-  x.steps <- if (is.null(x.steps)) dim(x.matrix)[2] else as.numeric(TrimSplit(x.steps))
+  x.blocks <- if (is.null(x.blocks)) dim(x.matrix)[2] else as.numeric(TrimSplit(x.blocks))
 
   # Create job.names
   y.names <- if (!is.null(y.names)) TrimSplit(y.names) else CapWords(y)
   x.names <- if (!is.null(x.names)) TrimSplit(x.names) else CapWords(x)
 
   # Create job group
-  if (is.null(job.group)) job.group <- list ( c("beta0","zbeta0") ,
-                                              c("beta","zbeta","sigma","zsigma")
+  if (is.null(job.group)) job.group <- list ( c("beta0","zbeta0","sigma","zsigma") ,
+                                              c("beta","zbeta")
   )
 
   # Final name list
-  job.names <- list(list("Intercept"),
-                    list(rep(y.names,x.blocks), x.names)
-  )
+  if (x.steps > 1) {
+    job.names <- list(list(sprintf("Intercept (block: %s)", seq(x.steps))),
+                      list(sprintf("%s (block: %s)", y.names, seq(x.steps)), x.names)
+    )
+  } else {
+    job.names <- list(list("Intercept"), list(y.names,x.names))  
+  }
 
   # Create crosstable for y parameters
   n.data <- data.frame(t(combn(job.names, 2)),n)
@@ -72,8 +76,8 @@ StatsRegression <- function(y,
     x = x.matrix,
     y = y.matrix,
     n = n,
-    n.x = x.steps,
-    q = x.blocks)
+    n.x = x.blocks,
+    q = x.steps)
 
   # Create name list
   name.list <- list(

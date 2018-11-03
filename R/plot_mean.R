@@ -10,6 +10,7 @@
 #' @param ribbon.plot logical, indicating whether or not to use ribbon plot for HDI, Default: TRUE
 #' @param y.text label on y axis, Default: 'Score'
 #' @param x.text label on x axis, Default: NULL
+#' @param remove.x logical, indicating whether or not to show x.axis information, Default: FALSE
 #' @seealso 
 #'  \code{\link[ggplot2]{ggproto}},
 #'  \code{\link[ggplot2]{ggplot2-ggproto}},
@@ -49,7 +50,8 @@ PlotMean <- function (data,
                       y.split = FALSE ,
                       ribbon.plot = TRUE,
                       y.text = "Score",
-                      x.text = NULL) {
+                      x.text = NULL,
+                      remove.x = FALSE) {
                       
   # Check if ggplots is installed
   if (!requireNamespace("ggplot2", quietly = TRUE) |
@@ -200,7 +202,7 @@ PlotMean <- function (data,
   # Lists of variables to plot
   plot.variables <- lapply(1:max(plot.sequence), function (i) matrix(which(plot.sequence %in% i) ) )
   # Create data frame with group indices and Bayesian statistics
-  plot.data <- plyr::rbind.fill(lapply(1:q, function (i) {
+  plot.data <- do.call(rbind,lapply(1:q, function (i) {
     
     x.names <- if (!i %in% y.position) x.names[x.groups[i]] else NA
     sub.names <- if (!i %in% y.position) sub.names[(repeated.position-1)[i]] else NA
@@ -272,19 +274,19 @@ PlotMean <- function (data,
     if ( (run.split & !y.split & !run.repeated) | !run.repeated ) job.names <- y.names
     
     if (run.repeated & run.split) {
-      plotTitle <- paste(job.title, "by", x.names)
+      plot.title <- paste(job.title, "by", x.names)
       label.groups <- y.names
     } else if (all(is.na(sub.names))) {
-      plotTitle <- job.title
+      plot.title <- job.title
       label.groups <- unique(y.names)
     } else if (all(sub.names[1] == sub.names) & run.repeated) {
-      plotTitle <- sprintf("%s by %s [%s]",job.title,x.names,sub.names)
+      plot.title <- sprintf("%s by %s [%s]",job.title,x.names,sub.names)
       label.groups <- unique(y.names)
     } else if (all(sub.names[1] == sub.names)) {
-      plotTitle <- sprintf("%s [%s]", x.names,sub.names)
+      plot.title <- sprintf("%s [%s]", x.names,sub.names)
       label.groups <- unique(y.names)
     } else {
-      plotTitle <- paste(job.names, "by", x.names)
+      plot.title <- paste(job.names, "by", x.names)
       label.groups <- unique(sub.names)
     }
     
@@ -411,7 +413,7 @@ PlotMean <- function (data,
                                    {if (run.split) geom_errorbar(aes(x=x.pos2, ymin = sd.lower.mode2, ymax = sd.lower.mode2), lwd=0.05, width = 0.1)}+
                                    {if (!run.split | run.repeated & run.split) scale_x_discrete(labels=x.ticks)}+
       scale_fill_manual(labels = label.groups , values = plot.colors)+
-      ggplot2::labs(title=plotTitle ,x=x.text, y = y.text)+
+      ggplot2::labs(title = plot.title , x = x.text, y = y.text)+
       theme(legend.position="top",
             legend.key.size = grid::unit(0.75, 'lines'),
             legend.key = element_rect(size = 1),
@@ -424,7 +426,7 @@ PlotMean <- function (data,
             panel.grid.major.y = element_line( size=.01, color="lightgrey"),
             axis.title.x=element_blank())+
             {if (!run.split) theme(legend.position = "none")}+
-            {if (run.split & !run.repeated) theme(axis.text.x=element_blank(),
+            {if (run.split & !run.repeated | remove.x) theme(axis.text.x=element_blank(),
                                                   axis.ticks.x=element_blank())}
     )                                           
     

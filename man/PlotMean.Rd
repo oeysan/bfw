@@ -7,7 +7,7 @@
 PlotMean(data, monochrome = TRUE, plot.colors = c("#495054",
   "#e3e8ea"), font.type = "serif", run.repeated = FALSE,
   run.split = FALSE, y.split = FALSE, ribbon.plot = TRUE,
-  y.text = "Score", x.text = NULL)
+  y.text = "Score", x.text = NULL, remove.x = FALSE)
 }
 \arguments{
 \item{data}{MCMC data to plot}
@@ -29,6 +29,8 @@ PlotMean(data, monochrome = TRUE, plot.colors = c("#495054",
 \item{y.text}{label on y axis, Default: 'Score'}
 
 \item{x.text}{label on x axis, Default: NULL}
+
+\item{remove.x}{logical, indicating whether or not to show x.axis information, Default: FALSE}
 }
 \description{
 Create a (repeated) mean plot

@@ -53,15 +53,15 @@
 #' @rdname StatsNominal
 #' @export
 
-StatsNominal <- function(x,
-                         x.names,
+StatsNominal <- function(x = NULL,
+                         x.names = NULL,
                          DF,
-                         params,
-                         job.group,
-                         initial.list,
+                         params = NULL,
+                         job.group = NULL,
+                         initial.list = list(),
                          model.name,
                          jags.model,
-                         custom.model,
+                         custom.model = NULL,
                          ...
 ) {
   

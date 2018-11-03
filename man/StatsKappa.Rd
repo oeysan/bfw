@@ -4,7 +4,8 @@
 \alias{StatsKappa}
 \title{Cohen's Kappa}
 \usage{
-StatsKappa(x, x.names, DF, params, initial.list, ...)
+StatsKappa(x = NULL, x.names = NULL, DF, params = NULL,
+  initial.list = list(), ...)
 }
 \arguments{
 \item{x}{predictor variable(s), Default: NULL}

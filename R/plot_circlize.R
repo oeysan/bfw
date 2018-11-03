@@ -1,7 +1,6 @@
 #' @title Circlize Plot
 #' @description Create a circlize plot
-#' @param category.items named items for circlize plot
-#' @param category.selects selected data for ciclize plot
+#' @param data data for circlize plot
 #' @param category.spacing spacing between category items , Default: 1.25
 #' @param category.inset inset of category items form plot , Default: c(-0.5, 0)
 #' @param monochrome logical, indicating whether or not to use monochrome colors, else use \link[bfw]{DistinctColors}, Default: TRUE
@@ -20,20 +19,28 @@
 #' @importFrom grDevices dev.new recordPlot dev.off 
 #' @importFrom graphics legend
 
-PlotCirclize <- function (category.items,
-                          category.selects,
+PlotCirclize <- function (data,
                           category.spacing = 1.2,
                           category.inset = c(-0.4, 0),
                           monochrome = TRUE,
                           plot.colors = c("#CCCCCC", "#DEDEDE"),
                           font.type = "serif") {
-  
+                          
+
   
   # Check if circlize is installed
   if (!requireNamespace("circlize", quietly = TRUE)) {
     stop("The \"circlize\" package is needed for this function to work. Please install it.",
          call. = FALSE)
   }
+  
+  # Clear circlize
+  circlize::circos.clear()
+  
+  # Fetch category, items and selects
+  category <- data$category
+  category.items <- data$category.items
+  category.selects <- data$category.selects
   
   # Set 0 as missing
   category.selects[category.selects == 0] <- NA
@@ -111,7 +118,7 @@ PlotCirclize <- function (category.items,
   # Legend title
   legend.title <- list(
     bquote(
-      bold(.(sprintf("%s (%s)", category.items,  nrow(category.selects))))
+      bold(.(sprintf("%s (%s)", category,  nrow(category.selects))))
     )
   )
   

@@ -4,8 +4,9 @@
 \alias{StatsNominal}
 \title{Predict Nominal}
 \usage{
-StatsNominal(x, x.names, DF, params, job.group, initial.list, model.name,
-  jags.model, custom.model, ...)
+StatsNominal(x = NULL, x.names = NULL, DF, params = NULL,
+  job.group = NULL, initial.list = list(), model.name, jags.model,
+  custom.model = NULL, ...)
 }
 \arguments{
 \item{x}{categorical variable(s), Default: NULL}

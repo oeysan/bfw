@@ -1,17 +1,5 @@
 #' @title Settings
 #' @description main settings for bfw
-#' @param y criterion variable(s), Default: NULL
-#' @param y.names optional names for criterion variable(s), Default: NULL
-#' @param x predictor variable(s), Default: NULL
-#' @param x.names optional names for predictor variable(s), Default: NULL
-#' @param latent latent variables, Default: NULL
-#' @param latent.names optional names for for latent variables, Default: NULL
-#' @param observed observed variable(s), Default: NULL
-#' @param observed.names optional names for for observed variable(s), Default: NULL
-#' @param additional supplemental parameters for fitted data (e.g., indirect pathways and total effect), Default: NULL
-#' @param additional.names optional names for supplemental parameters, Default: NULL
-#' @param x.steps define number of steps in hierarchical regression , Default: NULL
-#' @param x.blocks define which predictors are included in each step (e.g., for three steps "1,2,3") , Default: NULL
 #' @param job.title title of analysis, Default: NULL
 #' @param job.group for some hierarchical models with several layers of parameter names (e.g., latent and observed parameters), Default: NULL
 #' @param jags.model specify which module to use
@@ -25,12 +13,6 @@
 #' @param thinned.steps save every kth step of the original saved.steps, Default: 1
 #' @param adapt.steps the number of adaptive iterations to use at the start of each simulation, Default: NULL
 #' @param burnin.steps the number of burnin iterations, NOT including the adaptive iterations to use for the simulation, Default: NULL
-#' @param credible.region summarize uncertainty by defining a region of most credible values (e.g., 95 percent of the distribution), Default: 0.95
-#' @param ROPE define range for region of practical equivalence (e.g., c(-0.05 , 0.05), Default: NULL
-#' @param run.contrasts logical, indicating whether or not to run contrasts, Default: FALSE
-#' @param use.contrast choose from "between", "within" and "mixed". Between compare groups at different conditions. Within compare a group at different conditions. Mixed compute all comparisons
-#' @param contrasts define contrasts to use for analysis (defaults to all) , Default: NULL
-#' @param run.ppp logical, indicating whether or not to conduct ppp analysis, Default: FALSE
 #' @param initial.list initial values for analysis, Default: list()
 #' @param project.name name of project, Default: 'Project'
 #' @param project.dir define where to save data, Default: 'Results/'
@@ -44,21 +26,7 @@
 #' @param merge.MCMC logical, indicating whether or not to merge MCMC chains, Default: FALSE
 #' @param run.diag logical, indicating whether or not to run diagnostics, Default: FALSE
 #' @param sep symbol to separate data (e.g., comma-delimited), Default: ','
-#' @param monochrome logical, indicating whether or not to use monochrome colors, else use \link[bfw]{DistinctColors}, Default: TRUE
-#' @param plot.colors range of color to use, Default: c("#495054", "#e3e8ea")
-#' @param graphic.type type of graphics to use (e.g., pdf, png, ps), Default: 'pdf'
-#' @param plot.size size of plot, Default: '15,10'
-#' @param scaling scale size of plot, Default: 100
-#' @param plot.aspect aspect of plot, Default: NULL
-#' @param vector.graphic logical, indicating whether or not visualizations should be vector or raster graphics, Default: FALSE
-#' @param point.size point size used for visualizations, Default: 12
-#' @param font.type font type used for visualizations, Default: 'serif'
-#' @param one.file logical, indicating whether or not visualizations should be placed in one or several files, Default: TRUE
-#' @param ppi define pixel per inch used for visualizations, Default: 300
-#' @param units define unit of length used for visualizations, Default: 'in'
-#' @param layout define a layout size for visualizations, Default: 'a4'
-#' @param layout.inverse logical, indicating whether or not to inverse layout (e.g., landscape) , Default: FALSE
-#' @param silent logical, indicating whether or not analysis should be run silent, Default: FALSE
+#' @param silent logical, indicating whether or not to run analysis without output, Default: FALSE
 #' @param ... further arguments passed to or from other methods
 #' @return data from MCMC \link[bfw]{RunMCMC}
 #' @details Settings act like the main framework for bfw, connecting function, model and JAGS.
@@ -67,19 +35,7 @@
 #' @rdname bfw
 #' @export
 #' @importFrom utils tail modifyList capture.output
-bfw <- function(y = NULL,
-                y.names = NULL,
-                x = NULL,
-                x.names = NULL,
-                latent = NULL,
-                latent.names = NULL,
-                observed = NULL,
-                observed.names = NULL,
-                additional = NULL,
-                additional.names = NULL,
-                x.steps = NULL,
-                x.blocks = NULL,
-                job.title = NULL,
+bfw <- function(job.title = NULL,
                 job.group = NULL,
                 jags.model,
                 jags.seed = NULL,
@@ -92,12 +48,6 @@ bfw <- function(y = NULL,
                 thinned.steps = 1,
                 adapt.steps = NULL,
                 burnin.steps = NULL,
-                credible.region = 0.95,
-                ROPE = NULL,
-                run.contrasts = FALSE,
-                use.contrast = "between",
-                contrasts = NULL,
-                run.ppp = FALSE,
                 initial.list = list(),
                 project.name = "Project",
                 project.dir = "Results/",
@@ -111,20 +61,6 @@ bfw <- function(y = NULL,
                 merge.MCMC = FALSE,
                 run.diag = FALSE,
                 sep = ",",
-                monochrome = TRUE,
-                plot.colors = c("#495054", "#e3e8ea"),
-                graphic.type = "pdf",
-                plot.size = "15,10",
-                scaling = 100,
-                plot.aspect = NULL,
-                vector.graphic = FALSE,
-                point.size = 12,
-                font.type = "serif",
-                one.file = TRUE,
-                ppi = 300,
-                units = "in",
-                layout = "a4",
-                layout.inverse = FALSE,
                 silent = FALSE,
                 ...
 ) {
@@ -195,6 +131,7 @@ bfw <- function(y = NULL,
     # Select model function
     stats.model <- eval(parse(text=paste0("Stats",model.type)))
   }
+  
   # If custom jags model
   if (length(custom.model)) {
     model.name <- paste0("Custom JAGS model")
@@ -220,12 +157,14 @@ bfw <- function(y = NULL,
   
   # Get arguments from model function
   model.arguments  <- TrimSplit(names(formals(stats.model)))
-  # Create argument list
-  model.arguments  <- paste0(paste(model.arguments,
-                                   model.arguments,sep="="),
-                             collapse=",")
+
+  # Create argument list not defined by user
+  model.arguments <- paste0(unlist(lapply(model.arguments, function (arg) {
+    if (exists(arg) & arg != "...") sprintf("%s = %s", arg , arg)
+  })), collapse = ",")  
+                        
   # Create data list from model from specified argument list
-  stats.model <- eval(parse(text=sprintf("stats.model(%s)" , model.arguments)))
+  stats.model <- eval(parse(text=sprintf("stats.model(%s , ...)" , model.arguments)))
 
   # assign attributes from stats.model
   for (i in 1:length(stats.model)){
@@ -236,10 +175,33 @@ bfw <- function(y = NULL,
   if (is.null(jags.seed)) jags.seed <- sample(1:10^6,1)
 
   # Create save name
+  if (run.robust) {
+    job.title <- if (is.null(job.title)) "Robust" else paste0(job.title,"-Robust")
+  }
   project.name <- FileName( project.name , data.set , model.type , job.title , time.stamp)
   
   # Tidy up JAGS model
   jags.model <- TidyCode(jags.model)
+  
+  # Number of adapting steps
+  if (!length(adapt.steps)) adapt.steps <- max ( (saved.steps * 5) / 100 , 2000 )
+  
+  # Number of burn-in steps
+  if (!length(burnin.steps)) burnin.steps <- max ( (saved.steps * 7.5) / 100 , 3000 )
+  
+  # Runjags options
+  
+  # Disable redundant warnings
+  try( runjags::runjags.options( inits.warning=FALSE , rng.warning=FALSE ) )
+  
+  # Set runjags method and number of chains
+  if (!length(jags.method)) {
+    detect.cores <- parallel::detectCores()
+    jags.method <- if ( !is.finite(detect.cores || detect.cores < 4) ) "simple" else "parallel"
+  }
+  if (!length(jags.chains)) {
+    jags.chains <- if ( detect.cores >= 4 ) 4 else detect.cores
+  }
 
   # Create name list
   tmp.list <- list(
@@ -277,31 +239,12 @@ bfw <- function(y = NULL,
                     initial.list = initial.list,
                     saved.steps = saved.steps,
                     thinned.steps = thinned.steps,
-                    run.contrasts = run.contrasts,
-                    use.contrast = use.contrast,
-                    contrasts = contrasts,
-                    run.ppp = run.ppp,
                     n.data = n.data,
-                    credible.region = credible.region,
-                    ROPE = ROPE,
                     merge.MCMC = merge.MCMC,
                     run.diag = run.diag,
                     sep = sep,
-                    monochrome = monochrome,
-                    plot.colors = plot.colors,
-                    graphic.type = graphic.type,
-                    plot.size = plot.size,
-                    scaling = scaling,
-                    plot.aspect = plot.aspect,
                     save.data = save.data,
-                    vector.graphic = vector.graphic,
-                    point.size = point.size,
-                    font.type = font.type,
-                    one.file = one.file,
-                    ppi = 300,
-                    units = units,
-                    layout = layout,
-                    layout.inverse = layout.inverse)
+                    ...)
 
   # Run MCMC
   if (silent) {

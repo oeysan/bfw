@@ -1,3 +1,28 @@
+# bfw 0.2.0.9005
+
+### Feature
+
+* Updated `CFA` function to include correlation matrix
+* Added a option to run `PPP` for every kth length of MCMC chains (Default is every 10th)
+
+#### Moderate
+
+* Optimized `RunContrasts` to allow larger MCMC simulations (2nd review)
+
+#### Minor
+
+* Fixed `plot_data` vignette
+* Updated `README`
+* Fixed title bug in `circlize` plots
+* Added `RemoveGarbage` function to clear up working memory
+* Added `MultiGrep`  function to use multiple patterns to select an element from a vector
+* Fixed bug in `kappa` function
+* Fixed bug in `covariate` function
+* Fixed inlinde comment bug in `TidyCode` function
+* Added option to define which parameters to use for diagnostics
+* Removed (some of the...) unnecessary arguments in `bfw` function
+* Added a `apa` PowerPoint template
+
 # bfw 0.2.0.9004
 
 ### Feature

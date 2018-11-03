@@ -6,15 +6,17 @@
 #' @param data.list list of data
 #' @param initial.list initial values for analysis, Default: list()
 #' @param run.contrasts logical, indicating whether or not to run contrasts, Default: FALSE
-#' @param use.contrast choose from "between", "within" and "mixed". Between compare groups at different conditions. Within compare a group at different conditions. Mixed compute all comparisons. 
+#' @param use.contrast choose from "between", "within" and "mixed". Between compare groups at different conditions. Within compare a group at different conditions. Mixed compute all comparisons, Default: "between",
 #' @param contrasts define contrasts to use for analysis (defaults to all) , Default: NULL
 #' @param run.ppp logical, indicating whether or not to conduct ppp analysis, Default: FALSE
+#' @param k.ppp run ppp for every kth length of MCMC chains, Default: 10
 #' @param n.data sample size for each parameter
 #' @param credible.region summarize uncertainty by defining a region of most credible values (e.g., 95 percent of the distribution), Default: 0.95
 #' @param save.data logical, indicating whether or not to save data, Default: FALSE
 #' @param ROPE define range for region of practical equivalence (e.g., c(-0.05 , 0.05), Default: NULL
 #' @param merge.MCMC logical, indicating whether or not to merge MCMC chains, Default: FALSE
 #' @param run.diag logical, indicating whether or not to run diagnostics, Default: FALSE
+#' @param param.diag define parameters to use for diagnostics, default equals all parameters, Default: NULL
 #' @param sep symbol to separate data (e.g., comma-delimited), Default: ','
 #' @param monochrome logical, indicating whether or not to use monochrome colors, else use \link[bfw]{DistinctColors}, Default: TRUE
 #' @param plot.colors range of color to use, Default: c("#495054", "#e3e8ea")
@@ -49,21 +51,23 @@
 #' @importFrom MASS mvrnorm 
 #' @importFrom utils write.table
 RunMCMC <- function(jags.model, 
-                    params, 
+                    params = NULL, 
                     name.list,
                     data.list, 
-                    initial.list,
-                    run.contrasts,
-                    use.contrast,
-                    contrasts,
-                    run.ppp,
+                    initial.list  = list(),
+                    run.contrasts = FALSE,
+                    use.contrast = "between",
+                    contrasts = NULL,
+                    run.ppp = FALSE,
+                    k.ppp = 10,
                     n.data,
-                    credible.region, 
+                    credible.region = 0.95, 
                     save.data = FALSE, 
-                    ROPE,
-                    merge.MCMC, 
-                    run.diag,
-                    sep,
+                    ROPE = NULL,
+                    merge.MCMC = FALSE, 
+                    run.diag = FALSE,
+                    param.diag = NULL,
+                    sep = ",",
                     monochrome = TRUE,
                     plot.colors = c("#495054", "#e3e8ea"),
                     graphic.type = "pdf", 
@@ -100,24 +104,7 @@ RunMCMC <- function(jags.model,
   
   # Add jags seed to initial list
   initial.list <- c(initial.list, .RNG.seed = jags.seed)
-  
-  # Number of adapting steps
-  if (!length(adapt.steps)) adapt.steps <- max ( (saved.steps * 5) / 100 , 2000 )
-  # Number of burn-in steps
-  if (!length(burnin.steps)) burnin.steps <- max ( (saved.steps * 7.5) / 100 , 3000 )
-  
-  # Runjags options
-  # Disable redundant warnings
-  try( runjags::runjags.options( inits.warning=FALSE , rng.warning=FALSE ) )
-  # Set runjags method and number of chains
-  if (!length(jags.method)) {
-    detect.cores <- parallel::detectCores()
-    jags.method <- if ( !is.finite(detect.cores || detect.cores < 4) ) "simple" else "parallel"
-  }
-  if (!length(jags.chains)) {
-    jags.chains <- if ( detect.cores >= 4 ) 4 else detect.cores
-  }
-  
+      
   # Number of samples
   n.samples <- ceiling(saved.steps / jags.chains)
   
@@ -153,8 +140,13 @@ RunMCMC <- function(jags.model,
     data.MCMC <- merge.MCMC
   }
   
+  # Clean up working memory
+  RemoveGarbage("jags.data")
+  
   # Treat results as matrix for further examination
   matrix.MCMC <- as.matrix(data.MCMC)
+  # Sort matrix by column names
+  if (ncol(matrix.MCMC)>1) matrix.MCMC <- matrix.MCMC[, order(colnames(matrix.MCMC))]
   
   # Append bracket (ie., [1] ) for naming purposes
   colnames(matrix.MCMC) <- unlist(lapply(colnames(matrix.MCMC), function (x) if(regexpr('\\[', x)[1]<0) paste0(x,"[1]") else x ))
@@ -163,12 +155,19 @@ RunMCMC <- function(jags.model,
   # Diagnostics
   if (run.diag) {
     cat("\nConducting diagnostics. Please wait.\n")
+    
     diag.start.time  <- Sys.time()
-    diag.length <- length(coda::varnames(data.MCMC))
+    if (length(param.diag)) {
+      param.diag <- grep(paste(TrimSplit(param.diag),collapse="|"), 
+                         coda::varnames(data.MCMC), value = TRUE)
+    } else {
+      param.diag <- coda::varnames(data.MCMC)
+    }
+    diag.length <- length(param.diag)
     diag.plots <- lapply(1:diag.length, function(i) { 
       
-      x <- coda::varnames(data.MCMC)[i]    
-
+      x <- param.diag[i]    
+      
       if (stats::sd(matrix.MCMC[,x]) > 0) {
         diag <- DiagMCMC(data.MCMC = data.MCMC, 
                          par.name = x, 
@@ -183,20 +182,18 @@ RunMCMC <- function(jags.model,
       ETA(diag.start.time , i , diag.length)
       
       return (diag)
-
+      
     } )
-
+    
     # Adding names to diagnostics 
-    names(diag.plots) <- coda::varnames(data.MCMC)
+    names(diag.plots) <- param.diag
     
     if (save.data) {
       cat("\nAdjusting and saving diagnostic plots. Please wait.\n")
       
-      diag.plots <- diag.plots[lapply(diag.plots,length)>1]
-
       #  Save plots as PowerPoint, Default is raster graphics. 
       ## Change vector.graphic to TRUE if needed (not recommended) 
-      ParsePlot(diag.plots,
+      ParsePlot(diag.plots[lapply(diag.plots,length)>1],
                 project.dir = paste0(project.dir,"Diagnostics/"),
                 project.name = project.name,
                 graphic.type = graphic.type, 
@@ -218,43 +215,57 @@ RunMCMC <- function(jags.model,
     
     cat("\nComputing contrasts. Please wait.\n")
     
-    # Createsum to zero contrasts for mettric and nominal models
+    # Createsum to zero contrasts for metric and nominal models
     if (model.type == "Metric" | model.type == "Nominal") {
       sum.zero <- SumToZero(q.levels, matrix.MCMC, contrasts)
-      matrix.MCMC <- cbind(matrix.MCMC, sum.zero)
     }
     
     # Add odds (and odds-ratios/cohen's d) for nominal models
     if (model.type == "Nominal") {
-        
+      
+      # Create expected and observed nominal and proportions data
+      expected.observed <- MatrixCombn(matrix.MCMC, 
+                                       "o,o,e,e", 
+                                       "NULL,p,NULL,p", 
+                                       q.levels, 
+                                       rm.last = FALSE, 
+                                       row.means=FALSE)                                                                                        
+      
+      # Remove expected and observed columns from MCMC matrix
+      matrix.MCMC <- matrix.MCMC[ , !colnames(matrix.MCMC) %in% colnames(expected.observed)]
+      
       contrast.type <- c("b","o")
-      # Create matrix combiantions for models with multiple factors
-      if (length(q.levels)>1) { 
-        odds <- MatrixCombn(matrix.MCMC, "o", lvl = q.levels, row.means=FALSE)
-        expected.observed <- MatrixCombn(matrix.MCMC, "e,o", "p", q.levels, row.means=FALSE)
-        matrix.MCMC <- cbind(matrix.MCMC, cbind(odds, expected.observed))
-      }                                                                                        
+      contrast.data <- list(sum.zero, expected.observed)
+      
     }
+    
     # Add effect size cohen's d for metric model
     if (model.type == "Metric") {
+      
+      # Create mean difference data
+      mean.diff <- MatrixCombn(matrix.MCMC, "m,s", q.levels = q.levels, rm.last = FALSE)
+      
+      # Remove mean difference columns from MCMC matrix
+      matrix.MCMC <- matrix.MCMC[ , !colnames(matrix.MCMC) %in% colnames(mean.diff)]
+      
       contrast.type <- c("b","m")
-      # Create matrix combiantions for models with multiple factors
-      if (length(q.levels)>1) {
-        mean.diff <- MatrixCombn(matrix.MCMC, "m,s", lvl = q.levels)
-        matrix.MCMC <- cbind(matrix.MCMC, mean.diff)
-      }
+      contrast.data <- list(sum.zero, mean.diff)
     }
-        
-    # Run contrasts and add contrasts to data matrix
-    done.contrasts <- do.call(cbind, lapply(contrast.type, function (x) {
-      RunContrasts(x , q.levels , use.contrast , contrasts , matrix.MCMC , job.names) 
+    
+    # Run contrasts
+    contrasts <- do.call(cbind, lapply(1:length(contrast.type), function (i) {
+      RunContrasts(contrast.type[[i]], 
+                   q.levels, 
+                   use.contrast, 
+                   contrasts, 
+                   contrast.data[[i]], 
+                   job.names)
     }))
-    matrix.MCMC <- cbind(matrix.MCMC, done.contrasts)
   }
   
   # Add R^2 if regression
   if (model.type == "Regression") { 
-    
+      
     x <- data.list$x
     n.x <- data.list$n.x
     y <- data.list$y
@@ -276,19 +287,15 @@ RunMCMC <- function(jags.model,
       adjusted.rob.r <- as.matrix(1 - (1-rob.r.squared) * ( (n-1) / (n -(q+1)) ))
       
       # Add names
-      colnames(r.squared) <- sprintf("R^2 (block: %s)",i)
-      colnames(rob.r.squared) <- sprintf("Robust R^2 (block: %s)",i)
-      colnames(adjusted.r) <- sprintf("Adjusted R^2 (block: %s)",i)
-      colnames(adjusted.rob.r) <- sprintf("Adjusted Robust R^2 (block: %s)",i)
-
+      colnames(r.squared) <- if (q>1) sprintf("R^2 (block: %s)",i) else "R^2"
+      colnames(rob.r.squared) <- if (q>1) sprintf("Robust R^2 (block: %s)",i) else "Robust R^2"
+      colnames(adjusted.r) <- if (q>1) sprintf("Adjusted R^2 (block: %s)",i) else "Adjusted R^2"
+      colnames(adjusted.rob.r) <- if (q>1) sprintf("Adjusted Robust R^2 (block: %s)",i) else "Adjusted Robust R^2"
+      
       # Return as matrix
       cbind(r.squared , rob.r.squared , adjusted.r , adjusted.rob.r)
       
     }))
-      
-    # Add R^2 to MCMC matrix  
-    matrix.MCMC <-  cbind(matrix.MCMC, r.squared)
-    
   }  
   
   # Add PPP if SEM/CFA
@@ -299,12 +306,14 @@ RunMCMC <- function(jags.model,
     n <- data.list$n
     
     ppp.start.time  <- Sys.time()
-    cov.mat <- stats::cov(y)
     pppv <- 0
+    jags.ppp <-  sample(1:nrow(matrix.MCMC), nrow(matrix.MCMC)/k.ppp)
+    
+    cov.mat <- stats::cov(y)
     cat("\nComputing PPP-value, please wait (it may take some time).\n")
-    PPP <- lapply(1:nrow(matrix.MCMC), function (i) {   
+    PPP <- lapply(1:length(jags.ppp), function (i) {   
       
-      x <- matrix.MCMC[i,]
+      x <- matrix.MCMC[jags.ppp[i],]
       # Epsilon/Error variance matrix
       eps.pos <- grep("error", names(x))
       eps.length <- length(eps.pos)
@@ -318,12 +327,12 @@ RunMCMC <- function(jags.model,
       lam.pos <- grep("lam", names(x))
       lam.length <- length(lam.pos)
       
-      lambda <- do.call( rbind, lapply(1:lam.length, function (i) c(factor.seq[i], x[lam.pos][i]) ) )
-      lam.matrix <- matrix( unlist ( lapply(1:lat, function (i) {
-        if (i < max(lat)) {
-          c ( lambda[ lambda[,1] == i , 2], rep(0,lam.length) ) 
+      lambda <- do.call( rbind, lapply(1:lam.length, function (j) c(factor.seq[j], x[lam.pos][j]) ) )
+      lam.matrix <- matrix( unlist ( lapply(1:lat, function (j) {
+        if (j < max(lat)) {
+          c ( lambda[ lambda[,1] == j , 2], rep(0,lam.length) ) 
         } else {
-          lambda[ lambda[,1] == i , 2]
+          lambda[ lambda[,1] == j , 2]
         }
       } ) ), lam.length, lat)
       
@@ -340,11 +349,11 @@ RunMCMC <- function(jags.model,
       sim.fit <- (n - 1) * (log(det(pred.sigma)) + sum(diag(solve(pred.sigma) %*% sim.sigma)) - log(det(sim.sigma)) - eps.length)
       
       # Compute PPP-value
-      if (pred.fit <= sim.fit) pppv <<- pppv + 1
+      pppv <<- if (pred.fit < sim.fit) pppv + 1 else if (pred.fit == sim.fit) pppv + 0.5 else pppv
       PPP <- as.numeric(pppv / i)     
       
-      ETA(ppp.start.time , i , nrow(matrix.MCMC))
-
+      ETA(ppp.start.time , i , length(jags.ppp))
+      
       # Create matrix with chi-square, discrepancy between predicted and simulated data and PPP
       PPP <-  as.data.frame(t(
         c("Fit (Predicted)" = pred.fit, 
@@ -358,44 +367,63 @@ RunMCMC <- function(jags.model,
     } )
     
     if (requireNamespace("plyr", quietly = TRUE)) {
-      matrix.MCMC <-  cbind(matrix.MCMC, plyr::rbind.fill(PPP))
+      PPP <-  plyr::rbind.fill(PPP)
     } else {
-      matrix.MCMC <-  cbind(matrix.MCMC, do.call(rbind,PPP))
+      PPP <-  do.call(rbind,PPP)
     }
   }
   
-  # Find params from MCMC list
-  params <- colnames(matrix.MCMC)
-  
-  # Create final posterior parameter indicies
-  summary.start.time <- Sys.time()
-  cat("\nSummarizing data of each parameter. Please wait.\n")
-  summary.MCMC <- do.call(rbind,lapply(1:length(params), function(i) {
-    
-  summary <- SumMCMC( par = matrix.MCMC[, params[i]] , 
-                      par.names = params[i], 
-                      job.names = job.names, 
-                      job.group = job.group,
-                      n.data = n.data,
-                      credible.region = credible.region, 
-                      ROPE = ROPE
+  # create list of matrices to summarize
+  list.MCMC <- list(
+    matrix = matrix.MCMC,
+    PPP = if (exists("PPP")) PPP,
+    r.squared = if (exists("r.squared")) r.squared,
+    sum.zero = if (exists("sum.zero")) sum.zero,
+    count.data = if (exists("expected.observed")) expected.observed,
+    mean.difference = if (exists("mean.diff")) mean.diff,
+    contrasts = if (exists("contrasts")) contrasts
   )
+  
+  # Remove empty plots
+  list.MCMC <- Filter(length, list.MCMC)
+  
+  summary.MCMC <- do.call(rbind,lapply(1:length(list.MCMC), function (k) {
     
-  ETA(summary.start.time , i , length(params))
-
-  return (summary)
+    # Find params from MCMC list
+    params <- colnames(list.MCMC[[k]])
+    
+    # Create final posterior parameter indicies
+    summary.start.time <- Sys.time()
+    summary.cat <- sprintf("\nSummarizing data for each parameter in %s. Please wait.\n" , 
+                           gsub("\\."," ",names(list.MCMC)[[k]]) )
+    cat(summary.cat)
+    do.call(rbind,lapply(1:length(params), function(i) {
       
-  } ) ) 
-        
+      summary <- SumMCMC( par = list.MCMC[[k]][, params[i]] , 
+                          par.names = params[i], 
+                          job.names = job.names, 
+                          job.group = job.group,
+                          n.data = n.data,
+                          credible.region = credible.region, 
+                          ROPE = ROPE
+      )
+      
+      ETA(summary.start.time , i , length(params))
+      
+      return (summary)
+      
+    })) 
+  }))
+    
   # Display completion and running time
   stop.time <- Sys.time()
   total.time <- capture.output(difftime(stop.time, start.time))
   cat(format(stop.time,"\nCompleted at %d.%m.%Y - %H:%M:%S\n"), 
       gsub("Time difference of","Running time:",total.time),"\n", sep="")
-        
+  
   # Create MCMC and summary list (without chain information)
   final.MCMC <- list( raw.MCMC = data.MCMC, 
-                      matrix.MCMC = matrix.MCMC,
+                      matrix.MCMC = do.call(cbind,list.MCMC),
                       summary.MCMC = summary.MCMC, 
                       name.list = name.list,
                       initial.list = initial.list, 
@@ -418,11 +446,27 @@ RunMCMC <- function(jags.model,
     MCMC.file.name <- paste0(project.dir,"MCMC/",project.name,".rds")
     saveRDS(  final.MCMC , file = MCMC.file.name, compress="bzip2")
     
+    # Create meta data
+    meta.final.MCMC <- list(summary.MCMC = summary.MCMC, 
+                            name.list = name.list,
+                            initial.list = initial.list, 
+                            data.list = data.list, 
+                            jags.model = jags.model,
+                            run.time = c(start.time,stop.time)
+    )
+    
+    # Save meta data
+    MCMC.file.name <- sub('-', '-META-', MCMC.file.name)
+    saveRDS(  meta.final.MCMC , file = MCMC.file.name, compress="bzip2")
+    
     # Append to final MCMC list
     final.MCMC <- c(final.MCMC, 
                     data.file.name = data.file.name,
                     MCMC.file.name = MCMC.file.name)
   }  
-      
+  
+  # Clear up working memory
+  RemoveGarbage("data.MCMC,list.MCMC")
+  
   return (final.MCMC)
 }

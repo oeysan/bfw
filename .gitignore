@@ -1,6 +1,6 @@
 Meta
 .Rproj.user
-.Rhistory
+*.Rhistory
 .RData
 .Ruserdata
 *.Rmd

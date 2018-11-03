@@ -40,4 +40,14 @@ model {
   # Priors Wishart Distribution
   psi[1:lat,1:lat] ~ dwish(psi.prec,lat)
   cov[1:lat,1:lat] <- inverse(psi[1:lat,1:lat])
+  
+  # Compute covariance matrix
+  for(k in 1:lat) {
+    cor[k , k] <- 1
+  }
+    
+  for (k in 1:length(m[, 1])) {
+    cor[m[k, 1], m[k, 2]] <- cov[m[k, 1], m[k, 2]]/(sqrt(cov[m[k, 1], m[k, 1]])*sqrt(cov[m[k, 2], m[k, 2]]))
+    cor[m[k, 2], m[k, 1]] <- cor[ m[k, 1] , m[k, 2] ]
+  }
 }

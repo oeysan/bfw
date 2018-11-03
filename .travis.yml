@@ -34,12 +34,13 @@ apt_packages:
   - libv8-dev
 
 r_packages:
-  - coda
-  - MASS
-  - runjags
+  - covr
+  - circlize
+  - dplyr
   - ggplot2
   - knitr
   - lavaan
+  - magrittr
   - officer
   - plyr
   - png
@@ -47,7 +48,8 @@ r_packages:
   - rmarkdown
   - rvg
   - scales
-
+  - testthat
+  
 notifications:
   email:
     on_success: change
@@ -55,6 +57,7 @@ notifications:
 
 r_github_packages:
   - r-lib/covr
+  - r-lib/devtools
 
 after_success:
   - Rscript -e 'covr::coveralls()'

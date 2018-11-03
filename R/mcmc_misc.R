@@ -124,39 +124,45 @@ ContrastNames <- function(items , job.names , col.names) {
 
 #' @title Matrix Combinations
 #' @description Create matrices from combinations of columns
-#' @param m matrix to combine
-#' @param s stem first name of columns to use (e.g., "m" for mean)
-#' @param p stem last name of columns to use (e.g., "p" for proportions)
-#' @param lvl number of levels per column
+#' @param matrix matrix to combine
+#' @param first.stem first name of columns to use (e.g., "m" for mean)
+#' @param last.stem optional last name of columns to use (e.g., "p" for proportions) , Default: NONE
+#' @param q.levels number of levels per column
 #' @param rm.last logical, indicating whether or not to remove last combination (i.e., m1m2m3m4) , Default: TRUE
 #' @param row.means logical, indicating whether or not to compute row means from combined columns, else use row sums, Default: TRUE
 #' @rdname MatrixCombn
 #' @export
 
-MatrixCombn <- function(m , s, p = NULL, lvl, rm.last=TRUE, row.means=TRUE) {
-  s <- TrimSplit(s)
-  grid <- expand.grid(lapply(lvl, function (x) seq(x)))
+MatrixCombn <- function(matrix , first.stem, last.stem = NULL, q.levels, rm.last=TRUE, row.means=TRUE) {
+  first.stem <- TrimSplit(first.stem)
+  last.stem <- TrimSplit(last.stem)
+  grid <- expand.grid(lapply(q.levels, function (x) seq(x)))
   q <- ncol(grid)
 
   matrix.list <- lapply(seq(q-as.numeric(rm.last)), function (i) {
     q.combn <- t(combn(as.numeric(paste0(seq(q))),i))
     q.combn <- split(q.combn, 1:nrow(q.combn))
     lapply(q.combn, function (x) {
-      cols <- expand.grid(lapply(x, function (j) seq(lvl[[j]] ) ) )
+      cols <- expand.grid(lapply(x, function (j) seq(q.levels[[j]] ) ) )
       colnames(cols) <- c(x)
       lapply(1:nrow(cols), function (k) {
         col <- paste(sprintf("grid[,%s]==%s",colnames(cols),cols[k,]),collapse="&")
-        lapply(s, function (y) {
+        lapply(1:length(first.stem), function (l) {
           
-          s <- paste0(paste0(y,seq(q),collapse=""),p)
-          s.names <- colnames(m[, grep(paste0("\\b",s,"\\b"),colnames(m))])
+          if (length(last.stem) >= l) {
+            last.stem <- if (tolower(last.stem[[l]]) != "null") last.stem[[l]]
+          } else {
+            last.stem <- NULL
+          }
+          new.stem <- paste0( paste0(first.stem[[l]], seq(q), collapse=""), last.stem )
+          s.names <- colnames(matrix[, grep(paste0("\\b", new.stem, "\\b"), colnames(matrix))])
           
-          new.col <- as.matrix(m[,s.names[eval(parse(text=paste0(col)))]])
+          new.col <- as.matrix(matrix[,s.names[eval(parse(text=paste0(col)))]])
           if (ncol(new.col)>1) {
             new.col <- if (row.means) rowMeans(new.col) else rowSums(new.col)
           }
           new.col <- as.matrix(new.col)
-          new.colname <- paste0(paste0(y,colnames(cols),collapse=""),p)
+          new.colname <- paste0(paste0(first.stem[[l]],colnames(cols),collapse=""),last.stem)
           new.colname <- sprintf("%s[%s]",new.colname,paste(cols[k,],collapse=","))
           colnames(new.col) <- new.colname
           

@@ -1,4 +1,4 @@
-# Standardize the data:
+# Standardize the data
 data {
   y.m <- mean(y)
   y.sd <- sd(y)
@@ -17,14 +17,14 @@ data {
     }
   }
 }
-# Specify the model for standardized data:
+# Specify the model for standardized data
 model {
   for (j in 1:q) {
     for (i in 1:n) {
       zY[i,j] ~ dt(zbeta0[j] + sum(zbeta[j,1:n.x[j]] * zX[i, j, 1:n.x[j]]), 1 / zsigma[j] ^ 2, nu[j])
     }
   }
-  # Priors vague on standardized scale:
+  # Priors vague on standardized scale
   for (k in 1:q) {
     zbeta0[k] ~ dnorm(0, 0.001)
     for (l in 1:n.x[k]) {
@@ -38,7 +38,7 @@ model {
     nu.prec[m] ~ dexp(1 / 29)
   }
   
-  # Transform to original scale:
+  # Transform to original scale
   for (n in 1:q) {
     beta[n, 1:n.x[n]] <- (zbeta[n, 1:n.x[n]] / x.sd[n, 1:n.x[n]]) * y.sd
     beta0[n] <- zbeta0[n] * y.sd + y.m - sum(zbeta[n, 1:n.x[n]] * x.m[n, 1:n.x[n]] / x.sd[n, 1:n.x[n]]) * y.sd

@@ -4,7 +4,8 @@
 \alias{StatsCovariate}
 \title{Covariate}
 \usage{
-StatsCovariate(y, y.names, x, x.names, DF, params, initial.list,
+StatsCovariate(y = NULL, y.names = NULL, x = NULL, x.names = NULL,
+  DF, params = NULL, job.group = NULL, initial.list = list(),
   jags.model, ...)
 }
 \arguments{
@@ -19,6 +20,8 @@ StatsCovariate(y, y.names, x, x.names, DF, params, initial.list,
 \item{DF}{data to analyze}
 
 \item{params}{define parameters to observe, Default: NULL}
+
+\item{job.group}{for some hierarchical models with several layers of parameter names (e.g., latent and observed parameters), Default: NULL}
 
 \item{initial.list}{initial values for analysis, Default: list()}
 

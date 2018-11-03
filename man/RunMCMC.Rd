@@ -4,14 +4,17 @@
 \alias{RunMCMC}
 \title{Run MCMC}
 \usage{
-RunMCMC(jags.model, params, name.list, data.list, initial.list,
-  run.contrasts, use.contrast, contrasts, run.ppp, n.data, credible.region,
-  save.data = FALSE, ROPE, merge.MCMC, run.diag, sep,
-  monochrome = TRUE, plot.colors = c("#495054", "#e3e8ea"),
-  graphic.type = "pdf", plot.size = "15,10", scaling = 100,
-  plot.aspect = NULL, vector.graphic = FALSE, point.size = 12,
-  font.type = "serif", one.file = TRUE, ppi = 300, units = "in",
-  layout = "a4", layout.inverse = FALSE, ...)
+RunMCMC(jags.model, params = NULL, name.list, data.list,
+  initial.list = list(), run.contrasts = FALSE,
+  use.contrast = "between", contrasts = NULL, run.ppp = FALSE,
+  k.ppp = 10, n.data, credible.region = 0.95, save.data = FALSE,
+  ROPE = NULL, merge.MCMC = FALSE, run.diag = FALSE,
+  param.diag = NULL, sep = ",", monochrome = TRUE,
+  plot.colors = c("#495054", "#e3e8ea"), graphic.type = "pdf",
+  plot.size = "15,10", scaling = 100, plot.aspect = NULL,
+  vector.graphic = FALSE, point.size = 12, font.type = "serif",
+  one.file = TRUE, ppi = 300, units = "in", layout = "a4",
+  layout.inverse = FALSE, ...)
 }
 \arguments{
 \item{jags.model}{specify which module to use}
@@ -26,11 +29,13 @@ RunMCMC(jags.model, params, name.list, data.list, initial.list,
 
 \item{run.contrasts}{logical, indicating whether or not to run contrasts, Default: FALSE}
 
-\item{use.contrast}{choose from "between", "within" and "mixed". Between compare groups at different conditions. Within compare a group at different conditions. Mixed compute all comparisons.}
+\item{use.contrast}{choose from "between", "within" and "mixed". Between compare groups at different conditions. Within compare a group at different conditions. Mixed compute all comparisons, Default: "between",}
 
 \item{contrasts}{define contrasts to use for analysis (defaults to all) , Default: NULL}
 
 \item{run.ppp}{logical, indicating whether or not to conduct ppp analysis, Default: FALSE}
+
+\item{k.ppp}{run ppp for every kth length of MCMC chains, Default: 10}
 
 \item{n.data}{sample size for each parameter}
 
@@ -43,6 +48,8 @@ RunMCMC(jags.model, params, name.list, data.list, initial.list,
 \item{merge.MCMC}{logical, indicating whether or not to merge MCMC chains, Default: FALSE}
 
 \item{run.diag}{logical, indicating whether or not to run diagnostics, Default: FALSE}
+
+\item{param.diag}{define parameters to use for diagnostics, default equals all parameters, Default: NULL}
 
 \item{sep}{symbol to separate data (e.g., comma-delimited), Default: ','}
 

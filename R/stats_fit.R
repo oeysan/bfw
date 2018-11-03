@@ -1,6 +1,6 @@
 #' @title Fit Data
 #' @description Apply latent or observed models to fit data (e.g., SEM, CFA, mediation)
-#' @param latent laten variables, Default: NULL
+#' @param latent latenr variables, Default: NULL
 #' @param latent.names optional names for for latent variables, Default: NULL
 #' @param observed observed variable(s), Default: NULL
 #' @param observed.names optional names for for observed variable(s), Default: NULL
@@ -21,21 +21,21 @@
 #' @rdname StatsFit
 #' @export
 #' @importFrom stats complete.cases
-StatsFit <- function(latent,
-                     latent.names,
-                     observed,
-                     observed.names,
-                     additional,
-                     additional.names,
+StatsFit <- function(latent = NULL,
+                     latent.names = NULL,
+                     observed = NULL,
+                     observed.names = NULL,
+                     additional = NULL,
+                     additional.names = NULL,
                      DF,
-                     params,
-                     job.group,
-                     initial.list,
+                     params = NULL,
+                     job.group = NULL,
+                     initial.list = list(),
                      model.name,
                      jags.model,
-                     custom.model,
-                     run.ppp,
-                     run.robust,
+                     custom.model = NULL,
+                     run.ppp = FALSE,
+                     run.robust = FALSE,
                      ...
 ) {
   
@@ -75,6 +75,9 @@ StatsFit <- function(latent,
   # Number of observed variables
   lat <- length(name.stems)
   
+  # Latent variable permutations
+  m <- t(combn(1:lat, 2))
+
   # Select appropriate model
   if (!length(custom.model)) jags.model <- ReadFile( model.name , data.format = "txt" )
   
@@ -162,7 +165,7 @@ StatsFit <- function(latent,
     params <- TrimSplit(params)
   } else {
     lambda <- if(length(observed)) c("lam", "error") else NULL
-    params <- if (run.ppp) c( lambda , "cov") else c( lambda , "beta", "zbeta")
+    params <- if (run.ppp) c( lambda , "cov" , "cor") else c( lambda , "beta", "zbeta")
   }
   
   # Create data for Jags
@@ -177,7 +180,7 @@ StatsFit <- function(latent,
       fl = fl)
     
     if (run.ppp) {
-      data.list <- c(data.list, list(psi.prec = psi.prec))
+      data.list <- c(data.list, list(psi.prec = psi.prec , m = m))
     } else {
       data.list <- c(data.list, list(b.priors = b.priors)) 
     }
@@ -190,7 +193,7 @@ StatsFit <- function(latent,
   }
   
   # Define name group
-  if (is.null(job.group)) job.group <- list ( c("lam","error") , c("cov","beta","zbeta") )
+  if (is.null(job.group)) job.group <- list ( c("lam","error") , c("cov","cor","beta","zbeta") )
   
   # Add observed names if present
   if(length(observed.names)) {
@@ -233,6 +236,7 @@ StatsFit <- function(latent,
     name.list = name.list,
     params = params,
     jags.model = jags.model,
+    run.ppp = run.ppp,
     n.data = as.matrix(n)
   ))  
 }

@@ -5,7 +5,7 @@
 \title{Summarize MCMC}
 \usage{
 SumMCMC(par, par.names, job.names = NULL, job.group = NULL,
-  credible.region = 0.95, ROPE, n.data, ...)
+  credible.region = 0.95, ROPE = NULL, n.data, ...)
 }
 \arguments{
 \item{par}{defined parameter}

@@ -283,6 +283,7 @@ Layout <- function(x = "a4", layout.inverse = FALSE) {
   x <- switch (x,
                "pt" = c(10,7.5),
                "pw" = c(13.33,7.5),
+               "apa" = c(5.1338582677, 7.2515748),
                "4a0" = c(66.2,93.6),
                "2a0" = c(46.8,66.2),
                "a0" = c(33.1,46.8),
@@ -459,7 +460,7 @@ Trim <- function(s, multi = TRUE) {
 #' @param sep symbol to separate data (e.g., comma-delimited), Default: ','
 #' @param fixed logical, if TRUE match split exactly, otherwise use regular expressions. Has priority over perl, Default: FALSE
 #' @param perl logical, indicating whether or not to use Perl-compatible regexps, Default: FALSE
-#' @param useBytes logical. If TRUE the matching is done byte-by-byte rather than character-by-character, Default: FALSE
+#' @param useBytes logical, if TRUE the matching is done byte-by-byte rather than character-by-character, Default: FALSE
 #' @param rm.empty logical. indicating whether or not to remove empty elements, Default: TRUE
 #' @details \link[base]{strsplit}
 #' @examples
@@ -515,7 +516,7 @@ VectorSub <- function ( pattern , replacement , string ) {
 #' @title Tidy Code
 #' @description Small function that clears up messy code
 #' @param tidy.code Messy code that needs cleaning
-#' @param jags logical. If TRUE run code as JAGS model, Default: TRUE
+#' @param jags logical, if TRUE run code as JAGS model, Default: TRUE
 #' @return (Somewhat) tidy code
 #' @examples
 #' messy <- "code <- function( x ) {
@@ -540,35 +541,47 @@ TidyCode <- function(tidy.code,
     tidy.code <- gsub("model[[:space:]]+\\{", "if (TidyJagsModel) {" , tidy.code)
     tidy.code <- gsub("model\\{", "if (TidyJagsModel) {" , tidy.code)
   }
-  
-  # Extract blocks from cod
+
+  # Extract blocks from code
   tidy.code <- TrimSplit(tidy.code,"\\\n")
-  
+
   # Wrap comments prior to parsing
-  invisible(lapply(grep("\\#",tidy.code), function (i){
-    tidy.code[i] <<- sprintf("invisible(\"StartPreParse%sEndPreParse\")" , tidy.code[i])
+  invisible(lapply(grep("\\#",tidy.code), function (i) {
+    if (substring(tidy.code[[i]], 1, 1) == "#") {
+      tidy.code[i] <<- sprintf("invisible(\"StartPreParse%sEndPreParse\")" , tidy.code[i])
+    } else {
+      tidy.code[i] <<- sprintf("%s\ninvisible(\"StartInlinePreParse%sEndPreParse\")" , 
+                               gsub('\\#.*', '', tidy.code[[i]]),
+                               gsub('.*\\#', '#', tidy.code[[i]]) )
+    }
   }))
-  
+
   # Parse code
   tidy.code <- base::parse(text = tidy.code, keep.source = FALSE)
-  
+
   # Collapse parsed function into a vector
   tidy.code <- sapply(tidy.code, function(e) { 
     paste(base::deparse(e, getOption("width")), collapse = "\n")
   })
-  
+
   # remove spaces between commas
   tidy.code <- gsub("\\s*\\,\\s*", "," , tidy.code)
-  
+
   # Revert comments (remove invisibility)
   tidy.code <- gsub("invisible\\(\\\"StartPreParse" , "" , tidy.code)
   tidy.code <- gsub("EndPreParse\\\")" , "" , tidy.code)
-  
+  # Revert inline comments (remove invisibility)
+  tidy.code <- gsub("\n[[:space:]]+invisible\\(\\\"StartInlinePreParse" , " " , tidy.code)
+
+
   # If jags replace placeholder
   if (jags) {
     tidy.code <- gsub("if \\(TidyJagsData\\)", "data" , tidy.code)
     tidy.code <- gsub("if \\(TidyJagsModel\\)", "model" , tidy.code)
   }
+
+  # Collapse to string
+  tidy.code <- paste0(tidy.code, collapse="\n")
   
   return (tidy.code)
 }
@@ -594,4 +607,47 @@ ETA <- function (start.time, i , total) {
   cat("\r" , eta.message , sep="")
   utils::flush.console()
   if (i == total) cat("\n")
+}
+
+#' @title Remove Garbage
+#' @description Remove variable(s) and remove garbage from memory
+#' @param v variables to remove
+#' @rdname RemoveGarbage
+#' @export
+
+RemoveGarbage <- function (v) {
+  v <- TrimSplit(v)
+   rm( list = v, envir=sys.frame(-1) ) 
+  # Garbage Collection
+  invisible(base::gc(verbose = FALSE, full = TRUE))
+}
+
+#' @title Multi Grep
+#' @description Use multiple patterns from vector to find element in another vector, with option to remove certain patterns
+#' @param find vector to find
+#' @param from vector to find from
+#' @param remove variables to remove, Default: NULL
+#' @param value logical, if TRUE returns value, Default: TRUE
+#' @rdname MultiGrep
+#' @export
+
+MultiGrep <- function (find, from , remove = NULL , value = TRUE) {
+  
+  find <- TrimSplit(find)
+  remove <- TrimSplit(remove)
+  
+  found <- grep(paste(sprintf("(?=.*%s)",find), collapse=""), 
+                from, perl = TRUE , value=value)
+  
+  if (length(remove)) {
+    remove.find <- if (value) found else from[found]
+    remove <- unique(unlist(lapply(remove, function (x) {
+      grep(paste(sprintf("(?=.*\\b%s\\b)",x), collapse=""), 
+           remove.find, perl = TRUE)
+    })))
+    found <- found[-remove]
+  }
+
+  return (found)
+  
 }

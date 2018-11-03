@@ -9,7 +9,7 @@ TidyCode(tidy.code, jags = TRUE)
 \arguments{
 \item{tidy.code}{Messy code that needs cleaning}
 
-\item{jags}{logical. If TRUE run code as JAGS model, Default: TRUE}
+\item{jags}{logical, if TRUE run code as JAGS model, Default: TRUE}
 }
 \value{
 (Somewhat) tidy code

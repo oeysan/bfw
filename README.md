@@ -7,16 +7,16 @@
 <a href="man/figures/logo2.png" id="logo2" title="Logo II"><img src="man/figures/logo2.png" width="250px" alt="Logo II" /></a>
 </p>
 <p align="center">
-<a href="NEWS.md" id="news" title="News"><img src="https://img.shields.io/badge/News-2018.09.18 @ 19:35:09-purple.svg" alt="News" /></a>
+<a href="NEWS.md" id="news" title="News"><img src="https://img.shields.io/badge/News-2018.11.03 @ 15:31:23-purple.svg" alt="News" /></a>
 <a href="https://CRAN.R-project.org/package=bfw" id="cran" title="CRAN Version"><img src="https://www.r-pkg.org/badges/version/bfw" alt="CRAN Version" /></a>
-<a href="https://github.com/oeysan/bfw" id="github" title="GitHub Version"><img src="https://img.shields.io/badge/GitHub-0.2.0.9004-red.svg?style=flat-square" alt="GitHub Version" /></a>
+<a href="https://github.com/oeysan/bfw" id="github" title="GitHub Version"><img src="https://img.shields.io/badge/GitHub-0.2.0.9005-red.svg?style=flat-square" alt="GitHub Version" /></a>
 <br/>
 <a href="LICENSE.md" id="license" title="License"><img src="https://img.shields.io/badge/Licence-MIT-blue.svg" alt="License" /></a>
 <a href="https://travis-ci.org/oeysan/bfw" id="travis" title="Build Status"><img src="https://travis-ci.org/oeysan/bfw.svg?branch=master" alt="Build Status" /></a>
 </p>
 
 What is *bfw*?
---------------
+-----------------------
 
 The purpose of *`bfw`* is to establish a framework for conducting
 Bayesian analysis in [R](https://www.r-project.org/), using
@@ -30,9 +30,7 @@ Derived from the excellent work of Kruschke (2015), the goal of the
 framework is to easily estimate parameter values and the stability of
 estimates from the *highest density interval* (HDI), make null value
 assessment through *region of practical equivalence testing* (ROPE) and
-conduct convergence diagnostics (e.g., Gelman & Rubin, 1992). Though the
-initial version only support plotting mean data (including repeated
-measures), future releases will support other types of visualizations.
+conduct convergence diagnostics (e.g., Gelman & Rubin, 1992).
 
 Users are encouraged to apply justified priors by modifying existing
 JAGS models found in `extdata/models` or by adding custom models.
@@ -45,14 +43,22 @@ List of current modules
 -----------------------
 
 -   Bernoulli trials
--   Covariate estimations (including correlation and Cronbach's alpha)
+-   Covariate estimations (including correlation and Cronbach’s alpha)
 -   Fit observed and latent data (e.g., SEM, CFA, mediation models)
--   Bayesian equivalent of Cohen's kappa
+-   Bayesian equivalent of Cohen’s kappa
 -   Mean and standard deviation estimations
 -   Predict metric values (cf., ANOVA)
 -   Predict nominal values (cf., chi-square test)
 -   Simple, multiple and hierarchical regression
 -   Softmax regression (i.e., multinomial logistic regression)
+
+List of current visualizations
+------------------------------
+
+-   Plot density of parameter values (including ROPE)
+-   Plot mean data (including repeated measures)
+-   Plot nominal data (e.g., expected and observed values)
+-   Plot circlize data (e.g., multiple response categories)
 
 Prerequisites
 -------------
@@ -193,7 +199,7 @@ Shamelessly adapted from
 (credits to James Curran).
 
     # Create a function for left-censored data
-    custom.function <- function(DF) {
+    custom.function <- function(DF, ...) {
 
       x <- as.vector(unlist(DF))
       x[x < log(29)] = NA
@@ -260,11 +266,11 @@ The cost of conducting robust estimates
 
     # Running time for normal distribution analyis
     biased.mcmc$run.time[2] - biased.mcmc$run.time[1]
-    #> Time difference of 9.83 secs
+    #> Time difference of 7.43 secs
 
     # Running time for t-distribution analysis
     biased.mcmc.robust$run.time[2] - biased.mcmc.robust$run.time[1]
-    #> Time difference of 55.6 secs
+    #> Time difference of 34.1 secs
 
 License
 -------
@@ -286,8 +292,8 @@ References
     Simulation Using Multiple Sequences. *Statistical Science*, *7*(4),
     457-472. <https://doi.org/10.1214/ss/1177011136>
 -   Kruschke, J. K. (2013). Posterior predictive checks can and should
-    be Bayesian: Comment on Gelman and Shalizi, 'Philosophy and the
-    practice of Bayesian statistics'. *British Journal of Mathematical
+    be Bayesian: Comment on Gelman and Shalizi, ‘Philosophy and the
+    practice of Bayesian statistics’. *British Journal of Mathematical
     and Statistical Psychology*, *66*(1), 4556.
     <https://doi.org/10.1111/j.2044-8317.2012.02063.x>
 -   Kruschke, J. K. (2015). *Doing Bayesian data analysis: a tutorial

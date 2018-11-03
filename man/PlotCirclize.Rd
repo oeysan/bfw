@@ -4,14 +4,12 @@
 \alias{PlotCirclize}
 \title{Circlize Plot}
 \usage{
-PlotCirclize(category.items, category.selects, category.spacing = 1.2,
-  category.inset = c(-0.4, 0), monochrome = TRUE,
-  plot.colors = c("#CCCCCC", "#DEDEDE"), font.type = "serif")
+PlotCirclize(data, category.spacing = 1.2, category.inset = c(-0.4, 0),
+  monochrome = TRUE, plot.colors = c("#CCCCCC", "#DEDEDE"),
+  font.type = "serif")
 }
 \arguments{
-\item{category.items}{named items for circlize plot}
-
-\item{category.selects}{selected data for ciclize plot}
+\item{data}{data for circlize plot}
 
 \item{category.spacing}{spacing between category items , Default: 1.25}
 

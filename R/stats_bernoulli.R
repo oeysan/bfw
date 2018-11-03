@@ -68,11 +68,11 @@
 #' @rdname StatsBernoulli
 #' @export
 #' @importFrom stats complete.cases
-StatsBernoulli <- function(x,
-                           x.names,
+StatsBernoulli <- function(x = NULL,
+                           x.names = NULL,
                            DF,
-                           params,
-                           initial.list,
+                           params = NULL,
+                           initial.list = list(),
                            ...
 ) {
 

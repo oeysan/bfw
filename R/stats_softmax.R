@@ -52,15 +52,15 @@
 #' @rdname StatsSoftmax
 #' @export
 #' @importFrom stats complete.cases
-StatsSoftmax <- function(y,
-                         y.names,
-                         x,
-                         x.names,
+StatsSoftmax <- function(y = NULL,
+                         y.names = NULL,
+                         x = NULL,
+                         x.names = NULL,
                          DF,
-                         params,
-                         job.group,
-                         initial.list,
-                         run.robust,
+                         params = NULL,
+                         job.group = NULL,
+                         initial.list = NULL,
+                         run.robust = FALSE,
                          ...
 ) {
 

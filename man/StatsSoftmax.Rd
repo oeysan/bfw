@@ -4,8 +4,9 @@
 \alias{StatsSoftmax}
 \title{Softmax Regression}
 \usage{
-StatsSoftmax(y, y.names, x, x.names, DF, params, job.group, initial.list,
-  run.robust, ...)
+StatsSoftmax(y = NULL, y.names = NULL, x = NULL, x.names = NULL,
+  DF, params = NULL, job.group = NULL, initial.list = NULL,
+  run.robust = FALSE, ...)
 }
 \arguments{
 \item{y}{criterion variable(s), Default: NULL}

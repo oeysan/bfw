@@ -29,13 +29,14 @@ Enjoy this brief demonstration of the plot data module
     #> sigma[1]: Before    1      1  1.000 49354  0.958  1.046 1000
     #> sigma[2]: During    1      1  1.000 50000  0.957  1.045 1000
     #> sigma[3]: After     1      1  0.997 50000  0.957  1.045 1000
-    plot <- bfw::PlotData(mcmc, run.repeated = TRUE)
-    ParsePlot(plot)
+    Plot <- bfw::PlotMean(mcmc,
+                          run.repeated = TRUE)
+    ParsePlot(Plot)
 
 ### Plot the data as repeated measures
 
 <figure>
-<img src="../inst/extdata/data/ProjectAllData-Mean-StagesOfCheese-Plot01-1528465133.png" alt="plot1" width="800" /><figcaption>plot1</figcaption>
+<img src="../extdata/data/ProjectAllData-Mean-StagesOfCheese-Plot01-1528465133.png" alt="plot1" width="800" /><figcaption>plot1</figcaption>
 </figure>### Lets add some noise
 
     set.seed(101)
@@ -58,13 +59,14 @@ Enjoy this brief demonstration of the plot data module
     #> sigma[1]: Before  1.120  1.119  1.116 50000  1.072  1.170 1000
     #> sigma[2]: During  1.116  1.116  1.112 50000  1.068  1.166 1000
     #> sigma[3]: After   1.101  1.100  1.097 49233  1.054  1.151 1000
-    plot <- bfw::PlotData(noise.mcmc, run.repeated = TRUE)
-    ParsePlot(plot)
+    Plot <- bfw::PlotMean(noise.mcmc, 
+                          run.repeated = TRUE)
+    ParsePlot(Plot)
 
 ### Plot the noise as repeated measures
 
 <figure>
-<img src="../inst/extdata/data/ProjectAllData-Mean-StagesOfCheese-Plot01-1528466639.png" alt="plot2" width="800" /><figcaption>plot2</figcaption>
+<img src="../extdata/data/ProjectAllData-Mean-StagesOfCheese-Plot01-1528466639.png" alt="plot2" width="800" /><figcaption>plot2</figcaption>
 </figure>### Let’s add a group
 
     combined.data <- as.data.frame(rbind(cbind(data,"Y"), cbind(noise,"X") ), stringsAsFactors=FALSE)
@@ -102,12 +104,16 @@ Enjoy this brief demonstration of the plot data module
     #> sigma[7]: After                  1.105 50000  1.072  1.140 2000
     #> sigma[8]: After vs. Groups @ X   1.098 50000  1.054  1.150 1000
     #> sigma[9]: After vs. Groups @ Y   1.000 50000  0.957  1.045 1000
+
     # Let's also add some colors!
-    plot <- bfw::PlotData(combined.data, run.split = TRUE, run.repeated = TRUE ,  monochrome = FALSE)
-    ParsePlot(plot)
+    Plot <- bfw::PlotMean(combined.data, 
+                          run.split = TRUE, 
+                          run.repeated = TRUE,  
+                          monochrome = FALSE)
+    ParsePlot(Plot)
 
 ### Plot the split data
 
 <figure>
-<img src="../inst/extdata/data/ProjectAllData-Mean-StagesOfCheese-Plot01-1528467502.png" alt="plot3" width="800" /><figcaption>plot3</figcaption>
+<img src="../extdata/data/ProjectAllData-Mean-StagesOfCheese-Plot01-1528467502.png" alt="plot3" width="800" /><figcaption>plot3</figcaption>
 </figure>

@@ -1,13 +1,10 @@
-# List of past and present TODO's
+# TODO
 
-## bfw 0.0.1 (Initial launch)
-
-- [x] Develop a more elegant system to generate models for jags
-- [] Write a more detailed manual/vignettes
+- [] Replace cumbersome diagnostics plot
+- [] Write more detailed manual/vignettes
 - [] Add more visualizations (e.g., correlation and regression paths and SEM models)
 - [] Add ROPE for more than one parameter
+- [] Develop a more elegant system to generate models for jags
 
-
-## bfw 0.0.0-1 (Pre-launch)
-
+# Archive
 - [x] Merge modules for initial launch

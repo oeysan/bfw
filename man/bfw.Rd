@@ -4,52 +4,17 @@
 \alias{bfw}
 \title{Settings}
 \usage{
-bfw(y = NULL, y.names = NULL, x = NULL, x.names = NULL,
-  latent = NULL, latent.names = NULL, observed = NULL,
-  observed.names = NULL, additional = NULL, additional.names = NULL,
-  x.steps = NULL, x.blocks = NULL, job.title = NULL,
-  job.group = NULL, jags.model, jags.seed = NULL, jags.method = NULL,
-  jags.chains = NULL, custom.function = NULL, custom.model = NULL,
-  params = NULL, saved.steps = 10000, thinned.steps = 1,
-  adapt.steps = NULL, burnin.steps = NULL, credible.region = 0.95,
-  ROPE = NULL, run.contrasts = FALSE, use.contrast = "between",
-  contrasts = NULL, run.ppp = FALSE, initial.list = list(),
-  project.name = "Project", project.dir = "Results/",
-  project.data = NULL, time.stamp = TRUE, save.data = FALSE,
-  data.set = "AllData", data.format = "csv", raw.data = FALSE,
-  run.robust = FALSE, merge.MCMC = FALSE, run.diag = FALSE,
-  sep = ",", monochrome = TRUE, plot.colors = c("#495054",
-  "#e3e8ea"), graphic.type = "pdf", plot.size = "15,10",
-  scaling = 100, plot.aspect = NULL, vector.graphic = FALSE,
-  point.size = 12, font.type = "serif", one.file = TRUE, ppi = 300,
-  units = "in", layout = "a4", layout.inverse = FALSE,
-  silent = FALSE, ...)
+bfw(job.title = NULL, job.group = NULL, jags.model, jags.seed = NULL,
+  jags.method = NULL, jags.chains = NULL, custom.function = NULL,
+  custom.model = NULL, params = NULL, saved.steps = 10000,
+  thinned.steps = 1, adapt.steps = NULL, burnin.steps = NULL,
+  initial.list = list(), project.name = "Project",
+  project.dir = "Results/", project.data = NULL, time.stamp = TRUE,
+  save.data = FALSE, data.set = "AllData", data.format = "csv",
+  raw.data = FALSE, run.robust = FALSE, merge.MCMC = FALSE,
+  run.diag = FALSE, sep = ",", silent = FALSE, ...)
 }
 \arguments{
-\item{y}{criterion variable(s), Default: NULL}
-
-\item{y.names}{optional names for criterion variable(s), Default: NULL}
-
-\item{x}{predictor variable(s), Default: NULL}
-
-\item{x.names}{optional names for predictor variable(s), Default: NULL}
-
-\item{latent}{latent variables, Default: NULL}
-
-\item{latent.names}{optional names for for latent variables, Default: NULL}
-
-\item{observed}{observed variable(s), Default: NULL}
-
-\item{observed.names}{optional names for for observed variable(s), Default: NULL}
-
-\item{additional}{supplemental parameters for fitted data (e.g., indirect pathways and total effect), Default: NULL}
-
-\item{additional.names}{optional names for supplemental parameters, Default: NULL}
-
-\item{x.steps}{define number of steps in hierarchical regression , Default: NULL}
-
-\item{x.blocks}{define which predictors are included in each step (e.g., for three steps "1,2,3") , Default: NULL}
-
 \item{job.title}{title of analysis, Default: NULL}
 
 \item{job.group}{for some hierarchical models with several layers of parameter names (e.g., latent and observed parameters), Default: NULL}
@@ -75,18 +40,6 @@ bfw(y = NULL, y.names = NULL, x = NULL, x.names = NULL,
 \item{adapt.steps}{the number of adaptive iterations to use at the start of each simulation, Default: NULL}
 
 \item{burnin.steps}{the number of burnin iterations, NOT including the adaptive iterations to use for the simulation, Default: NULL}
-
-\item{credible.region}{summarize uncertainty by defining a region of most credible values (e.g., 95 percent of the distribution), Default: 0.95}
-
-\item{ROPE}{define range for region of practical equivalence (e.g., c(-0.05 , 0.05), Default: NULL}
-
-\item{run.contrasts}{logical, indicating whether or not to run contrasts, Default: FALSE}
-
-\item{use.contrast}{choose from "between", "within" and "mixed". Between compare groups at different conditions. Within compare a group at different conditions. Mixed compute all comparisons}
-
-\item{contrasts}{define contrasts to use for analysis (defaults to all) , Default: NULL}
-
-\item{run.ppp}{logical, indicating whether or not to conduct ppp analysis, Default: FALSE}
 
 \item{initial.list}{initial values for analysis, Default: list()}
 
@@ -114,35 +67,7 @@ bfw(y = NULL, y.names = NULL, x = NULL, x.names = NULL,
 
 \item{sep}{symbol to separate data (e.g., comma-delimited), Default: ','}
 
-\item{monochrome}{logical, indicating whether or not to use monochrome colors, else use \link[bfw]{DistinctColors}, Default: TRUE}
-
-\item{plot.colors}{range of color to use, Default: c("#495054", "#e3e8ea")}
-
-\item{graphic.type}{type of graphics to use (e.g., pdf, png, ps), Default: 'pdf'}
-
-\item{plot.size}{size of plot, Default: '15,10'}
-
-\item{scaling}{scale size of plot, Default: 100}
-
-\item{plot.aspect}{aspect of plot, Default: NULL}
-
-\item{vector.graphic}{logical, indicating whether or not visualizations should be vector or raster graphics, Default: FALSE}
-
-\item{point.size}{point size used for visualizations, Default: 12}
-
-\item{font.type}{font type used for visualizations, Default: 'serif'}
-
-\item{one.file}{logical, indicating whether or not visualizations should be placed in one or several files, Default: TRUE}
-
-\item{ppi}{define pixel per inch used for visualizations, Default: 300}
-
-\item{units}{define unit of length used for visualizations, Default: 'in'}
-
-\item{layout}{define a layout size for visualizations, Default: 'a4'}
-
-\item{layout.inverse}{logical, indicating whether or not to inverse layout (e.g., landscape) , Default: FALSE}
-
-\item{silent}{logical, indicating whether or not analysis should be run silent, Default: FALSE}
+\item{silent}{logical, indicating whether or not to run analysis without output, Default: FALSE}
 
 \item{...}{further arguments passed to or from other methods}
 }

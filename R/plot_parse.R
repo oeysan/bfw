@@ -2,7 +2,7 @@
 #' @description Display and/or save plots
 #' @param plot.data a list of plots
 #' @param project.dir define where to save data, Default: 'Results/'
-#' @param project.name define name of project, Default: 'FileName(name="Plot")'
+#' @param project.name define name of project, Default: 'FileName(name="Print")'
 #' @param save.data logical, indicating whether or not to save data, Default: FALSE
 #' @param graphic.type type of graphics to use (e.g., pdf, png, ps), Default: 'pdf'
 #' @param plot.size size of plot, Default: '15,10'
@@ -363,7 +363,7 @@ ParsePlot <- function (plot.data,
           if (font.type == "serif") font.type <- "Times New Roman"
           
           # Select template
-          template <- if (layout == "pt") "legacy" else "widescreen" 
+          template <- if (layout == "pt") "legacy" else if (layout == "apa") "apa" else "widescreen" 
           template.file <- paste0(system.file(package = 'bfw'),"/extdata/templates/",template,".pptx")
           
           # Create PowerPoint document

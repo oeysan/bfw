@@ -4,8 +4,9 @@
 \alias{StatsRegression}
 \title{Regression}
 \usage{
-StatsRegression(y, y.names, x, x.names, x.steps, x.blocks, DF, params,
-  job.group, initial.list, ...)
+StatsRegression(y = NULL, y.names = NULL, x = NULL, x.names = NULL,
+  x.steps = NULL, x.blocks = NULL, DF, params = NULL,
+  job.group = NULL, initial.list = list(), ...)
 }
 \arguments{
 \item{y}{criterion variable(s), Default: NULL}

@@ -1,6 +1,6 @@
 Package: bfw
-Version: 0.2.0.9004
-Date: 2018-09-18
+Version: 0.2.0.9005
+Date: 2018-11-03
 Title: Bayesian Framework for Computational Modeling
 Authors@R: person( "Øystein Olav","Skaar", email="bayesianfw@gmail.com", role=c("aut","cre"))
 Maintainer: Øystein Olav Skaar <bayesianfw@gmail.com>
@@ -19,13 +19,15 @@ SystemRequirements: JAGS >=4.3.0 <http://mcmc-jags.sourceforge.net/>,
 Depends: R (>= 3.5.0),
 Imports: coda (>= 0.19-1),
          MASS (>= 7.3-47),
-         runjags (>= 2.0.4-2)         
+         runjags (>= 2.0.4-2)
 Suggests:
          covr (>= 3.1.0),
          circlize (>= 0.4.4),
+         dplyr (>= 0.7.7),
          ggplot2 (>= 2.2.1),
          knitr (>= 1.20),
          lavaan (>= 0.6-1),
+         magrittr (>= 1.5),
          officer (>= 0.3.1),
          plyr (>= 1.8.4),
          png (>= 0.1-7),

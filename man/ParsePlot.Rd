@@ -16,7 +16,7 @@ ParsePlot(plot.data, project.dir = "Results/",
 
 \item{project.dir}{define where to save data, Default: 'Results/'}
 
-\item{project.name}{define name of project, Default: 'FileName(name="Plot")'}
+\item{project.name}{define name of project, Default: 'FileName(name="Print")'}
 
 \item{graphic.type}{type of graphics to use (e.g., pdf, png, ps), Default: 'pdf'}
 

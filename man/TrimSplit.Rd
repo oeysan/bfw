@@ -16,7 +16,7 @@ TrimSplit(x, sep = ",", fixed = FALSE, perl = FALSE,
 
 \item{perl}{logical, indicating whether or not to use Perl-compatible regexps, Default: FALSE}
 
-\item{useBytes}{logical. If TRUE the matching is done byte-by-byte rather than character-by-character, Default: FALSE}
+\item{useBytes}{logical, if TRUE the matching is done byte-by-byte rather than character-by-character, Default: FALSE}
 
 \item{rm.empty}{logical. indicating whether or not to remove empty elements, Default: TRUE}
 }

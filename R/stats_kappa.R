@@ -35,11 +35,11 @@
 #' @rdname StatsKappa
 #' @export
 #' @importFrom stats complete.cases
-StatsKappa <- function(x,
-                       x.names,
+StatsKappa <- function(x = NULL,
+                       x.names = NULL,
                        DF,
-                       params,
-                       initial.list,
+                       params = NULL,
+                       initial.list = list(),
                        ...
 ) {
 
@@ -47,10 +47,7 @@ StatsKappa <- function(x,
   x <- TrimSplit(x)
 
   # Exclude noncomplete observations
-  DF <- DF[stats::complete.cases(DF[, x]), ]
-
-  # If data is binary ( ones and zeros ) add one
-  if (any(DF == 0)) DF <- DF + 1
+  DF <- DF[stats::complete.cases(DF[, x]), x]
 
   # Create crosstable for x parameters
   n.data  <- as.data.frame(table(DF[, x]))
@@ -75,7 +72,7 @@ StatsKappa <- function(x,
 
   # Paramter(s) of interest
   params <- if(length(params)) TrimSplit(params) else c("Kappa")
-
+  
   # Create data for Jags
   data.list <- list(
     rater = rater,

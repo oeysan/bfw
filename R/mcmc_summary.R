@@ -19,7 +19,7 @@ SumMCMC <- function(par,
                     job.names = NULL, 
                     job.group = NULL, 
                     credible.region = 0.95, 
-                    ROPE,
+                    ROPE = NULL,
                     n.data,
                     ...
 ) {
