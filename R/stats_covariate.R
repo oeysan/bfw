@@ -210,7 +210,7 @@ StatsCovariate <- function(y = NULL,
     alpha <- "Alpha <- q / (q - 1) * (1 - sum(diag[]) / (sum(cov)))"
     jags.model <- gsub("\\#ALPHA", alpha , jags.model)
     job.names <- list(list(job.names) , list("Tau-equivalent reliability"))
-    alpha.n <- c( rep("Alpha" ,  ncol(n.data)-1) , 
+    alpha.n <- c( rep("Tau-equivalent reliability" ,  ncol(n.data)-1) , 
                   mean(n.data[ ,  ncol(n.data)]) )
     n.data <- rbind(n.data , alpha.n)
   }

@@ -1,3 +1,21 @@
+# bfw 0.3.0
+
+### Feature
+
+* Added `PlotParam` function to plot density of parameter values (including ROPE)
+
+#### Moderate
+
+* Removed `PlotData` function. All plots are now called from seperate functions:
+    + `PlotCirclize` to create a circlize plot
+    + `PlotMean` to create a mean plot
+    + `PlotNominal` to create a nominal plot
+    + `PlotParam` to create a density plot with parameter values
+
+#### Minor
+
+* Small fix in `SumMCMC` function to compute sample sizes 
+
 # bfw 0.2.0.9005
 
 ### Feature

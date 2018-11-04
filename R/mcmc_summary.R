@@ -36,12 +36,17 @@ SumMCMC <- function(par,
   if (nrow(n.data) == 1 | length(table(n.data)) == 1) {
     n <- n.data[ 1 , ncol(n.data)]
   } else {
-    n <- TrimSplit(gsub(".*:","",par.names),"vs.|@|/| - ")
-    n <- apply(n.data[-ncol(n.data)], 2, function (x) x %in% n)
-    drop.n <- which( apply(n, 2, function (x) any(x)) == FALSE)
-    if (max((drop.n),0)>0) n <- n[,-(drop.n)]
-    n <- which(apply(as.matrix(n),1,function (x) all(x) == TRUE))
-    n <- sum(n.data[ n , ncol(n.data)])
+    
+n <- TrimSplit(gsub(".*:","",par.names),"vs.|@|/| - ")
+    if (length(unique(n)) < length(n)) {
+      n <- max(n.data[,"n"])
+    } else {
+      n <- apply(n.data[-ncol(n.data)], 2, function (x) x %in% n)
+      drop.n <- which( apply(n, 2, function (x) any(x)) == FALSE)
+      if (max((drop.n),0)>0) n <- n[,-(drop.n)]
+      n <- which(apply(as.matrix(n),1,function (x) all(x) == TRUE))
+      n <- sum(n.data[ n , ncol(n.data)])
+    }
   }
   
   if ( !is.null(ROPE) ) {

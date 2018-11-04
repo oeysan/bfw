@@ -18,7 +18,6 @@
 #' @param dens.rope.col colour of line indicating ROPE value, Default: 'black'
 #' @return Density plot of parameter values
 #' @seealso 
-#'  \code{\link[magrittr]{`%>%`}}
 #'  \code{\link[dplyr]{mutate}},\code{\link[dplyr]{group_by}},\code{\link[dplyr]{join}},\code{\link[dplyr]{select}},\code{\link[dplyr]{slice}},\code{\link[dplyr]{filter}}
 #'  \code{\link[stats]{approxfun}}
 #'  \code{\link[ggplot2]{aes}},\code{\link[ggplot2]{margin}},\code{\link[ggplot2]{geom_density}},\code{\link[ggplot2]{geom_polygon}},\code{\link[ggplot2]{geom_segment}},\code{\link[ggplot2]{geom_label}},\code{\link[ggplot2]{ggplot}},\code{\link[ggplot2]{ggplot_build}},\code{\link[ggplot2]{scale_continuous}},\code{\link[ggplot2]{theme}},\code{\link[ggplot2]{labs}}
