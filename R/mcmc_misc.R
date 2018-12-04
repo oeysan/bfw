@@ -78,8 +78,8 @@ AddNames <- function(par, job.names, job.group = NULL, keep.par = TRUE, names.on
 #' data <-rnorm(100,0,1)
 #' credible.region <- 0.95
 #' ComputeHDI(data,credible.region)
-#' # hdi.min hdi.max
-#' # -1.99    1.60
+#' # HDIlo HDIhi
+#' # -1.99 1.60
 #' @rdname ComputeHDI
 #' @export
 
@@ -90,11 +90,56 @@ ComputeHDI <- function(data, credible.region) {
   ci.mass <- lapply(1:length.ci, function(i) {
     data[min(i + ci.interval,length(data))] - data[i]
   })
-  hdi.min <- data[which.min(ci.mass)]
-  hdi.max <- data[which.min(ci.mass) + min(ci.interval,length(data)-1)]
-  hdi <- c(hdi.min = hdi.min, hdi.max = hdi.max)
+  
+  HDI <- c(HDIlo = data[which.min(ci.mass)],
+           HDIhi = data[which.min(ci.mass) + min(ci.interval,length(data)-1)]
+  )
+  
+  return (HDI)
+}
 
-  return (hdi)
+
+#' @title Compute Inverse HDI
+#' @description Compute inverse cumulative density function of the distribution
+#' @param beta density, distribution function, quantile function and random generation for the Beta distribution with parameters shape1 and shape2
+#' @param shape1 non-negative parameter of the Beta distribution.
+#' @param shape2 non-negative parameter of the Beta distribution.
+#' @param credible.region summarize uncertainty by defining a region of most credible values (e.g., 95 percent of the distribution), Default: 0.95
+#' @param tolerance the desired accuracy, Default: 1e-8
+#' @return Return HDI
+#' @details values within the HDI have higher probability density than values outside the HDI, and the values inside the HDI have a total probability equal to the credible region (e.g., 95 percent).
+#' @examples
+#' InverseHDI( qbeta , 554 , 149 )
+#' # HDIlo HDIhi
+#' # 0.758 0.818
+#' @seealso
+#'  \code{\link[stats]{Beta}},\code{\link[stats]{optimize}}
+#' @rdname InverseHDI
+#' @export
+#' @importFrom stats optimize dbeta pbeta qbeta rbeta
+
+InverseHDI = function( beta , shape1 , shape2 , credible.region = 0.95 , tolerance = 1e-8) {
+  
+  incredible.region <-  1.0 - credible.region
+
+  IntervalWidth <- function( beta , credible.region , low.tail , shape1 , shape2) {
+    beta(credible.region + low.tail , shape1 , shape2) - beta(low.tail , shape1 , shape2)
+  }
+  
+  optimize.results = stats::optimize(IntervalWidth , 
+                                     c( 0 , incredible.region ) , 
+                                     beta = beta , 
+                                     credible.region = credible.region , 
+                                     tol = tolerance,
+                                     shape1 , shape2
+  )
+  
+  HDI <- c(HDIlo = beta(optimize.results$minimum , shape1 , shape2 ),
+           HDIhi = beta(credible.region + optimize.results$minimum , shape1 , shape2 )
+  )
+  
+  return (HDI)
+  
 }
 
 #' @title Contrast Names

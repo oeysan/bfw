@@ -588,22 +588,24 @@ TidyCode <- function(tidy.code,
 
 #' @title ETA
 #' @description Print estimated time for arrival (ETA)
-#' @param start.time Start time (preset variable with Sys.time())
+#' @param start.time start time (preset variable with Sys.time())
 #' @param i incremental steps towards total
-#' @param total Total number of steps
+#' @param total total number of steps
+#' @param results message to display, Default: NULL
 #' @seealso
 #' \code{\link[utils]{flush.console}}
 #' @rdname ETA
 #' @export
 #' @importFrom utils flush.console
 
-ETA <- function (start.time, i , total) {
+ETA <- function (start.time, i , total, results = NULL) {
   eta <- Sys.time() + ( (total - i) * ((Sys.time() - start.time) / i) )
   eta.message <- sprintf("Progress: %.02f%% (%s/%s). ETA: %s ", 
                          (i * 100) / total,
                          i,
                          total,
                          format(eta,"%d.%m.%Y - %H:%M:%S"))
+  if (length(results)) eta.message <- paste0("Results: ", results , ". " ,eta.message)
   cat("\r" , eta.message , sep="")
   utils::flush.console()
   if (i == total) cat("\n")

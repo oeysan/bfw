@@ -4,14 +4,16 @@
 \alias{ETA}
 \title{ETA}
 \usage{
-ETA(start.time, i, total)
+ETA(start.time, i, total, results = NULL)
 }
 \arguments{
-\item{start.time}{Start time (preset variable with Sys.time())}
+\item{start.time}{start time (preset variable with Sys.time())}
 
 \item{i}{incremental steps towards total}
 
-\item{total}{Total number of steps}
+\item{total}{total number of steps}
+
+\item{results}{message to display, Default: NULL}
 }
 \description{
 Print estimated time for arrival (ETA)

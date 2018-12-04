@@ -2,7 +2,9 @@
 
 language: r
 sudo: required
+
 cache: packages
+
 jdk: 
   - oraclejdk8
   - oraclejdk9
@@ -27,15 +29,13 @@ env:
     - R_CHECK_FORCE_SUGGESTS_=false
     - R_CHECK_ARGS=--no-manual --as-cran 
 
-r_github_packages:
-  - Rexamine/stringi
-
 apt_packages:
   - libv8-dev
 
 r_packages:
   - covr
   - circlize
+  - devtools
   - dplyr
   - ggplot2
   - knitr
@@ -50,14 +50,13 @@ r_packages:
   - scales
   - testthat
   
+r_github_packages:
+  - Rexamine/stringi
+  
 notifications:
   email:
     on_success: change
     on_failure: change
-
-r_github_packages:
-  - r-lib/covr
-  - r-lib/devtools
 
 after_success:
   - Rscript -e 'covr::coveralls()'
