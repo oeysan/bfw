@@ -47,7 +47,9 @@ StatsMetric <- function(y = NULL,
   
   # Create X and Y metric count observations, number of parameters and categories in each parameter
   y.data <- DF[, y]
-  x.data <- apply(as.matrix(DF[, x]), 2 , function (x) as.numeric(as.factor(x)))
+  x.data <- do.call(cbind, lapply(1:length(x), function (i) as.numeric( DF[, x[i] ] ) ) )
+  colnames(x.data) <- x
+  
   q.levels  <- apply(x.data, 2, function(x) length(unique(x[!is.na(x)]))) #Number of categories per x
   
   # name.contrasts for creating contrasts

@@ -1,3 +1,9 @@
+# bfw 0.3.0.9002
+
+#### Minor
+
+* Fixed factor-to-numeric-bug `metric` function
+
 # bfw 0.3.0.9001
 
 ### Feature
