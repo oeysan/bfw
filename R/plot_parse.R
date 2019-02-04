@@ -37,7 +37,7 @@
 #' \donttest{
 #' # Save plots as png with a4 layout and return file names
 #' project.dir <- tempdir()
-#' project.name <- FileName(name="Testing")
+#' project.name <- FileName(name="Testing-Plot")
 #' ParsePlot(plot.data,
 #'           project.dir = project.dir,
 #'           project.name = project.name,
@@ -51,7 +51,7 @@
 #' # [3] "\\Temp/Project-Testing-Plot03-1528833217.png"
 #' # Save plots as single PowerPoint (default) and return file names
 #' project.dir <- tempdir()
-#' project.name <- FileName(name="Testing")
+#' project.name <- FileName(name="Testing-Plot")
 #' ParsePlot(plot.data,
 #'           project.dir = project.dir,
 #'           project.name = project.name,
@@ -196,9 +196,9 @@ ParsePlot <- function (plot.data,
     if (one.file & ( dev.type == "postscript" |
                      dev.type == "pdf" |
                      dev.type == "pptx" ) ) {
-      plot.type <- "-Plot"
+      plot.type <- ""
     } else {
-      plot.type <- "-Plot%02d"
+      plot.type <- "%02d"
     }
     
     # split file name

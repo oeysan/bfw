@@ -311,9 +311,6 @@ StatsNominal <- function(x = NULL,
     
   }),collapse="\n\n")
   
-  
-
-  
   # Replace placeholders in jags model with created values
   model.name <-  paste0(model.name,n.x)
   jags.model <- gsub("\\#FACTORS", factors.additive, jags.model)
@@ -328,7 +325,7 @@ StatsNominal <- function(x = NULL,
     job.names = job.names,
     model.name = model.name
   )
-  
+    
   # Return data list
   return (list(
     data.list = data.list,

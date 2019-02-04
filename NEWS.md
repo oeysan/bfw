@@ -1,3 +1,14 @@
+# bfw 0.4.0
+
+#### Critical 
+
+* Fixed an sorting error in `contrasts` function
+
+#### Minor
+
+* Added the ability to use custom save names
+* Removed the appended "Plot" in save names for `ParsePlot` function
+
 # bfw 0.3.0.9002
 
 #### Minor

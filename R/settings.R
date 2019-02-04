@@ -14,6 +14,7 @@
 #' @param adapt.steps the number of adaptive iterations to use at the start of each simulation, Default: NULL
 #' @param burnin.steps the number of burnin iterations, NOT including the adaptive iterations to use for the simulation, Default: NULL
 #' @param initial.list initial values for analysis, Default: list()
+#' @param custom.name custom name of project, Default: NULL
 #' @param project.name name of project, Default: 'Project'
 #' @param project.dir define where to save data, Default: 'Results/'
 #' @param project.data define data to use for analysis (e.g., csv, rda, custom data.frame or matrix, or data included in package, Default: NULL
@@ -49,6 +50,7 @@ bfw <- function(job.title = NULL,
                 adapt.steps = NULL,
                 burnin.steps = NULL,
                 initial.list = list(),
+                custom.name = NULL,
                 project.name = "Project",
                 project.dir = "Results/",
                 project.data = NULL,
@@ -178,7 +180,12 @@ bfw <- function(job.title = NULL,
   if (run.robust) {
     job.title <- if (is.null(job.title)) "Robust" else paste0(job.title,"-Robust")
   }
-  project.name <- FileName( project.name , data.set , model.type , job.title , time.stamp)
+  
+  if (length(custom.name)) {
+    project.name <- custom.name
+  } else {
+    project.name <- FileName( project.name , data.set , model.type , job.title , time.stamp)
+  }
   
   # Tidy up JAGS model
   jags.model <- TidyCode(jags.model)

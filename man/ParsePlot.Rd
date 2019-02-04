@@ -70,7 +70,7 @@ ParsePlot(plot.data)
 \donttest{
 # Save plots as png with a4 layout and return file names
 project.dir <- tempdir()
-project.name <- FileName(name="Testing")
+project.name <- FileName(name="Testing-Plot")
 ParsePlot(plot.data,
           project.dir = project.dir,
           project.name = project.name,
@@ -84,7 +84,7 @@ ParsePlot(plot.data,
 # [3] "\\\\Temp/Project-Testing-Plot03-1528833217.png"
 # Save plots as single PowerPoint (default) and return file names
 project.dir <- tempdir()
-project.name <- FileName(name="Testing")
+project.name <- FileName(name="Testing-Plot")
 ParsePlot(plot.data,
           project.dir = project.dir,
           project.name = project.name,

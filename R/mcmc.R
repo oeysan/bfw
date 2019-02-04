@@ -8,6 +8,7 @@
 #' @param run.contrasts logical, indicating whether or not to run contrasts, Default: FALSE
 #' @param use.contrast choose from "between", "within" and "mixed". Between compare groups at different conditions. Within compare a group at different conditions. Mixed compute all comparisons, Default: "between",
 #' @param contrasts define contrasts to use for analysis (defaults to all) , Default: NULL
+#' @param custom.contrast define contrasts for custom models , Default: NULL
 #' @param run.ppp logical, indicating whether or not to conduct ppp analysis, Default: FALSE
 #' @param k.ppp run ppp for every kth length of MCMC chains, Default: 10
 #' @param n.data sample size for each parameter
@@ -58,6 +59,7 @@ RunMCMC <- function(jags.model,
                     run.contrasts = FALSE,
                     use.contrast = "between",
                     contrasts = NULL,
+                    custom.contrast = NULL,
                     run.ppp = FALSE,
                     k.ppp = 10,
                     n.data,
@@ -145,8 +147,6 @@ RunMCMC <- function(jags.model,
   
   # Treat results as matrix for further examination
   matrix.MCMC <- as.matrix(data.MCMC)
-  # Sort matrix by column names
-  if (ncol(matrix.MCMC)>1) matrix.MCMC <- matrix.MCMC[, order(colnames(matrix.MCMC))]
   
   # Append bracket (ie., [1] ) for naming purposes
   colnames(matrix.MCMC) <- unlist(lapply(colnames(matrix.MCMC), function (x) if(regexpr('\\[', x)[1]<0) paste0(x,"[1]") else x ))
@@ -212,16 +212,17 @@ RunMCMC <- function(jags.model,
   if (run.contrasts) {
     
     q.levels <- data.list$q.levels
+    defined.contrast <- if (length(custom.contrast)) tolower(custom.contrast) else tolower(model.type)
     
     cat("\nComputing contrasts. Please wait.\n")
     
     # Createsum to zero contrasts for metric and nominal models
-    if (model.type == "Metric" | model.type == "Nominal") {
+    if (defined.contrast == "metric" | defined.contrast == "nominal") {
       sum.zero <- SumToZero(q.levels, matrix.MCMC, contrasts)
     }
     
     # Add odds (and odds-ratios/cohen's d) for nominal models
-    if (model.type == "Nominal") {
+    if (defined.contrast == "nominal") {
       
       # Create expected and observed nominal and proportions data
       expected.observed <- MatrixCombn(matrix.MCMC, 
@@ -229,7 +230,7 @@ RunMCMC <- function(jags.model,
                                        "NULL,p,NULL,p", 
                                        q.levels, 
                                        rm.last = FALSE, 
-                                       row.means=FALSE)                                                                                        
+                                       row.means = FALSE)                                                                                        
       
       # Remove expected and observed columns from MCMC matrix
       matrix.MCMC <- matrix.MCMC[ , !colnames(matrix.MCMC) %in% colnames(expected.observed)]
@@ -240,7 +241,7 @@ RunMCMC <- function(jags.model,
     }
     
     # Add effect size cohen's d for metric model
-    if (model.type == "Metric") {
+    if (defined.contrast == "metric") {
       
       # Create mean difference data
       mean.diff <- MatrixCombn(matrix.MCMC, "m,s", q.levels = q.levels, rm.last = FALSE)
@@ -391,7 +392,7 @@ RunMCMC <- function(jags.model,
     
     # Find params from MCMC list
     params <- colnames(list.MCMC[[k]])
-    
+        
     # Create final posterior parameter indicies
     summary.start.time <- Sys.time()
     summary.cat <- sprintf("\nSummarizing data for each parameter in %s. Please wait.\n" , 
@@ -414,6 +415,9 @@ RunMCMC <- function(jags.model,
       
     })) 
   }))
+  
+  # Sort summary by rownames
+  if (nrow(summary.MCMC)>1) summary.MCMC <- summary.MCMC[order(rownames(summary.MCMC)) ,]
     
   # Display completion and running time
   stop.time <- Sys.time()
