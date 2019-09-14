@@ -1,3 +1,9 @@
+# bfw 0.4.0.9001
+
+#### Minor
+
+* Updated `ParsePlot` function to conform with changes in `rvg` package: Part Deux
+
 # bfw 0.4.0.9000
 
 #### Minor

@@ -1,5 +1,5 @@
 Package: bfw
-Version: 0.4.0.9000
+Version: 0.4.0.9001
 Date: 2019-09-14
 Title: Bayesian Framework for Computational Modeling
 Authors@R: person( "Øystein Olav","Skaar", email="bayesianfw@gmail.com", role=c("aut","cre"))

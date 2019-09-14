@@ -1,4 +1,5 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
+
 *bfw*: Bayesian Framework for Computational Modeling
 ====================================================
 
@@ -7,9 +8,9 @@
 <a href="man/figures/logo2.png" id="logo2" title="Logo II"><img src="man/figures/logo2.png" width="250px" alt="Logo II" /></a>
 </p>
 <p align="center">
-<a href="NEWS.md" id="news" title="News"><img src="https://img.shields.io/badge/News-2019.02.04 @ 11:50:01-purple.svg" alt="News" /></a>
+<a href="NEWS.md" id="news" title="News"><img src="https://img.shields.io/badge/News-2019.09.14 @ 16:16:00-purple.svg" alt="News" /></a>
 <a href="https://CRAN.R-project.org/package=bfw" id="cran" title="CRAN Version"><img src="https://www.r-pkg.org/badges/version/bfw" alt="CRAN Version" /></a>
-<a href="https://github.com/oeysan/bfw" id="github" title="GitHub Version"><img src="https://img.shields.io/badge/GitHub-0.4.0-red.svg?style=flat-square" alt="GitHub Version" /></a>
+<a href="https://github.com/oeysan/bfw" id="github" title="GitHub Version"><img src="https://img.shields.io/badge/GitHub-0.4.0.9001-red.svg?style=flat-square" alt="GitHub Version" /></a>
 <br/>
 <a href="LICENSE.md" id="license" title="License"><img src="https://img.shields.io/badge/Licence-MIT-blue.svg" alt="License" /></a>
 <a href="https://travis-ci.org/oeysan/bfw" id="travis" title="Build Status"><img src="https://travis-ci.org/oeysan/bfw.svg?branch=master" alt="Build Status" /></a>
@@ -42,9 +43,9 @@ List of current modules
 -----------------------
 
 -   Bernoulli trials
--   Covariate estimations (including correlation and Cronbach's alpha)
+-   Covariate estimations (including correlation and Cronbach’s alpha)
 -   Fit observed and latent data (e.g., SEM, CFA, mediation models)
--   Bayesian equivalent of Cohen's kappa
+-   Bayesian equivalent of Cohen’s kappa
 -   Mean and standard deviation estimations
 -   Predict metric values (cf., ANOVA)
 -   Predict nominal values (cf., chi-square test)
@@ -62,8 +63,10 @@ List of current visualizations
 Prerequisites
 -------------
 
--   JAGS (&gt;=4.3.0): <http://mcmc-jags.sourceforge.net/>
--   Java JDK (&gt;=1.4): <https://www.java.com/en/download/manual.jsp>
+-   JAGS (&gt;=4.3.0):
+    <a href="http://mcmc-jags.sourceforge.net/" class="uri">http://mcmc-jags.sourceforge.net/</a>
+-   Java JDK (&gt;=1.4):
+    <a href="https://www.java.com/en/download/manual.jsp" class="uri">https://www.java.com/en/download/manual.jsp</a>
 
 Dependencies
 ------------
@@ -265,7 +268,7 @@ The cost of conducting robust estimates
 
     # Running time for normal distribution analyis
     biased.mcmc$run.time[2] - biased.mcmc$run.time[1]
-    #> Time difference of 7.66 secs
+    #> Time difference of 7.67 secs
 
     # Running time for t-distribution analysis
     biased.mcmc.robust$run.time[2] - biased.mcmc.robust$run.time[1]
@@ -289,14 +292,16 @@ References
 
 -   Gelman, A., & Rubin, D. B. (1992). Inference from Iterative
     Simulation Using Multiple Sequences. *Statistical Science*, *7*(4),
-    457-472. <https://doi.org/10.1214/ss/1177011136>
+    457-472.
+    <a href="https://doi.org/10.1214/ss/1177011136" class="uri">https://doi.org/10.1214/ss/1177011136</a>
 -   Kruschke, J. K. (2013). Posterior predictive checks can and should
-    be Bayesian: Comment on Gelman and Shalizi, 'Philosophy and the
-    practice of Bayesian statistics'. *British Journal of Mathematical
+    be Bayesian: Comment on Gelman and Shalizi, ‘Philosophy and the
+    practice of Bayesian statistics’. *British Journal of Mathematical
     and Statistical Psychology*, *66*(1), 4556.
-    <https://doi.org/10.1111/j.2044-8317.2012.02063.x>
+    <a href="https://doi.org/10.1111/j.2044-8317.2012.02063.x" class="uri">https://doi.org/10.1111/j.2044-8317.2012.02063.x</a>
 -   Kruschke, J. K. (2015). *Doing Bayesian data analysis: a tutorial
     with R, JAGS, and Stan*. Academic Press: Boston.
 -   Plummer, M. (2003). JAGS A program for analysis of Bayesian
     graphical models using Gibbs sampling (Version 4.3.0). Retrieved
-    from <http://mcmc-jags.sourceforge.net/>
+    from
+    <a href="http://mcmc-jags.sourceforge.net/" class="uri">http://mcmc-jags.sourceforge.net/</a>
