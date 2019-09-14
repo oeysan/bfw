@@ -1,3 +1,10 @@
+# bfw 0.4.0.9000
+
+#### Minor
+
+* Updated `ParsePlot` function to conform with changes in `rvg` package
+* Fixed `circlize` function
+
 # bfw 0.4.0
 
 #### Critical 

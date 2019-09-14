@@ -373,7 +373,7 @@ ParsePlot <- function (plot.data,
           lapply(create.document, function (j) {
             
             # Add new slide
-            document <- officer::add_slide(document, "Blank", "Office Theme")
+            document <- officer::add_slide(document, "Title and Content", "Office Theme")
             
             # If Vector graphics use rvg
             if (vector.graphic) { 
@@ -382,7 +382,7 @@ ParsePlot <- function (plot.data,
               document <- rvg::ph_with_vg(document, 
                                           print(plot.data[[j]]),
                                           fonts = list(font.type),
-                                          type = NULL,
+                                          type = "body",
                                           pointsize = point.size,
                                           offx = (page.width - plot.width) / 2,
                                           offy = (page.height - plot.height) / 2,

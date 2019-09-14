@@ -1,6 +1,6 @@
 Package: bfw
-Version: 0.4.0
-Date: 2010-02-04
+Version: 0.4.0.9000
+Date: 2019-09-14
 Title: Bayesian Framework for Computational Modeling
 Authors@R: person( "Øystein Olav","Skaar", email="bayesianfw@gmail.com", role=c("aut","cre"))
 Maintainer: Øystein Olav Skaar <bayesianfw@gmail.com>
@@ -23,6 +23,7 @@ Imports: coda (>= 0.19-1),
 Suggests:
          covr (>= 3.1.0),
          circlize (>= 0.4.4),
+         data.table (>= 1.12.2),
          dplyr (>= 0.7.7),
          ggplot2 (>= 2.2.1),
          knitr (>= 1.20),

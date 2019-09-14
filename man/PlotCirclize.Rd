@@ -26,10 +26,10 @@ Create a circlize plot
 }
 \seealso{
 \code{\link[grDevices]{dev}},
- \code{\link[grDevices]{recordPlot}}
- \code{\link[graphics]{legend}}
- \code{\link[circlize]{circos.par}},
- \code{\link[circlize]{chordDiagram}},
- \code{\link[circlize]{circos.trackPlotRegion}},
- \code{\link[circlize]{circos.clear}}
+\code{\link[grDevices]{recordPlot}}
+\code{\link[graphics]{legend}}
+\code{\link[circlize]{circos.par}},
+\code{\link[circlize]{chordDiagram}},
+\code{\link[circlize]{circos.trackPlotRegion}},
+\code{\link[circlize]{circos.clear}}
 }
