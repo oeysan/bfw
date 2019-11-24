@@ -4,10 +4,19 @@
 \alias{PlotMean}
 \title{Plot Mean}
 \usage{
-PlotMean(data, monochrome = TRUE, plot.colors = c("#495054",
-  "#e3e8ea"), font.type = "serif", run.repeated = FALSE,
-  run.split = FALSE, y.split = FALSE, ribbon.plot = TRUE,
-  y.text = "Score", x.text = NULL, remove.x = FALSE)
+PlotMean(
+  data,
+  monochrome = TRUE,
+  plot.colors = c("#495054", "#e3e8ea"),
+  font.type = "serif",
+  run.repeated = FALSE,
+  run.split = FALSE,
+  y.split = FALSE,
+  ribbon.plot = TRUE,
+  y.text = "Score",
+  x.text = NULL,
+  remove.x = FALSE
+)
 }
 \arguments{
 \item{data}{MCMC data to plot}

@@ -1,3 +1,77 @@
+#' @title Find Environment
+#' @description Find the environment of a selected variable.
+#' @param x any type of named object
+#' @param where select reference environment, Default: NULL
+#' @return returns Found environment, Default: R_GlobalEnv.
+#' @rdname FindEnvironment
+#' @export
+
+FindEnvironment <- function(x, where = NULL ) {
+  
+  if(is.null(where)) where <- unique(rev(sys.parents()))
+  
+  x <- lapply(where, function (i) {
+    if (exists(x, frame=i)) sys.frame(i) else ".GlobalEnv"
+  })
+  
+  x <- list (called = x[[1]],
+             nested = x)
+  
+  return (x)
+}
+
+#' @title Change Names
+#' @description Change names, colnames or rownames of single items or a list of items
+#' @param x list, vector, matrix, dataframe or a list of such items
+#' @param names names to insert
+#' @param single.items logical, indicating whether or not to use names rather than colnames or rownames, Default: FALSE
+#' @param row.names logical, indicating whether or not to use rownames rather than colnames, Default: FALSE
+#' @param param Variable name, Default: NULL
+#' @param where select parents, Default: NULL
+#' @param environment select reference environment, Default: NULL
+#' @return returns Named items
+#'  # ABC <- c("1","2","3")
+#'  # "1" "2" "3"
+#'  # ChangeNames(ABC, names = c("A","B","C") , single.items = TRUE)
+#'  #  A   B   C 
+#'  # "1" "2" "3" 
+#' @rdname ChangeNames
+#' @export
+
+ChangeNames <- function(x, 
+                        names, 
+                        single.items = FALSE , 
+                        row.names = FALSE , 
+                        param = NULL , 
+                        where = NULL , 
+                        environment = NULL) {
+  
+  if(is.null(where)) where <- unique(rev(sys.parents()))
+  
+  if (typeof(x) == "list") { 
+    # Get parameter name from list
+    param <- unlist(lapply(substitute(x)[-1],deparse))
+    invisible(lapply(1:length(x), function (i) { 
+      ChangeNames(x[[i]], names , single.items , row.names , param = param[i] , where = where) 
+    }))
+  } else {
+    # if parameter name is empty get name from x
+    if (is.null(param)) param <- deparse(substitute(x))[[1]]
+    if (is.null(environment)) environment <- FindEnvironment(param, where)$called
+
+    if (single.items) {
+      names(x) <- names
+    } else if (row.names) {
+      rownames(x) <- names
+    } else {
+      colnames(x) <- names
+    }
+   
+    assign(param , x , envir=environment)
+  }
+}
+
+
 #' @title Capitalize Words
 #' @description capitalize the first letter in each words in a string
 #' @param s string
@@ -308,6 +382,7 @@ Layout <- function(x = "a4", layout.inverse = FALSE) {
 #' @title Parse Numbers
 #' @description simple function to extract numbers from string/vector
 #' @param x string or vector
+#' @param digits logical, indicating whether or not to extract decimals, Default: FALSE
 #' @examples
 #'  ParseNumber("String1WithNumbers2")
 #'  # [1] 1 2
@@ -317,10 +392,22 @@ Layout <- function(x = "a4", layout.inverse = FALSE) {
 #' @export
 #' @importFrom stats na.omit
 
-ParseNumber <- function (x) {
-  x <- c(stats::na.omit(as.numeric(TrimSplit(x,"\\D+"))))
+ParseNumber <- function(x , digits = FALSE) {
+
+  if (digits) {
+    x <- unlist(lapply(strsplit(x, split = " "), function(x) {
+      x <- gsub("[^\\.0-9A-Za-z///' ]", "" , x , ignore.case = TRUE)
+      grep("\\d+", x, value = TRUE)
+    }))
+  } else {
+    x <- TrimSplit(x, "\\D+") 
+  }
+  
+  x <- suppressWarnings(c(stats::na.omit(as.numeric(x))))
   if (!length(x)) x <- 0
-  return (x)
+  
+  return(x)
+  
 }
 
 #' @title Read File

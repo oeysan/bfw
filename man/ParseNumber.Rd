@@ -4,10 +4,12 @@
 \alias{ParseNumber}
 \title{Parse Numbers}
 \usage{
-ParseNumber(x)
+ParseNumber(x, digits = FALSE)
 }
 \arguments{
 \item{x}{string or vector}
+
+\item{digits}{logical, indicating whether or not to extract decimals, Default: FALSE}
 }
 \description{
 simple function to extract numbers from string/vector

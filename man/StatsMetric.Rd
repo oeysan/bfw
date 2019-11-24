@@ -4,9 +4,21 @@
 \alias{StatsMetric}
 \title{Predict Metric}
 \usage{
-StatsMetric(y = NULL, y.names = NULL, x = NULL, x.names = NULL, DF,
-  params = NULL, job.group = NULL, initial.list = list(), model.name,
-  jags.model, custom.model = NULL, run.robust = FALSE, ...)
+StatsMetric(
+  y = NULL,
+  y.names = NULL,
+  x = NULL,
+  x.names = NULL,
+  DF,
+  params = NULL,
+  job.group = NULL,
+  initial.list = list(),
+  model.name,
+  jags.model,
+  custom.model = NULL,
+  run.robust = FALSE,
+  ...
+)
 }
 \arguments{
 \item{y}{criterion variable(s), Default: NULL}

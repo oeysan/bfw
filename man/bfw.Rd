@@ -4,16 +4,37 @@
 \alias{bfw}
 \title{Settings}
 \usage{
-bfw(job.title = NULL, job.group = NULL, jags.model, jags.seed = NULL,
-  jags.method = NULL, jags.chains = NULL, custom.function = NULL,
-  custom.model = NULL, params = NULL, saved.steps = 10000,
-  thinned.steps = 1, adapt.steps = NULL, burnin.steps = NULL,
-  initial.list = list(), custom.name = NULL,
-  project.name = "Project", project.dir = "Results/",
-  project.data = NULL, time.stamp = TRUE, save.data = FALSE,
-  data.set = "AllData", data.format = "csv", raw.data = FALSE,
-  run.robust = FALSE, merge.MCMC = FALSE, run.diag = FALSE,
-  sep = ",", silent = FALSE, ...)
+bfw(
+  job.title = NULL,
+  job.group = NULL,
+  jags.model,
+  jags.seed = NULL,
+  jags.method = NULL,
+  jags.chains = NULL,
+  custom.function = NULL,
+  custom.model = NULL,
+  params = NULL,
+  saved.steps = 10000,
+  thinned.steps = 1,
+  adapt.steps = NULL,
+  burnin.steps = NULL,
+  initial.list = list(),
+  custom.name = NULL,
+  project.name = "Project",
+  project.dir = "Results/",
+  project.data = NULL,
+  time.stamp = TRUE,
+  save.data = FALSE,
+  data.set = "AllData",
+  data.format = "csv",
+  raw.data = FALSE,
+  run.robust = FALSE,
+  merge.MCMC = FALSE,
+  run.diag = FALSE,
+  sep = ",",
+  silent = FALSE,
+  ...
+)
 }
 \arguments{
 \item{job.title}{title of analysis, Default: NULL}

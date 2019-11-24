@@ -4,12 +4,26 @@
 \alias{ParsePlot}
 \title{Parse Plot}
 \usage{
-ParsePlot(plot.data, project.dir = "Results/",
-  project.name = FileName(name = "Print"), graphic.type = "pdf",
-  plot.size = "15,10", scaling = 100, plot.aspect = NULL,
-  save.data = FALSE, vector.graphic = FALSE, point.size = 12,
-  font.type = "serif", one.file = TRUE, ppi = 300, units = "in",
-  layout = "a4", layout.inverse = FALSE, return.files = FALSE, ...)
+ParsePlot(
+  plot.data,
+  project.dir = "Results/",
+  project.name = FileName(name = "Print"),
+  graphic.type = "pdf",
+  plot.size = "15,10",
+  scaling = 100,
+  plot.aspect = NULL,
+  save.data = FALSE,
+  vector.graphic = FALSE,
+  point.size = 12,
+  font.type = "serif",
+  one.file = TRUE,
+  ppi = 300,
+  units = "in",
+  layout = "a4",
+  layout.inverse = FALSE,
+  return.files = FALSE,
+  ...
+)
 }
 \arguments{
 \item{plot.data}{a list of plots}
@@ -79,9 +93,9 @@ ParsePlot(plot.data,
           layout = "a4",
           return.files = TRUE
 )
-# [1] "\\\\Temp/Project-Testing-Plot01-1528833217.png"
-# [2] "\\\\Temp/Project-Testing-Plot02-1528833217.png"
-# [3] "\\\\Temp/Project-Testing-Plot03-1528833217.png"
+# [1] "\\Temp/Project-Testing-Plot01-1528833217.png"
+# [2] "\\Temp/Project-Testing-Plot02-1528833217.png"
+# [3] "\\Temp/Project-Testing-Plot03-1528833217.png"
 # Save plots as single PowerPoint (default) and return file names
 project.dir <- tempdir()
 project.name <- FileName(name="Testing-Plot")
@@ -94,7 +108,7 @@ ParsePlot(plot.data,
           save.data = TRUE,
           return.files = TRUE
 )
-# [1] "\\\\Temp/Project-Testing-Plot-1528833342.pptx"
+# [1] "\\Temp/Project-Testing-Plot-1528833342.pptx"
 }
 }
 \seealso{
@@ -102,6 +116,6 @@ ParsePlot(plot.data,
  \code{\link[utils]{head}}
  \code{\link[png]{readPNG}}
  \code{\link[graphics]{par}},\code{\link[graphics]{plot}},\code{\link[graphics]{rasterImage}}
- \code{\link[officer]{read_pptx}},\code{\link[officer]{add_slide}},\code{\link[officer]{ph_with_img}}
- \code{\link[rvg]{ph_with_vg}}
+ \code{\link[officer]{read_pptx}},\code{\link[officer]{add_slide}},\code{\link[officer]{ph_with}}
+ \code{\link[rvg]{dml}}
 }

@@ -4,12 +4,24 @@
 \alias{PlotParam}
 \title{Plot Param}
 \usage{
-PlotParam(data, param, ROPE = FALSE, monochrome = TRUE,
-  plot.colors = c("#495054", "#e3e8ea"), font.type = "serif",
-  font.size = 4.5, rope.line = -0.2, rope.tick = -0.1,
-  rope.label = -0.35, line.size = 0.5, dens.zero.col = "black",
-  dens.mean.col = "white", dens.median.col = "white",
-  dens.mode.col = "black", dens.rope.col = "black")
+PlotParam(
+  data,
+  param,
+  ROPE = FALSE,
+  monochrome = TRUE,
+  plot.colors = c("#495054", "#e3e8ea"),
+  font.type = "serif",
+  font.size = 4.5,
+  rope.line = -0.2,
+  rope.tick = -0.1,
+  rope.label = -0.35,
+  line.size = 0.5,
+  dens.zero.col = "black",
+  dens.mean.col = "white",
+  dens.median.col = "white",
+  dens.mode.col = "black",
+  dens.rope.col = "black"
+)
 }
 \arguments{
 \item{data}{MCMC data to plot}

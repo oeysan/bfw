@@ -4,8 +4,7 @@
 \alias{FlattenList}
 \title{Flatten List}
 \usage{
-FlattenList(li, rm.duplicated = TRUE, unname.li = TRUE,
-  rm.empty = TRUE)
+FlattenList(li, rm.duplicated = TRUE, unname.li = TRUE, rm.empty = TRUE)
 }
 \arguments{
 \item{li}{list to flatten}

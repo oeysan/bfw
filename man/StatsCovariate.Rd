@@ -4,9 +4,18 @@
 \alias{StatsCovariate}
 \title{Covariate}
 \usage{
-StatsCovariate(y = NULL, y.names = NULL, x = NULL, x.names = NULL,
-  DF, params = NULL, job.group = NULL, initial.list = list(),
-  jags.model, ...)
+StatsCovariate(
+  y = NULL,
+  y.names = NULL,
+  x = NULL,
+  x.names = NULL,
+  DF,
+  params = NULL,
+  job.group = NULL,
+  initial.list = list(),
+  jags.model,
+  ...
+)
 }
 \arguments{
 \item{y}{criterion variable(s), Default: NULL}

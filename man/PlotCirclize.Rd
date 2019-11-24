@@ -4,9 +4,14 @@
 \alias{PlotCirclize}
 \title{Circlize Plot}
 \usage{
-PlotCirclize(data, category.spacing = 1.2, category.inset = c(-0.4, 0),
-  monochrome = TRUE, plot.colors = c("#CCCCCC", "#DEDEDE"),
-  font.type = "serif")
+PlotCirclize(
+  data,
+  category.spacing = 1.2,
+  category.inset = c(-0.4, 0),
+  monochrome = TRUE,
+  plot.colors = c("#CCCCCC", "#DEDEDE"),
+  font.type = "serif"
+)
 }
 \arguments{
 \item{data}{data for circlize plot}

@@ -4,8 +4,14 @@
 \alias{MatrixCombn}
 \title{Matrix Combinations}
 \usage{
-MatrixCombn(matrix, first.stem, last.stem = NULL, q.levels,
-  rm.last = TRUE, row.means = TRUE)
+MatrixCombn(
+  matrix,
+  first.stem,
+  last.stem = NULL,
+  q.levels,
+  rm.last = TRUE,
+  row.means = TRUE
+)
 }
 \arguments{
 \item{matrix}{matrix to combine}

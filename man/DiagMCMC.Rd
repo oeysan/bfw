@@ -4,9 +4,15 @@
 \alias{DiagMCMC}
 \title{Diagnose MCMC}
 \usage{
-DiagMCMC(data.MCMC, par.name, job.names, job.group,
-  credible.region = 0.95, monochrome = TRUE,
-  plot.colors = c("#495054", "#e3e8ea"))
+DiagMCMC(
+  data.MCMC,
+  par.name,
+  job.names,
+  job.group,
+  credible.region = 0.95,
+  monochrome = TRUE,
+  plot.colors = c("#495054", "#e3e8ea")
+)
 }
 \arguments{
 \item{data.MCMC}{MCMC chains to diagnose}

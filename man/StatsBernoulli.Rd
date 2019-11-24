@@ -4,8 +4,14 @@
 \alias{StatsBernoulli}
 \title{Bernoulli Trials}
 \usage{
-StatsBernoulli(x = NULL, x.names = NULL, DF, params = NULL,
-  initial.list = list(), ...)
+StatsBernoulli(
+  x = NULL,
+  x.names = NULL,
+  DF,
+  params = NULL,
+  initial.list = list(),
+  ...
+)
 }
 \arguments{
 \item{x}{predictor variable(s), Default: NULL}

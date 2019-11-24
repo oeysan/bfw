@@ -1,3 +1,18 @@
+# bfw 0.4.1
+
+#### Minor
+
+* Sync with CRAN
+
+# bfw 0.4.0.9002
+
+#### Minor
+
+* added `FindEnvironment` function to find the environment of a selected variable
+* added `ChangeNames` function to change names, colnames or rownames of single items or a list of items
+* Updated `ParseNumber` function to optionally extract numeric values with decimals
+* @davidgohel adapted `ParsePlot` to conform with changes in `officer` and `rvg` packages
+
 # bfw 0.4.0.9001
 
 #### Minor

@@ -4,8 +4,14 @@
 \alias{AddNames}
 \title{Add Names}
 \usage{
-AddNames(par, job.names, job.group = NULL, keep.par = TRUE,
-  names.only = FALSE, ...)
+AddNames(
+  par,
+  job.names,
+  job.group = NULL,
+  keep.par = TRUE,
+  names.only = FALSE,
+  ...
+)
 }
 \arguments{
 \item{par}{defined parameter to analyze (e.g., "cor[1,2]")}

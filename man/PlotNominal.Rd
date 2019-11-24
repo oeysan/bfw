@@ -4,11 +4,22 @@
 \alias{PlotNominal}
 \title{Plot Nominal}
 \usage{
-PlotNominal(data, monochrome = TRUE, plot.colors = c("#CCCCCC",
-  "#DEDEDE"), font.type = "serif", bar.dodge = 0.6, bar.alpha = 0.7,
-  bar.width = 0.4, bar.extras.dodge = 0, bar.border = "black",
-  bar.label = FALSE, bar.error = TRUE, use.cutoff = FALSE,
-  diff.cutoff = 1, q.items = NULL)
+PlotNominal(
+  data,
+  monochrome = TRUE,
+  plot.colors = c("#CCCCCC", "#DEDEDE"),
+  font.type = "serif",
+  bar.dodge = 0.6,
+  bar.alpha = 0.7,
+  bar.width = 0.4,
+  bar.extras.dodge = 0,
+  bar.border = "black",
+  bar.label = FALSE,
+  bar.error = TRUE,
+  use.cutoff = FALSE,
+  diff.cutoff = 1,
+  q.items = NULL
+)
 }
 \arguments{
 \item{data}{MCMC data to plot}

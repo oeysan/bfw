@@ -4,8 +4,15 @@
 \alias{ReadFile}
 \title{Read File}
 \usage{
-ReadFile(file = NULL, path = "models/", package = "bfw",
-  type = "string", sep = ",", data.format = "txt", custom = FALSE)
+ReadFile(
+  file = NULL,
+  path = "models/",
+  package = "bfw",
+  type = "string",
+  sep = ",",
+  data.format = "txt",
+  custom = FALSE
+)
 }
 \arguments{
 \item{file}{name of file, Default: NULL}

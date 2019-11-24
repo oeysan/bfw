@@ -4,8 +4,16 @@
 \alias{StatsMean}
 \title{Mean Data}
 \usage{
-StatsMean(y = NULL, y.names = NULL, x = NULL, x.names = NULL, DF,
-  params = NULL, initial.list = list(), ...)
+StatsMean(
+  y = NULL,
+  y.names = NULL,
+  x = NULL,
+  x.names = NULL,
+  DF,
+  params = NULL,
+  initial.list = list(),
+  ...
+)
 }
 \arguments{
 \item{y}{criterion variable(s), Default: NULL}

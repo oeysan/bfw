@@ -4,11 +4,24 @@
 \alias{StatsFit}
 \title{Fit Data}
 \usage{
-StatsFit(latent = NULL, latent.names = NULL, observed = NULL,
-  observed.names = NULL, additional = NULL, additional.names = NULL,
-  DF, params = NULL, job.group = NULL, initial.list = list(),
-  model.name, jags.model, custom.model = NULL, run.ppp = FALSE,
-  run.robust = FALSE, ...)
+StatsFit(
+  latent = NULL,
+  latent.names = NULL,
+  observed = NULL,
+  observed.names = NULL,
+  additional = NULL,
+  additional.names = NULL,
+  DF,
+  params = NULL,
+  job.group = NULL,
+  initial.list = list(),
+  model.name,
+  jags.model,
+  custom.model = NULL,
+  run.ppp = FALSE,
+  run.robust = FALSE,
+  ...
+)
 }
 \arguments{
 \item{latent}{latenr variables, Default: NULL}

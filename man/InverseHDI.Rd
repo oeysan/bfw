@@ -4,8 +4,13 @@
 \alias{InverseHDI}
 \title{Compute Inverse HDI}
 \usage{
-InverseHDI(beta, shape1, shape2, credible.region = 0.95,
-  tolerance = 0.00000001)
+InverseHDI(
+  beta,
+  shape1,
+  shape2,
+  credible.region = 0.95,
+  tolerance = 0.00000001
+)
 }
 \arguments{
 \item{beta}{density, distribution function, quantile function and random generation for the Beta distribution with parameters shape1 and shape2}

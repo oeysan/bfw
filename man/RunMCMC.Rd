@@ -4,17 +4,42 @@
 \alias{RunMCMC}
 \title{Run MCMC}
 \usage{
-RunMCMC(jags.model, params = NULL, name.list, data.list,
-  initial.list = list(), run.contrasts = FALSE,
-  use.contrast = "between", contrasts = NULL, custom.contrast = NULL,
-  run.ppp = FALSE, k.ppp = 10, n.data, credible.region = 0.95,
-  save.data = FALSE, ROPE = NULL, merge.MCMC = FALSE,
-  run.diag = FALSE, param.diag = NULL, sep = ",",
-  monochrome = TRUE, plot.colors = c("#495054", "#e3e8ea"),
-  graphic.type = "pdf", plot.size = "15,10", scaling = 100,
-  plot.aspect = NULL, vector.graphic = FALSE, point.size = 12,
-  font.type = "serif", one.file = TRUE, ppi = 300, units = "in",
-  layout = "a4", layout.inverse = FALSE, ...)
+RunMCMC(
+  jags.model,
+  params = NULL,
+  name.list,
+  data.list,
+  initial.list = list(),
+  run.contrasts = FALSE,
+  use.contrast = "between",
+  contrasts = NULL,
+  custom.contrast = NULL,
+  run.ppp = FALSE,
+  k.ppp = 10,
+  n.data,
+  credible.region = 0.95,
+  save.data = FALSE,
+  ROPE = NULL,
+  merge.MCMC = FALSE,
+  run.diag = FALSE,
+  param.diag = NULL,
+  sep = ",",
+  monochrome = TRUE,
+  plot.colors = c("#495054", "#e3e8ea"),
+  graphic.type = "pdf",
+  plot.size = "15,10",
+  scaling = 100,
+  plot.aspect = NULL,
+  vector.graphic = FALSE,
+  point.size = 12,
+  font.type = "serif",
+  one.file = TRUE,
+  ppi = 300,
+  units = "in",
+  layout = "a4",
+  layout.inverse = FALSE,
+  ...
+)
 }
 \arguments{
 \item{jags.model}{specify which module to use}
