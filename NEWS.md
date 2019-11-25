@@ -1,3 +1,10 @@
+# bfw 0.4.1.9000
+
+#### Minor
+
+* moved `inst/doc` to `inst/extdata/doc`
+* moved `LICENSE.md` to `inst/extdata/LICENSE.md`
+
 # bfw 0.4.1
 
 #### Minor
