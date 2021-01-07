@@ -1,3 +1,10 @@
+# bfw 0.4.1.9001
+
+#### Minor
+
+* Made `PlotParam` more flexible for different kinds of parameter values 
+* Fixed `FlattenList` function for complex nested lists with contents other than list of lists.
+
 # bfw 0.4.1.9000
 
 #### Minor

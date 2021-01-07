@@ -8,15 +8,16 @@
 <a href="man/figures/logo2.png" id="logo2" title="Logo II"><img src="man/figures/logo2.png" width="250px" alt="Logo II" /></a>
 </p>
 <p align="center">
-<a href="NEWS.md" id="news" title="News"><img src="https://img.shields.io/badge/News-2019.11.25 @ 08:15:49-purple.svg" alt="News" /></a>
+<a href="NEWS.md" id="news" title="News"><img src="https://img.shields.io/badge/News-2021.01.07 @ 09:06:23-purple.svg" alt="News" /></a>
 <a href="https://CRAN.R-project.org/package=bfw" id="cran" title="CRAN Version"><img src="https://www.r-pkg.org/badges/version/bfw" alt="CRAN Version" /></a>
-<a href="https://github.com/oeysan/bfw" id="github" title="GitHub Version"><img src="https://img.shields.io/badge/GitHub-0.4.1.9000-red.svg?style=flat-square" alt="GitHub Version" /></a>
+<a href="https://github.com/oeysan/bfw" id="github" title="GitHub Version"><img src="https://img.shields.io/badge/GitHub-0.4.1.9001-red.svg?style=flat-square" alt="GitHub Version" /></a>
 <br/>
 <a href="inst/extdata/LICENSE.md" id="license" title="License"><img src="https://img.shields.io/badge/Licence-MIT-blue.svg" alt="License" /></a>
 <a href="https://travis-ci.org/oeysan/bfw" id="travis" title="Build Status"><img src="https://travis-ci.org/oeysan/bfw.svg?branch=master" alt="Build Status" /></a>
 </p>
 
-## What is *bfw*?
+What is *bfw*?
+--------------
 
 The purpose of *`bfw`* is to establish a framework for conducting
 Bayesian analysis in [R](https://www.r-project.org/), using
@@ -268,11 +269,11 @@ The cost of conducting robust estimates
 
     # Running time for normal distribution analyis
     biased.mcmc$run.time[2] - biased.mcmc$run.time[1]
-    #> Time difference of 7.61 secs
+    #> Time difference of 7.74 secs
 
     # Running time for t-distribution analysis
     biased.mcmc.robust$run.time[2] - biased.mcmc.robust$run.time[1]
-    #> Time difference of 31.8 secs
+    #> Time difference of 32 secs
 
 License
 -------

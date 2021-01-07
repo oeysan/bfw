@@ -96,19 +96,6 @@ ParsePlot(plot.data,
 # [1] "\\Temp/Project-Testing-Plot01-1528833217.png"
 # [2] "\\Temp/Project-Testing-Plot02-1528833217.png"
 # [3] "\\Temp/Project-Testing-Plot03-1528833217.png"
-# Save plots as single PowerPoint (default) and return file names
-project.dir <- tempdir()
-project.name <- FileName(name="Testing-Plot")
-ParsePlot(plot.data,
-          project.dir = project.dir,
-          project.name = project.name,
-          vector.graphic = FALSE,
-          graphic.type = "pptx",
-          layout = "pw",
-          save.data = TRUE,
-          return.files = TRUE
-)
-# [1] "\\Temp/Project-Testing-Plot-1528833342.pptx"
 }
 }
 \seealso{

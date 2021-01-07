@@ -20,7 +20,13 @@ PlotParam(
   dens.mean.col = "white",
   dens.median.col = "white",
   dens.mode.col = "black",
-  dens.rope.col = "black"
+  dens.rope.col = "black",
+  scale = FALSE,
+  y.limits = NULL,
+  y.breaks = NULL,
+  x.limits = NULL,
+  x.breaks = NULL,
+  plot.title = NULL
 )
 }
 \arguments{
@@ -55,6 +61,18 @@ PlotParam(
 \item{dens.mode.col}{colour of line indicating mode value, Default: 'black'}
 
 \item{dens.rope.col}{colour of line indicating ROPE value, Default: 'black'}
+
+\item{scale}{scale x and y axis, Default: FALSE}
+
+\item{y.limits}{vector of y limits, Default: NULL}
+
+\item{y.breaks}{vector of y breaks, Default: NULL}
+
+\item{x.limits}{= vector of x limits, Default: NULL}
+
+\item{x.breaks}{= vector of x breaks, Default: NULL}
+
+\item{plot.title}{= title of plot, Default: NULL}
 }
 \value{
 Density plot of parameter values

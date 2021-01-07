@@ -1,9 +1,14 @@
 # R for travis: see documentation at https://docs.travis-ci.com/user/languages/r
 
 language: r
-sudo: required
 
 cache: packages
+
+os:
+  - linux
+  
+dist:
+  - xenial
 
 jdk: 
   - oraclejdk8
@@ -13,9 +18,8 @@ before_install:
   - sudo add-apt-repository ppa:marutter/rrutter -y
   - sudo apt-get update
   - sudo apt-get install r-cran-runjags
-
-after_success: "coveralls"
-
+  - sudo apt-get install libgit2-dev
+        
 r:
   - release
   - devel
@@ -26,8 +30,9 @@ env:
     - WARNINGS_ARE_ERRORS=1
     - R_BUILD_ARGS=--no-manual 
     - R_CHECK_ARGS=--no-vignettes
-    - R_CHECK_FORCE_SUGGESTS_=false
-    - R_CHECK_ARGS=--no-manual --as-cran 
+    - R_CHECK_FORCE_SUGGESTS_=FALSE
+    - R_CHECK_ARGS=--no-manual --as-cran
+    - _R_CHECK_DONTTEST_EXAMPLES_=FALSE
 
 apt_packages:
   - libv8-dev

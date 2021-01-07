@@ -4,13 +4,15 @@
 \name{Cats}
 \alias{Cats}
 \title{Dataset with Cats}
-\format{A data frame with 2000 rows and 4 variables:
+\format{
+A data frame with 2000 rows and 4 variables:
 \describe{
   \item{\code{Reward}}{integer Food or Affection}
   \item{\code{Dance}}{integer Yes or No}
   \item{\code{Alignment}}{integer Good or Evil}
   \item{\code{Ratings}}{double Cats rate their owners (average of multiple seven-point Likert-type scale (1 = Hate ... 7 = Love)} 
-}}
+}
+}
 \usage{
 Cats
 }

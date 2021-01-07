@@ -6,12 +6,7 @@ Meta
 *.Rmd
 README.html
 cran-comments.md
-doc/*.R
-doc/*.html
-doc/*.Rmd
-inst/doc/*.R
-inst/doc/*.html
-inst/doc/*.Rmd
 .Rbuildignore
 tests
 doc
+!inst/extdata/doc/
