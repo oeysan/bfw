@@ -1,0 +1,16 @@
+^CRAN-RELEASE$
+^Meta$
+^doc$
+^.*\.Rproj$
+^\.Rproj\.user$
+^cran-comments\.md$
+^README\.Rmd$
+^README\.html$
+^TODO\.md$
+^CONDUCT\.md$
+^README-.*\.png$
+^LICENSE\.md$
+^tests$
+^codecov\.yml$
+^\.github$
+^revdep$

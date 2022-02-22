@@ -218,13 +218,7 @@ DistinctColors <- function(range, random = FALSE) {
 
 FlattenList <- function(li, rm.duplicated = TRUE, unname.li = TRUE, rm.empty = TRUE) {
   # process argument
-  f <- function (l) {
-    if (length(class(l)) == 1) {
-      if( class(l) == 'list') sapply(l, f) else enquote(l)
-    } else {
-      enquote(l)
-    }
-  }
+  f <- function (l) if( class(l) == 'list') sapply(l, f) else enquote(l)
   # evaluate argument
   fi <- lapply(lapply(unlist(f(li)), eval),unlist)
   if (rm.duplicated) fi <- fi[!duplicated(fi)]

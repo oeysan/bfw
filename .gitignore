@@ -3,10 +3,10 @@ Meta
 *.Rhistory
 .RData
 .Ruserdata
-*.Rmd
 README.html
 cran-comments.md
-.Rbuildignore
 tests
 doc
-!inst/extdata/doc/
+!inst/extdata/doc
+README.Rmd
+revdep/

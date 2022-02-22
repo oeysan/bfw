@@ -1,28 +1,28 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-*bfw*: Bayesian Framework for Computational Modeling
-====================================================
+# *bfw*: Bayesian Framework for Computational Modeling
 
 <p align="center">
 <a href="man/figures/logo.png" id="logo" title="Logo"><img src="man/figures/logo.png" width="250px" alt="Logo" /></a>
 <a href="man/figures/logo2.png" id="logo2" title="Logo II"><img src="man/figures/logo2.png" width="250px" alt="Logo II" /></a>
 </p>
 <p align="center">
-<a href="NEWS.md" id="news" title="News"><img src="https://img.shields.io/badge/News-2021.01.07 @ 09:06:23-purple.svg" alt="News" /></a>
+<a href="NEWS.md" id="news" title="News"><img src="https://img.shields.io/badge/News-2022.02.22 @ 11:44:09-purple.svg" alt="News" /></a>
 <a href="https://CRAN.R-project.org/package=bfw" id="cran" title="CRAN Version"><img src="https://www.r-pkg.org/badges/version/bfw" alt="CRAN Version" /></a>
-<a href="https://github.com/oeysan/bfw" id="github" title="GitHub Version"><img src="https://img.shields.io/badge/GitHub-0.4.1.9001-red.svg?style=flat-square" alt="GitHub Version" /></a>
+<a href="https://github.com/oeysan/bfw" id="github" title="GitHub Version"><img src="https://img.shields.io/badge/GitHub-0.4.2-red.svg?style=flat-square" alt="GitHub Version" /></a>
 <br/>
 <a href="inst/extdata/LICENSE.md" id="license" title="License"><img src="https://img.shields.io/badge/Licence-MIT-blue.svg" alt="License" /></a>
-<a href="https://travis-ci.org/oeysan/bfw" id="travis" title="Build Status"><img src="https://travis-ci.org/oeysan/bfw.svg?branch=master" alt="Build Status" /></a>
+<a href="https://github.com/oeysan/bfw/actions" id="rcmdcheck" title="Build Status"><img src="https://github.com/oeysan/bfw/workflows/R-CMD-check/badge.svg" alt="Build Status" /></a>
 </p>
 
-What is *bfw*?
---------------
+# 
+
+## What is *bfw*?
 
 The purpose of *`bfw`* is to establish a framework for conducting
 Bayesian analysis in [R](https://www.r-project.org/), using
 [MCMC](https://link.springer.com/article/10.3758/s13423-016-1015-8) and
-[JAGS](http://mcmc-jags.sourceforge.net/) (Plummer, 2003). The framework
+[JAGS](https://mcmc-jags.sourceforge.io) (Plummer, 2003). The framework
 provides several modules to conduct linear and non-linear (hierarchical)
 analyses, and allows the use of custom functions and complex JAGS
 models.
@@ -40,8 +40,7 @@ checks (see Kruschke, 2013). The purpose of the framework is not to
 provide generic modules suitable for all circumstances, but rather act
 as a platform for modifying or developing models for a given project.
 
-List of current modules
------------------------
+## List of current modules
 
 -   Bernoulli trials
 -   Covariate estimations (including correlation and Cronbach’s alpha)
@@ -53,30 +52,24 @@ List of current modules
 -   Simple, multiple and hierarchical regression
 -   Softmax regression (i.e., multinomial logistic regression)
 
-List of current visualizations
-------------------------------
+## List of current visualizations
 
 -   Plot density of parameter values (including ROPE)
 -   Plot mean data (including repeated measures)
 -   Plot nominal data (e.g., expected and observed values)
 -   Plot circlize data (e.g., multiple response categories)
 
-Prerequisites
--------------
+## Prerequisites
 
--   JAGS (&gt;=4.3.0):
-    <a href="http://mcmc-jags.sourceforge.net/" class="uri">http://mcmc-jags.sourceforge.net/</a>
--   Java JDK (&gt;=1.4):
-    <a href="https://www.java.com/en/download/manual.jsp" class="uri">https://www.java.com/en/download/manual.jsp</a>
+-   JAGS (>=4.3.0): <https://mcmc-jags.sourceforge.io>
+-   Java JDK (>=1.4): <https://www.java.com/en/download/manual.jsp>
 
-Dependencies
-------------
+## Dependencies
 
 Dependencies are automatically installed from CRAN. By default, outdated
 dependencies are automatically upgraded.
 
-Installing
-----------
+## Installing
 
 You can install *`bfw`* from GitHub. If you already have a previous
 version of *`bfw`* installed, using the command below will update to the
@@ -98,13 +91,13 @@ versions are in active development.
 Please report any bugs/issues
 [here](https://github.com/oeysan/bfw/issues/)
 
-Example 1: Normal distributed data
-----------------------------------
+## Example 1: Normal distributed data
 
 Compute mean and standard deviation estimates.  
 Please see manual for more examples.
 
-    # Apply MASS to create normal distributed data with mean = 0 and standard deviation = 1
+    # Apply MASS to create normal distributed data 
+    # mean = 0 and standard deviation = 1
     set.seed(99)
     data <- data.frame(y =
                          MASS::mvrnorm(n=100,
@@ -151,8 +144,7 @@ Please see manual for more examples.
     #> mu[1]: Y    0.027 25887 -0.167 0.229      0      0    100 100
     #> sigma[1]: Y 0.933 10275  0.749 1.115      0    100      0 100
 
-Example 2: Same data but with outliers
---------------------------------------
+## Example 2: Same data but with outliers
 
     # Add 10 outliers, each with a value of 10.
     biased.data <- rbind(data,data.frame(y = rep(10,10)))
@@ -194,8 +186,7 @@ Example 2: Same data but with outliers
     #> mu[1]: Y    0.168 29405 -0.015 0.355      0  0.008  99.992 110
     #> sigma[1]: Y 0.679 17597  0.512 0.903      0 99.128   0.872 110
 
-Example 3: Custom function and model
-------------------------------------
+## Example 3: Custom function and model
 
 Shamelessly adapted from
 [here](http://jamescurran.co.nz/2014/06/bayesian-modelling-of-left-censored-data-using-jags/)
@@ -264,45 +255,46 @@ Shamelessly adapted from
     #>     Mode    HDIlo    HDIhi   ROPElo   ROPEhi   ROPEin        n 
     #>     1.03     1.00     1.06     7.64    14.33    78.03 10000.00
 
-The cost of conducting robust estimates
----------------------------------------
+## The cost of conducting robust estimates
 
     # Running time for normal distribution analyis
     biased.mcmc$run.time[2] - biased.mcmc$run.time[1]
-    #> Time difference of 7.74 secs
+    #> Time difference of 7.92 secs
 
     # Running time for t-distribution analysis
     biased.mcmc.robust$run.time[2] - biased.mcmc.robust$run.time[1]
-    #> Time difference of 32 secs
+    #> Time difference of 35.8 secs
 
-License
--------
+## License
 
 This project is licensed under the MIT License - see
-[LICENSE.md](inst/extdata/LICENSE.md) for details
+[LICENSE](inst/extdata/LICENSE.md) for details
 
-Acknowledgments
----------------
+## Acknowledgments
 
 -   John Kruschke for his overall amazing work, and especially for his
     workshop at ICPSR 2016. It opened my eyes to Bayesian statistics.
--   Martyn Plummer for his work on JAGS. Cheers!
+-   Martyn Plummer for his work on JAGS.
+-   David Gohel for his work on
+    [officer](https://cran.r-project.org/package=officer)
 
-References
-----------
+## Code of Conduct
+
+Don’t be evil. Please read the [Code of
+Conduct](https://github.com/oeysan/bfw/blob/master/CONDUCT.md)
+
+## References
 
 -   Gelman, A., & Rubin, D. B. (1992). Inference from Iterative
     Simulation Using Multiple Sequences. *Statistical Science*, *7*(4),
-    457-472.
-    <a href="https://doi.org/10.1214/ss/1177011136" class="uri">https://doi.org/10.1214/ss/1177011136</a>
+    457-472. <https://doi.org/10.1214/ss/1177011136>
 -   Kruschke, J. K. (2013). Posterior predictive checks can and should
     be Bayesian: Comment on Gelman and Shalizi, ‘Philosophy and the
     practice of Bayesian statistics’. *British Journal of Mathematical
     and Statistical Psychology*, *66*(1), 4556.
-    <a href="https://doi.org/10.1111/j.2044-8317.2012.02063.x" class="uri">https://doi.org/10.1111/j.2044-8317.2012.02063.x</a>
+    <https://doi.org/10.1111/j.2044-8317.2012.02063.x>
 -   Kruschke, J. K. (2015). *Doing Bayesian data analysis: a tutorial
-    with R, JAGS, and Stan*. Academic Press: Boston.
+    with R, JAGS, and Stan*. Academic Press
 -   Plummer, M. (2003). JAGS A program for analysis of Bayesian
-    graphical models using Gibbs sampling (Version 4.3.0). Retrieved
-    from
-    <a href="http://mcmc-jags.sourceforge.net/" class="uri">http://mcmc-jags.sourceforge.net/</a>
+    graphical models using Gibbs sampling (Version 4.3.0).
+    <https://mcmc-jags.sourceforge.io>

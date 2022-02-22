@@ -1,9 +1,23 @@
+# bfw 0.4.2
+
+#### Critical 
+
+* Removed an example from `ParsePlot` as temp saving caused errors on some platforms
+
+#### Minor
+
+* Added a code of conduct
+* Adapted examples to improve run time of `rcmdcheck`
+* Moved away from Travis CI to Github Actions
+* Changed some urls that had moved hosting
+* Adapted `kappa` function to handle binary values
+
 # bfw 0.4.1.9001
 
 #### Minor
 
 * Made `PlotParam` more flexible for different kinds of parameter values 
-* Fixed `FlattenList` function for complex nested lists with contents other than list of lists.
+* Fixed `FlattenList` function for complex nested lists with contents other than list of lists
 
 # bfw 0.4.1.9000
 

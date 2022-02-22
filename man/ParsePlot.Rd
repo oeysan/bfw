@@ -81,28 +81,19 @@ plot.data <- lapply(1:3, function (i) {
 
 # Print plots
 ParsePlot(plot.data)
-\donttest{
-# Save plots as png with a4 layout and return file names
-project.dir <- tempdir()
-project.name <- FileName(name="Testing-Plot")
-ParsePlot(plot.data,
-          project.dir = project.dir,
-          project.name = project.name,
-          graphic.type = "png",
-          save.data = TRUE,
-          layout = "a4",
-          return.files = TRUE
-)
-# [1] "\\Temp/Project-Testing-Plot01-1528833217.png"
-# [2] "\\Temp/Project-Testing-Plot02-1528833217.png"
-# [3] "\\Temp/Project-Testing-Plot03-1528833217.png"
-}
 }
 \seealso{
-\code{\link[grDevices]{dev}},\code{\link[grDevices]{png}},\code{\link[grDevices]{ps.options}},\code{\link[grDevices]{recordPlot}}
+\code{\link[grDevices]{dev}},
+ \code{\link[grDevices]{png}},
+ \code{\link[grDevices]{ps.options}},
+ \code{\link[grDevices]{recordPlot}}
  \code{\link[utils]{head}}
  \code{\link[png]{readPNG}}
- \code{\link[graphics]{par}},\code{\link[graphics]{plot}},\code{\link[graphics]{rasterImage}}
- \code{\link[officer]{read_pptx}},\code{\link[officer]{add_slide}},\code{\link[officer]{ph_with}}
+ \code{\link[graphics]{par}},
+ \code{\link[graphics]{plot}},
+ \code{\link[graphics]{rasterImage}}
+ \code{\link[officer]{read_pptx}},
+ \code{\link[officer]{add_slide}},
+ \code{\link[officer]{ph_with}}
  \code{\link[rvg]{dml}}
 }

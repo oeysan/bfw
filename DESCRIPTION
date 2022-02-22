@@ -1,45 +1,55 @@
 Package: bfw
-Version: 0.4.1.9001
-Date: 2021-01-07
 Title: Bayesian Framework for Computational Modeling
+Version: 0.4.2
+Date: 2022-02-22
 Authors@R: person( "Øystein Olav","Skaar", email="bayesianfw@gmail.com", role=c("aut","cre"))
 Maintainer: Øystein Olav Skaar <bayesianfw@gmail.com>
+Description: Derived from the work of Kruschke (2015,
+    <ISBN:9780124058880>), the present package aims to provide a framework
+    for conducting Bayesian analysis using Markov chain Monte Carlo (MCMC)
+    sampling utilizing the Just Another Gibbs Sampler ('JAGS', Plummer,
+    2003, <https://mcmc-jags.sourceforge.io>).  The initial version
+    includes several modules for conducting Bayesian equivalents of
+    chi-squared tests, analysis of variance (ANOVA), multiple
+    (hierarchical) regression, softmax regression, and for fitting data
+    (e.g., structural equation modeling).
+License: MIT + file LICENSE
 URL: https://github.com/oeysan/bfw/
 BugReports: https://github.com/oeysan/bfw/issues/
-Description: Derived from the work of Kruschke (2015, <ISBN:9780124058880>),
-    the present package aims to provide a framework for conducting Bayesian
-    analysis using Markov chain Monte Carlo (MCMC) sampling utilizing the
-    Just Another Gibbs Sampler ('JAGS', Plummer, 2003, <http://mcmc-jags.sourceforge.net/>).
-    The initial version includes several modules for conducting Bayesian
-    equivalents of chi-squared tests, analysis of variance (ANOVA),
-    multiple (hierarchical) regression, softmax regression, and for fitting data
-    (e.g., structural equation modeling).
-SystemRequirements: JAGS >=4.3.0 <http://mcmc-jags.sourceforge.net/>,
-                    Java JDK >=1.4 <https://www.java.com/en/download/manual.jsp>
-Depends: R (>= 3.5.0),
-Imports: coda (>= 0.19-1),
-         MASS (>= 7.3-47),
-         runjags (>= 2.0.4-2)
+Depends: 
+    R (>= 3.5.0)
+Imports: 
+    circlize (>= 0.4.4),
+    coda (>= 0.19-1),
+    data.table (>= 1.12.2),
+    dplyr (>= 0.7.7),
+    ggplot2 (>= 2.2.1),
+    graphics,
+    grDevices,
+    grid,
+    magrittr (>= 1.5),
+    MASS (>= 7.3-47),
+    officer (>= 0.3.1),
+    parallel,
+    plyr (>= 1.8.4),
+    png (>= 0.1-7),
+    runjags (>= 2.0.4-2),
+    rvg (>= 0.1.9),
+    scales (>= 0.5.0),
+    stats,
+    utils
 Suggests:
-         covr (>= 3.1.0),
-         circlize (>= 0.4.4),
-         data.table (>= 1.12.2),
-         dplyr (>= 0.7.7),
-         ggplot2 (>= 2.2.1),
-         knitr (>= 1.20),
-         lavaan (>= 0.6-1),
-         magrittr (>= 1.5),
-         officer (>= 0.3.1),
-         plyr (>= 1.8.4),
-         png (>= 0.1-7),
-         psych (>= 1.7.8),
-         rmarkdown (>= 1.10),
-         rvg (>= 0.1.9),
-         scales (>= 0.5.0),
-         testthat (>= 2.0.0)
-License: MIT + file LICENSE
+    testthat (>= 3.0.0),
+    knitr (>= 1.20),
+    lavaan (>= 0.6-1),
+    psych (>= 1.7.8),
+    rmarkdown (>= 1.10)
+VignetteBuilder: 
+    knitr
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.1.1
-VignetteBuilder: knitr
 NeedsCompilation: no
+RoxygenNote: 7.1.2
+SystemRequirements: JAGS >=4.3.0 <https://mcmc-jags.sourceforge.io>, Java
+    JDK >=1.4 <https://www.java.com/en/download/manual.jsp>
+Config/testthat/edition: 3
